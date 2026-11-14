@@ -21,7 +21,7 @@ Stack : **Next.js** (App Router) · **Supabase** · **next-intl** (FR / EN).
 
 ## Prérequis
 
-- Node.js **≥ 20.19**
+- Node.js **24** (version exacte dans `.nvmrc` : `nvm install`)
 - Un projet [Supabase](https://supabase.com)
 - [Supabase CLI](https://supabase.com/docs/guides/cli) (fournie via `devDependencies`)
 
