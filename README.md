@@ -62,6 +62,23 @@ Les migrations créent notamment `profiles`, `cards`, `card_translations`, le le
 
 Détails sécurité : [`docs/security.md`](docs/security.md).
 
+### Base locale (dev)
+
+En dev, l’app tourne sur un Supabase local (Docker) pour ne jamais toucher la prod :
+
+```bash
+npx supabase start        # API sur http://127.0.0.1:55321, Studio sur http://127.0.0.1:54323
+npm run db:reset          # recrée la base locale depuis les migrations
+npm run db:pull-cards     # copie le catalogue de cartes de la prod (lecture seule) vers le local
+```
+
+- `.env.local` pointe sur le local (`npx supabase status -o env` donne l’URL et les clés).
+- Les clés de prod sont dans `.env.prod`, qu’aucun outil ne charge automatiquement.
+  Publier des cartes en prod : `npx tsx --env-file=.env.prod scripts/cards/publish.mts`.
+- L’API locale est sur le port 55321 (54321 est souvent pris, par exemple par CleanMyMac).
+- Les e-mails d’auth arrivent dans Mailpit : http://127.0.0.1:54324.
+- `npm run db:migrate` est la seule commande qui écrit en prod.
+
 ### Lancer l’app
 
 ```bash
@@ -85,6 +102,7 @@ Ouvre [http://localhost:3000/fr](http://localhost:3000/fr) (ou `/en`).
 | `npm run test:integration` | Tests d’intégration |
 | `npm run db:migrate` | Appliquer les migrations (`supabase db push`) |
 | `npm run db:reset` | Reset local de la base |
+| `npm run db:pull-cards` | Copie le catalogue de cartes de la prod vers la base locale |
 | `npm run cards:build` | Pipeline d’import / images / review / webp des cartes |
 
 Import de cartes : [`docs/card-import.md`](docs/card-import.md).
