@@ -1,36 +1,126 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# WILDIA TCG
 
-## Getting Started
+TCG digital d’animaux : collectionne des espèces réelles, ouvre des boosters et farme des pièces — même hors ligne.
 
-First, run the development server:
+Stack : **Next.js** (App Router) · **Supabase** · **next-intl** (FR / EN).
+
+---
+
+## Fonctionnalités
+
+- **Catalogue** — cartes d’animaux réels, filtrables par rareté (commune → mythique)
+- **Boosters** — packs de 5 cartes, tirage serveur et révélation carte par carte
+- **Classeur** — collection personnelle, tri par rareté / nom / quantité
+- **Économie** — farm passif de pièces selon les cartes possédées (crédité à chaque visite)
+- **Profil joueur** — bio, bannière, carte vitrine ; profil public ou privé
+- **Rareté UICN** — la rareté reflète le statut de conservation réel de l’espèce
+- **i18n** — interface en français et en anglais (`/fr`, `/en`)
+- **Auth** — inscription / connexion via Supabase Auth
+
+---
+
+## Prérequis
+
+- Node.js **≥ 20.19**
+- Un projet [Supabase](https://supabase.com)
+- [Supabase CLI](https://supabase.com/docs/guides/cli) (fournie via `devDependencies`)
+
+---
+
+## Installation
+
+```bash
+git clone https://github.com/<ton-org>/wildia-tcg.git
+cd wildia-tcg
+cp .env.example .env.local
+npm install
+```
+
+### Variables d’environnement
+
+Renseigne `.env.local` (clés dans le dashboard Supabase → **Settings → API**) :
+
+| Variable | Rôle |
+|----------|------|
+| `NEXT_PUBLIC_SUPABASE_URL` | URL du projet |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Clé anon (client) |
+| `SUPABASE_SERVICE_ROLE_KEY` | Clé service role (serveur uniquement) |
+| `ENABLE_DEV_GRANTS=true` | *(optionnel)* active `/dev/grants` pour s’attribuer des cartes en local |
+| `PIXABAY_API_KEY` | *(scripts d’import)* |
+| `CARD_IMPORT_CONTACT` | *(scripts d’import)* contact User-Agent Wikimedia |
+
+Voir `.env.example` pour la liste complète (Stripe prévu en option).
+
+### Base de données
+
+```bash
+npx supabase link --project-ref <ton-project-ref>
+npm run db:migrate
+```
+
+Les migrations créent notamment `profiles`, `cards`, `card_translations`, le ledger économique, les boosters / `draw_logs`, et le bucket Storage `card-art`.
+
+Détails sécurité : [`docs/security.md`](docs/security.md).
+
+### Lancer l’app
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Ouvre [http://localhost:3000/fr](http://localhost:3000/fr) (ou `/en`).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Scripts
 
-## Learn More
+| Commande | Description |
+|----------|-------------|
+| `npm run dev` | Serveur de développement |
+| `npm run build` | Build production |
+| `npm run start` | Serveur production |
+| `npm run lint` | ESLint |
+| `npm run typecheck` | Vérification TypeScript |
+| `npm test` | Tests unitaires (Vitest) |
+| `npm run test:integration` | Tests d’intégration |
+| `npm run db:migrate` | Appliquer les migrations (`supabase db push`) |
+| `npm run db:reset` | Reset local de la base |
+| `npm run cards:build` | Pipeline d’import / images / review / webp des cartes |
 
-To learn more about Next.js, take a look at the following resources:
+Import de cartes : [`docs/card-import.md`](docs/card-import.md).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Structure du projet
 
-## Deploy on Vercel
+```
+app/[locale]/     # Routes i18n (/fr, /en)
+components/         # UI React
+lib/                # Domaine pur (types, règles, validation) — pas de Supabase
+server/             # Use cases et accès données (seul consommateur Supabase côté app)
+supabase/migrations # SQL versionné
+docs/               # Architecture, économie, sécurité, tests…
+scripts/cards/      # Pipeline d’import des cartes
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Conventions pour une future migration Nest + Postgres : [`docs/architecture.md`](docs/architecture.md) (vérifiées par ESLint).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Autres docs utiles :
+
+- [`docs/economy.md`](docs/economy.md) — ledger, farm, sync
+- [`docs/rate-limiting.md`](docs/rate-limiting.md)
+- [`docs/testing.md`](docs/testing.md)
+
+---
+
+## Déploiement (Vercel)
+
+1. Importer le repo sur Vercel
+2. Configurer les variables de **Production** et **Preview** (voir `.env.example`)
+3. Déployer — les migrations restent gérées via `npm run db:migrate` / Supabase CLI
+
+---
+
+## Licence
+
+Projet privé pour l’instant (`"private": true`).

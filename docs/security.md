@@ -1,0 +1,60 @@
+# Sécurité Supabase — TCG V2
+
+## Clients
+
+| Client | Où | Rôle |
+|--------|-----|------|
+| Anon + cookies (`createClient`) | Server Components, Server Actions joueur | Respecte RLS, session utilisateur |
+| Browser anon (`lib/supabase/client.ts`) | Client Components si besoin | Jamais la service role |
+| Service role (`createServiceClient`) | Server Actions admin, seeds, webhooks | Bypass RLS — **server-only** |
+
+`createServiceClient` vit dans `lib/supabase/admin.ts` avec `import "server-only"`. Ne pas l’importer depuis un fichier `"use client"`.
+
+## Quand utiliser quoi
+
+- **Lecture catalogue** (`cards`, `card_translations`) : client anon, policies `SELECT` publiques.
+- **Inventaire** (`user_cards`) : `SELECT` own user only ; écritures via RPC `grant_card` (service role) ou Server Actions.
+- **Ledger, tirages** (sprints suivants) : écritures via Server Actions + service role ou RPC `SECURITY DEFINER`, pas d’`INSERT` direct depuis le navigateur.
+- **Storage `card-art`** : lecture publique ; écriture réservée au service role.
+- **Storage `profile-banners`** : lecture publique ; upload/update/delete par l’utilisateur authentifié dans son dossier `{user_id}/`.
+- **`profiles`** : lecture own row ; lecture rows `is_public = true` pour anon/authenticated ; update own only. Carte vitrine validée côté serveur (possession `user_cards`).
+
+Voir aussi `docs/rate-limiting.md`.
+
+## Checklist nouvelle table
+
+1. `enable row level security`
+2. Définir qui peut `SELECT` (public, `authenticated`, own row via `auth.uid()`)
+3. Pas de policy `INSERT`/`UPDATE`/`DELETE` pour `anon` si l’écriture passe par le serveur
+4. Tester avec le rôle anon dans le SQL editor Supabase
+5. Documenter les exceptions (RPC, triggers `security definer`)
+
+## Modèles de policies
+
+**Lecture publique (catalogue)**
+
+```sql
+create policy "table_select_public"
+  on public.my_table for select
+  to anon, authenticated
+  using (true);
+```
+
+**Lecture / écriture sur ses lignes**
+
+```sql
+create policy "rows_select_own"
+  on public.my_table for select
+  to authenticated
+  using (auth.uid() = user_id);
+
+create policy "rows_update_own"
+  on public.my_table for update
+  to authenticated
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+```
+
+## Migrations
+
+Voir `supabase/migrations/` et le template commenté dans `supabase/migrations/_template_rls.sql`.
