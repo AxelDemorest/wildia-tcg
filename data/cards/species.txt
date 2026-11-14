@@ -1,0 +1,14 @@
+# Graine du workflow de cartes : un nom scientifique (binôme) par ligne.
+# Ajouter un QID Wikidata après le nom pour lever une ambiguïté, par exemple : Genre espece Q123456
+# Les lignes vides et ce qui suit # sont ignorés.
+
+Vulpes vulpes
+Meles meles
+Cervus elaphus
+Sciurus vulgaris
+Lutra lutra
+Ursus maritimus
+Ailuropoda melanoleuca
+Panthera tigris
+Diceros bicornis
+Elaphurus davidianus

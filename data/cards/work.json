@@ -1,0 +1,768 @@
+{
+  "version": 1,
+  "entries": {
+    "vulpes-vulpes": {
+      "slug": "vulpes-vulpes",
+      "scientificName": "Vulpes vulpes",
+      "pinnedQid": null,
+      "fetchedAt": "2026-11-01T20:20:16.403Z",
+      "taxon": {
+        "qid": "Q8332",
+        "scientificName": "Vulpes vulpes",
+        "iucnStatus": "LC",
+        "iucnStatusQid": "Q211005",
+        "iucnAssessedAt": null,
+        "iucnTaxonId": "23062",
+        "sitelinks": {
+          "fr": "Renard roux",
+          "en": "Red fox"
+        }
+      },
+      "rarity": "common",
+      "translations": {
+        "fr": {
+          "wikipediaTitle": "Renard roux",
+          "name": "Renard roux",
+          "extract": "Le renard roux, parfois désigné sous les noms de renard commun ou encore renard rouge, et plus affectueusement sous la dénomination médiévale de goupil, est une espèce de mammifère carnivore de la famille des Canidés. Le renard roux est l’une des espèces de mammifères carnivores les plus répandue à travers le monde, couvrant la majorité de l’hémisphère nord des continents eurasien et américain, jusqu’en Afrique du Nord plus au sud de son aire de répartition, et fut même introduite par l’Homme sur certaines îles comme l’Australie. C'est un canidé aux dimensions moyennes reconnaissables par son pelage roux souvent marqué de blanc sous le ventre et la gorge, au museau pointu, aux oreilles droites et à la queue touffue. L'espèce est classée dans l'ordre des Carnivora, mais il a un régime alimentaire omnivore à prédominance carnivore, et se nourrit surtout de rongeurs et de lapins, mais aussi d'insectes, de poissons ou de fruits. Il est ainsi très opportuniste, ce qui lui permet de s'adapter à des milieux très différents et de modifier son alimentation suivant le mois de l'année.",
+          "description": "Le renard roux, parfois désigné sous les noms de renard commun ou encore renard rouge, et plus affectueusement sous la dénomination médiévale de goupil, est une espèce de mammifère carnivore de la famille des Canidés."
+        },
+        "en": {
+          "wikipediaTitle": "Red fox",
+          "name": "Red fox",
+          "extract": "The red fox is the largest of the true foxes, and the most widely distributed member of the order Carnivora. It is present across the entire Northern Hemisphere, including most of North America, Europe and Asia, as well as parts of North Africa. Its range has expanded alongside human settlement, with the species having been introduced into Australia, where it preys on native small and medium-sized rodents and marsupials. The red fox is listed as of Least Concern on the IUCN Red List. Because of its impact on native species, it is included on the list of the \"world's 100 worst invasive species\".",
+          "description": "The red fox is the largest of the true foxes, and the most widely distributed member of the order Carnivora. It is present across the entire Northern Hemisphere, including most of North America, Europe and Asia, as well as parts of North Africa. Its range has expanded alongside human settlement, with the species having been introduced into Australia, where it preys on native small and medium-sized rodents and marsupials. The red fox is listed as of Least Concern on the IUCN Red List."
+        }
+      },
+      "nameOverrides": {},
+      "imageSearchedAt": "2026-11-01T20:20:24.324Z",
+      "imageCandidates": [
+        {
+          "pixabayId": 4808560,
+          "pageUrl": "https://pixabay.com/photos/red-fox-vulpes-vulpes-animal-nature-4808560/",
+          "previewUrl": "https://cdn.pixabay.com/photo/2020/01/31/17/05/red-fox-4808560_150.jpg",
+          "user": "Erik_Karits",
+          "tags": "red fox, vulpes vulpes, animal, nature, mammal, carnivore, wildlife, animals in the wild, dog, fox, canine, outdoors, forest, pawed mammal, animals hunting, wolf, wild dog, one animal, fur, pet, wilderness area, cute, looking, grass, beauty in nature, alertness",
+          "score": 10.24,
+          "query": "Vulpes vulpes"
+        },
+        {
+          "pixabayId": 9706543,
+          "pageUrl": "https://pixabay.com/photos/fox-puppy-red-fox-vulpes-vulpes-9706543/",
+          "previewUrl": "https://cdn.pixabay.com/photo/2025/07/10/11/45/fox-9706543_150.jpg",
+          "user": "xiSerge",
+          "tags": "fox, puppy, red fox, vulpes vulpes, animal, wildlife, predator, mammal, fauna, canine, norway, nature, Norway, Bodø, Nordland",
+          "score": 10.21,
+          "query": "Vulpes vulpes"
+        },
+        {
+          "pixabayId": 10465229,
+          "pageUrl": "https://pixabay.com/photos/fox-yawning-wildlife-mammal-10465229/",
+          "previewUrl": "https://cdn.pixabay.com/photo/2026/09/08/09/55/09-55-48-868_150.jpg",
+          "user": "erwinbosman",
+          "tags": "fox, yawning, wildlife, mammal, predator, nature, grass, fur, open mouth, teeth, looking back, speed, tail, sneaking, vulpes vulpes, wild, outdoors, habitat, brush, spontaneous",
+          "score": 8.07,
+          "query": "Vulpes vulpes"
+        }
+      ],
+      "image": {
+        "pixabayId": 4808560,
+        "pageUrl": "https://pixabay.com/photos/red-fox-vulpes-vulpes-animal-nature-4808560/",
+        "user": "Erik_Karits",
+        "tags": "red fox, vulpes vulpes, animal, nature, mammal, carnivore, wildlife, animals in the wild, dog, fox, canine, outdoors, forest, pawed mammal, animals hunting, wolf, wild dog, one animal, fur, wilderness area, cute, looking, grass, beauty in nature, alertness",
+        "source": "auto",
+        "localPath": "data/cards/images/vulpes-vulpes.webp",
+        "contentType": "image/webp"
+      },
+      "approved": false,
+      "flags": [],
+      "status": "published",
+      "publishedAt": "2026-11-12T16:33:52.635Z"
+    },
+    "meles-meles": {
+      "slug": "meles-meles",
+      "scientificName": "Meles meles",
+      "pinnedQid": null,
+      "fetchedAt": "2026-11-01T20:20:16.982Z",
+      "taxon": {
+        "qid": "Q27066",
+        "scientificName": "Meles meles",
+        "iucnStatus": "LC",
+        "iucnStatusQid": "Q211005",
+        "iucnAssessedAt": null,
+        "iucnTaxonId": "29673",
+        "sitelinks": {
+          "fr": "Blaireau européen",
+          "en": "European badger"
+        }
+      },
+      "rarity": "common",
+      "translations": {
+        "fr": {
+          "wikipediaTitle": "Blaireau européen",
+          "name": "Blaireau européen",
+          "extract": "Le Blaireau européen, parfois désigné sous le nom de Blaireau commun, ou plus rarement sous la dénomination traditionnelle de Taisson, est une espèce de mammifères carnivores de la famille des mustélidés. Il s’agit du Blaireau au sens strict. Très reconnaissable à son aspect trapu et court sur pattes, ainsi qu’aux bandes longitudinales noires qu'il porte sur sa face blanche, il s’agit d’un animal fouisseur, capable de construire de vastes galeries « familiales ».",
+          "description": "Le Blaireau européen, parfois désigné sous le nom de Blaireau commun, ou plus rarement sous la dénomination traditionnelle de Taisson, est une espèce de mammifères carnivores de la famille des mustélidés. Il s’agit du Blaireau au sens strict. Très reconnaissable à son aspect trapu et court sur pattes, ainsi qu’aux bandes longitudinales noires qu'il porte sur sa face blanche, il s’agit d’un animal fouisseur, capable de construire de vastes galeries « familiales »."
+        },
+        "en": {
+          "wikipediaTitle": "European badger",
+          "name": "European badger",
+          "extract": "The European badger, also known as the Eurasian badger, is a species of badger in the family Mustelidae native to Europe and West Asia and parts of Central Asia. It is classified as least concern on the IUCN Red List due to its wide range and large, stable population size which is thought to be increasing in some regions. Several subspecies are recognised, with the nominate subspecies predominating in most of Europe. In the UK it is the only extant species, and is simply known as the \"badger\".",
+          "description": "The European badger, also known as the Eurasian badger, is a species of badger in the family Mustelidae native to Europe and West Asia and parts of Central Asia. It is classified as least concern on the IUCN Red List due to its wide range and large, stable population size which is thought to be increasing in some regions. Several subspecies are recognised, with the nominate subspecies predominating in most of Europe. In the UK it is the only extant species, and is simply known as the \"badger\"."
+        }
+      },
+      "nameOverrides": {},
+      "imageSearchedAt": "2026-11-01T20:20:25.909Z",
+      "imageCandidates": [
+        {
+          "pixabayId": 3205397,
+          "pageUrl": "https://pixabay.com/photos/the-asian-badger-meles-leucurus-3205397/",
+          "previewUrl": "https://cdn.pixabay.com/photo/2018/03/07/07/38/the-asian-badger-3205397_150.jpg",
+          "user": "zoosnow",
+          "tags": "the asian badger, meles leucurus, badger, predator, cunha, animal, mammals, cute, muzzle, head, close-up, fauna, animals of russia, nature, not man, asian badger, badger, badger, badger, badger, badger, asian badger, asian badger",
+          "score": 7.1,
+          "query": "Meles meles"
+        },
+        {
+          "pixabayId": 4226520,
+          "pageUrl": "https://pixabay.com/photos/badger-animal-wildlife-black-white-4226520/",
+          "previewUrl": "https://cdn.pixabay.com/photo/2019/05/24/15/22/badger-4226520_150.jpg",
+          "user": "PBarlowArt",
+          "tags": "badger, animal, wildlife, black, white, roar, nature, badger, badger, badger, badger, badger",
+          "score": 2.14,
+          "query": "Meles meles"
+        },
+        {
+          "pixabayId": 44208,
+          "pageUrl": "https://pixabay.com/photos/badger-animal-badgers-forest-44208/",
+          "previewUrl": "https://cdn.pixabay.com/photo/2012/04/28/19/39/badger-44208_150.jpg",
+          "user": "Beeki",
+          "tags": "badger, animal, badgers, nature, forest, mammal",
+          "score": 2.1,
+          "query": "Meles meles"
+        }
+      ],
+      "image": {
+        "pixabayId": 3205397,
+        "pageUrl": "https://pixabay.com/photos/the-asian-badger-meles-leucurus-3205397/",
+        "user": "zoosnow",
+        "tags": "the asian badger, meles leucurus, badger, predator, cunha, animal, mammals, cute, muzzle, head, close-up, fauna, animals of russia, nature, not man, asian badger",
+        "source": "auto",
+        "localPath": "data/cards/images/meles-meles.webp",
+        "contentType": "image/webp"
+      },
+      "approved": false,
+      "flags": [],
+      "status": "published",
+      "publishedAt": "2026-11-12T16:33:53.318Z"
+    },
+    "cervus-elaphus": {
+      "slug": "cervus-elaphus",
+      "scientificName": "Cervus elaphus",
+      "pinnedQid": null,
+      "fetchedAt": "2026-11-01T20:20:17.555Z",
+      "taxon": {
+        "qid": "Q79794",
+        "scientificName": "Cervus elaphus",
+        "iucnStatus": "LC",
+        "iucnStatusQid": "Q211005",
+        "iucnAssessedAt": null,
+        "iucnTaxonId": "55997072",
+        "sitelinks": {
+          "fr": "Cerf élaphe",
+          "en": "Red deer"
+        }
+      },
+      "rarity": "common",
+      "translations": {
+        "fr": {
+          "wikipediaTitle": "Cerf élaphe",
+          "name": "Cerf élaphe",
+          "extract": "Le Cerf élaphe est une espèce de grands cervidés des milieux tempérés d'Europe, d'Afrique du Nord et d'Asie occidentale. Son nom est un pléonasme, car « élaphe » signifie déjà « cerf » en grec.",
+          "description": "Le Cerf élaphe est une espèce de grands cervidés des milieux tempérés d'Europe, d'Afrique du Nord et d'Asie occidentale. Son nom est un pléonasme, car « élaphe » signifie déjà « cerf » en grec."
+        },
+        "en": {
+          "wikipediaTitle": "Red deer",
+          "name": "Red deer",
+          "extract": "The red deer is a species of deer in the genus Cervus. It is one of the largest deer species. A male red deer is called a stag or hart, and a female is called a hind. The red deer inhabits most of Europe, the Caucasus Mountains region, Anatolia, Iran, and parts of Western Asia. It also inhabits the Atlas Mountains of Northern Africa, being the only living species of deer to inhabit Africa. Red deer have been introduced to other areas, including Australia, New Zealand, the United States, Canada, Peru, Uruguay, Chile and Argentina. In many parts of the world, the meat (venison) from red deer is used as a food source.",
+          "description": "The red deer is a species of deer in the genus Cervus. It is one of the largest deer species. A male red deer is called a stag or hart, and a female is called a hind. The red deer inhabits most of Europe, the Caucasus Mountains region, Anatolia, Iran, and parts of Western Asia. It also inhabits the Atlas Mountains of Northern Africa, being the only living species of deer to inhabit Africa."
+        }
+      },
+      "nameOverrides": {},
+      "imageSearchedAt": "2026-11-01T20:20:27.079Z",
+      "imageCandidates": [
+        {
+          "pixabayId": 899118,
+          "pageUrl": "https://pixabay.com/photos/deer-red-deer-cervus-elaphus-antler-899118/",
+          "previewUrl": "https://cdn.pixabay.com/photo/2015/08/21/16/07/hirsch-899118_150.jpg",
+          "user": "Antranias",
+          "tags": "deer, red deer, cervus elaphus, antler, animal, forest, wild, nature, pair of ungulates, real deer, mammal, wildlife, handsome, masculine, deer, deer, deer, deer, deer, red deer, red deer, red deer, cervus elaphus",
+          "score": 10.17,
+          "query": "Cervus elaphus"
+        },
+        {
+          "pixabayId": 58655,
+          "pageUrl": "https://pixabay.com/photos/deer-red-deer-animal-antler-graze-58655/",
+          "previewUrl": "https://cdn.pixabay.com/photo/2012/10/01/15/30/hirsch-58655_150.jpg",
+          "user": "Hans",
+          "tags": "deer, nature, red deer, animal, antler, graze, forest, food, meadow, cervus elaphus, real deer, cervidae, mammal, pair of ungulates, artiodactyla",
+          "score": 10.16,
+          "query": "Cervus elaphus"
+        },
+        {
+          "pixabayId": 7448088,
+          "pageUrl": "https://pixabay.com/photos/deer-red-deer-forest-cervus-elaphus-7448088/",
+          "previewUrl": "https://cdn.pixabay.com/photo/2022/09/11/21/51/deer-7448088_150.jpg",
+          "user": "feckerle96",
+          "tags": "deer, red deer, forest, cervus elaphus, animal, nature, wildlife, wild animal, trees, deer, deer, deer, deer, deer, red deer, red deer, red deer, cervus elaphus, cervus elaphus",
+          "score": 10.11,
+          "query": "Cervus elaphus"
+        }
+      ],
+      "image": {
+        "pixabayId": 899118,
+        "pageUrl": "https://pixabay.com/photos/deer-red-deer-cervus-elaphus-antler-899118/",
+        "user": "Antranias",
+        "tags": "deer, red deer, cervus elaphus, antler, animal, forest, wild, nature, pair of ungulates, real deer, mammal, wildlife, handsome, masculine",
+        "source": "auto",
+        "localPath": "data/cards/images/cervus-elaphus.webp",
+        "contentType": "image/webp"
+      },
+      "approved": false,
+      "flags": [],
+      "status": "published",
+      "publishedAt": "2026-11-12T16:33:53.770Z"
+    },
+    "sciurus-vulgaris": {
+      "slug": "sciurus-vulgaris",
+      "scientificName": "Sciurus vulgaris",
+      "pinnedQid": null,
+      "fetchedAt": "2026-11-01T20:20:17.990Z",
+      "taxon": {
+        "qid": "Q4388",
+        "scientificName": "Sciurus vulgaris",
+        "iucnStatus": "LC",
+        "iucnStatusQid": "Q211005",
+        "iucnAssessedAt": null,
+        "iucnTaxonId": "20025",
+        "sitelinks": {
+          "fr": "Écureuil roux",
+          "en": "Red squirrel"
+        }
+      },
+      "rarity": "common",
+      "translations": {
+        "fr": {
+          "wikipediaTitle": "Écureuil roux",
+          "name": "Écureuil roux",
+          "extract": "L'Écureuil roux ou Écureuil d'Eurasie a pour nom scientifique Sciurus vulgaris. Cette espèce d'écureuils est un petit rongeur arboricole et diurne de la famille des Sciuridés.",
+          "description": "L'Écureuil roux ou Écureuil d'Eurasie a pour nom scientifique Sciurus vulgaris. Cette espèce d'écureuils est un petit rongeur arboricole et diurne de la famille des Sciuridés."
+        },
+        "en": {
+          "wikipediaTitle": "Red squirrel",
+          "name": "Red squirrel",
+          "extract": "The red squirrel, also called Eurasian red squirrel, is a species of tree squirrel in the genus Sciurus. It is an arboreal and primarily herbivorous rodent and common throughout Eurasia.",
+          "description": "The red squirrel, also called Eurasian red squirrel, is a species of tree squirrel in the genus Sciurus. It is an arboreal and primarily herbivorous rodent and common throughout Eurasia."
+        }
+      },
+      "nameOverrides": {},
+      "imageSearchedAt": "2026-11-01T20:20:28.498Z",
+      "imageCandidates": [
+        {
+          "pixabayId": 5543011,
+          "pageUrl": "https://pixabay.com/photos/red-squirrel-rodent-animal-squirrel-5543011/",
+          "previewUrl": "https://cdn.pixabay.com/photo/2020/09/04/06/10/red-squirrel-5543011_150.jpg",
+          "user": "Ralphs_Fotos",
+          "tags": "red squirrel, rodent, animal, squirrel, eurasian red squirrel, tree squirrel, sciurus vulgaris, nature, animal world, red squirrel, red squirrel, red squirrel, red squirrel, red squirrel",
+          "score": 10.2,
+          "query": "Sciurus vulgaris"
+        },
+        {
+          "pixabayId": 7354320,
+          "pageUrl": "https://pixabay.com/photos/squirrel-rodent-animal-red-squirrel-7354320/",
+          "previewUrl": "https://cdn.pixabay.com/photo/2022/07/30/18/04/squirrel-7354320_150.jpg",
+          "user": "Lillybeth",
+          "tags": "squirrel, rodent, animal, red squirrel, ear brush, nature, sciurus vulgaris, oak kitten, fauna, cute, portrait",
+          "score": 10.18,
+          "query": "Sciurus vulgaris"
+        },
+        {
+          "pixabayId": 7022158,
+          "pageUrl": "https://pixabay.com/photos/red-squirrel-sciurus-vulgaris-7022158/",
+          "previewUrl": "https://cdn.pixabay.com/photo/2022/02/19/09/25/red-squirrel-7022158_150.jpg",
+          "user": "Erik_Karits",
+          "tags": "red squirrel, sciurus vulgaris, squirrel, rodent, animal, mammal, nature, wildlife, animals in the wild",
+          "score": 10.13,
+          "query": "Sciurus vulgaris"
+        }
+      ],
+      "image": {
+        "pixabayId": 5543011,
+        "pageUrl": "https://pixabay.com/photos/red-squirrel-rodent-animal-squirrel-5543011/",
+        "user": "Ralphs_Fotos",
+        "tags": "red squirrel, rodent, animal, squirrel, eurasian red squirrel, tree squirrel, sciurus vulgaris, nature, animal world",
+        "source": "auto",
+        "localPath": "data/cards/images/sciurus-vulgaris.webp",
+        "contentType": "image/webp"
+      },
+      "approved": false,
+      "flags": [],
+      "status": "published",
+      "publishedAt": "2026-11-12T16:33:54.237Z"
+    },
+    "lutra-lutra": {
+      "slug": "lutra-lutra",
+      "scientificName": "Lutra lutra",
+      "pinnedQid": null,
+      "fetchedAt": "2026-11-01T20:20:18.433Z",
+      "taxon": {
+        "qid": "Q29995",
+        "scientificName": "Lutra lutra",
+        "iucnStatus": "NT",
+        "iucnStatusQid": "Q719675",
+        "iucnAssessedAt": null,
+        "iucnTaxonId": "12419",
+        "sitelinks": {
+          "fr": "Lutra lutra",
+          "en": "Eurasian otter"
+        }
+      },
+      "rarity": "uncommon",
+      "translations": {
+        "fr": {
+          "wikipediaTitle": "Loutre d'Europe",
+          "name": "Loutre d'Europe",
+          "extract": "Lutra lutra, la Loutre, mais plus spécifiquement désignée sous les terminologies de Loutre d'Europe, ou plutôt d'Eurasie, est une espèce de mammifères carnivores de la famille des Mustélidés. Espèce nominale de la sous-famille des Lutrinés, elle est également appelée sous les noms de Loutre commune ou vulgaire, puisque le nom commun « loutre » désigne cette espèce au sens strict.",
+          "description": "Lutra lutra, la Loutre, mais plus spécifiquement désignée sous les terminologies de Loutre d'Europe, ou plutôt d'Eurasie, est une espèce de mammifères carnivores de la famille des Mustélidés. Espèce nominale de la sous-famille des Lutrinés, elle est également appelée sous les noms de Loutre commune ou vulgaire, puisque le nom commun « loutre » désigne cette espèce au sens strict."
+        },
+        "en": {
+          "wikipediaTitle": "Eurasian otter",
+          "name": "Eurasian otter",
+          "extract": "The Eurasian otter, also known as the European otter, Eurasian river otter, European river otter, common otter, and Old World otter, is a semiaquatic mammal native to Eurasia and the Maghreb. It is the most widely distributed member of the otter subfamily (Lutrinae) of the weasel family (Mustelidae) and is found in the waterways and on the coasts of Europe, much of Asia, and parts of North Africa. The Eurasian otter eats mainly fish, and is strongly territorial. It is endangered in some parts of its range, but is recovering in others.",
+          "description": "The Eurasian otter, also known as the European otter, Eurasian river otter, European river otter, common otter, and Old World otter, is a semiaquatic mammal native to Eurasia and the Maghreb. It is the most widely distributed member of the otter subfamily (Lutrinae) of the weasel family (Mustelidae) and is found in the waterways and on the coasts of Europe, much of Asia, and parts of North Africa. The Eurasian otter eats mainly fish, and is strongly territorial."
+        }
+      },
+      "nameOverrides": {
+        "fr": "Loutre d'Europe"
+      },
+      "imageSearchedAt": "2026-11-01T20:20:29.890Z",
+      "imageCandidates": [
+        {
+          "pixabayId": 2539518,
+          "pageUrl": "https://pixabay.com/photos/otter-fur-cute-animal-water-zoo-2539518/",
+          "previewUrl": "https://cdn.pixabay.com/photo/2017/07/25/20/56/otter-2539518_150.jpg",
+          "user": "manfredrichter",
+          "tags": "otter, fur, cute, animal, water, zoo, wild animals, nature, wildlife, mammal, lutra lutra, attentive, enclosure, wildlife park, deer park, keeping an eye out, watch out, moustache",
+          "score": 12.13,
+          "query": "Lutra lutra"
+        },
+        {
+          "pixabayId": 6947263,
+          "pageUrl": "https://pixabay.com/photos/animal-common-otter-mammal-species-6947263/",
+          "previewUrl": "https://cdn.pixabay.com/photo/2022/01/18/15/24/animal-6947263_150.jpg",
+          "user": "Camera-man",
+          "tags": "animal, nature, common otter, mammal, species, fauna, habitat, lutra lutra, mustelids, fur, swamp, the needle, mustache, first floor, head",
+          "score": 10.16,
+          "query": "Lutra lutra"
+        },
+        {
+          "pixabayId": 2777586,
+          "pageUrl": "https://pixabay.com/photos/european-otter-lutra-lutra-2777586/",
+          "previewUrl": "https://cdn.pixabay.com/photo/2017/09/23/00/04/european-otter-2777586_150.jpg",
+          "user": "Joleńka",
+          "tags": "european otter, lutra lutra, a carnivorous mammal, animal, nature, water, fauna, wild animal, animals, wild animals, predators, european otter, european otter, european otter, european otter, european otter, lutra lutra",
+          "score": 10.12,
+          "query": "Lutra lutra"
+        }
+      ],
+      "image": {
+        "pixabayId": 2539518,
+        "pageUrl": "https://pixabay.com/photos/otter-fur-cute-animal-water-zoo-2539518/",
+        "user": "manfredrichter",
+        "tags": "otter, fur, cute, animal, water, zoo, wild animals, wildlife, mammal, lutra lutra, attentive, enclosure, wildlife park, deer park, keeping an eye out, watch out, moustache",
+        "source": "auto",
+        "localPath": "data/cards/images/lutra-lutra.webp",
+        "contentType": "image/webp"
+      },
+      "approved": false,
+      "flags": [],
+      "status": "published",
+      "publishedAt": "2026-11-12T16:33:54.860Z"
+    },
+    "ursus-maritimus": {
+      "slug": "ursus-maritimus",
+      "scientificName": "Ursus maritimus",
+      "pinnedQid": null,
+      "fetchedAt": "2026-11-01T20:20:19.160Z",
+      "taxon": {
+        "qid": "Q33609",
+        "scientificName": "Ursus maritimus",
+        "iucnStatus": "VU",
+        "iucnStatusQid": "Q278113",
+        "iucnAssessedAt": null,
+        "iucnTaxonId": "22823",
+        "sitelinks": {
+          "fr": "Ours blanc",
+          "en": "Polar bear"
+        }
+      },
+      "rarity": "rare",
+      "translations": {
+        "fr": {
+          "wikipediaTitle": "Ours blanc",
+          "name": "Ours blanc",
+          "extract": "Ursus maritimus, l'Ours blanc ou Ours polaire, ou plus rarement Ours maritime, est une espèce de mammifère carnivore de la famille des Ursidés.",
+          "description": "Ursus maritimus, l'Ours blanc ou Ours polaire, ou plus rarement Ours maritime, est une espèce de mammifère carnivore de la famille des Ursidés."
+        },
+        "en": {
+          "wikipediaTitle": "Polar bear",
+          "name": "Polar bear",
+          "extract": "The polar bear is a large bear native to the Arctic and nearby areas. It is closely related to the brown bear, and the two species can interbreed. The polar bear is the largest extant species of bear and land carnivore by body mass, with adult males weighing 300–800 kg (660–1,760 lb). The species is sexually dimorphic, as adult females are much smaller. The polar bear is white or yellowish-furred with black skin and a thick layer of fat. It is more slender than the brown bear, with a narrower skull, longer neck and lower shoulder hump. Its teeth are sharper and more adapted to cutting meat. The paws are large and allow the bear to walk on ice and paddle in the water.",
+          "description": "The polar bear is a large bear native to the Arctic and nearby areas. It is closely related to the brown bear, and the two species can interbreed. The polar bear is the largest extant species of bear and land carnivore by body mass, with adult males weighing 300–800 kg (660–1,760 lb). The species is sexually dimorphic, as adult females are much smaller. The polar bear is white or yellowish-furred with black skin and a thick layer of fat."
+        }
+      },
+      "nameOverrides": {},
+      "imageSearchedAt": "2026-11-01T20:20:31.303Z",
+      "imageCandidates": [
+        {
+          "pixabayId": 3686186,
+          "pageUrl": "https://pixabay.com/photos/polar-bear-ursus-maritimus-portrait-3686186/",
+          "previewUrl": "https://cdn.pixabay.com/photo/2018/09/18/13/25/white-bear-3686186_150.jpg",
+          "user": "zoosnow",
+          "tags": "polar bear, ursus maritimus, portrait, sight, fauna, dangerous animal, the beast, bear, animals, wild animal, animals of russia, nature, not man, zoology, mammal, views, polar bear, polar bear, polar bear, polar bear, polar bear",
+          "score": 10.17,
+          "query": "Ursus maritimus"
+        },
+        {
+          "pixabayId": 7776301,
+          "pageUrl": "https://pixabay.com/photos/polar-bear-mammal-animal-white-bear-7776301/",
+          "previewUrl": "https://cdn.pixabay.com/photo/2023/02/08/10/52/polar-bear-7776301_150.jpg",
+          "user": "dendoktoor",
+          "tags": "polar bear, mammal, animal, white bear, arctic bear, ursus maritimus, wild animal, wildlife",
+          "score": 10.17,
+          "query": "Ursus maritimus"
+        },
+        {
+          "pixabayId": 1471002,
+          "pageUrl": "https://pixabay.com/photos/polar-bear-child-young-polar-bear-1471002/",
+          "previewUrl": "https://cdn.pixabay.com/photo/2016/06/21/12/18/polar-bear-child-1471002_150.jpg",
+          "user": "Wildfaces",
+          "tags": "polar bear child, young polar bear, smile, white, fur, laugh, polar bear, happy, mammal, cute, attentive, bear, ursus maritimus, arctic circle, polar bear, polar bear, polar bear, polar bear, polar bear",
+          "score": 10.17,
+          "query": "Ursus maritimus"
+        }
+      ],
+      "image": {
+        "pixabayId": 3686186,
+        "pageUrl": "https://pixabay.com/photos/polar-bear-ursus-maritimus-portrait-3686186/",
+        "user": "zoosnow",
+        "tags": "polar bear, ursus maritimus, portrait, sight, fauna, dangerous animal, the beast, bear, animals, wild animal, animals of russia, nature, not man, zoology, mammal, views",
+        "source": "auto",
+        "localPath": "data/cards/images/ursus-maritimus.webp",
+        "contentType": "image/webp"
+      },
+      "approved": false,
+      "flags": [],
+      "status": "published",
+      "publishedAt": "2026-11-12T16:33:55.286Z"
+    },
+    "ailuropoda-melanoleuca": {
+      "slug": "ailuropoda-melanoleuca",
+      "scientificName": "Ailuropoda melanoleuca",
+      "pinnedQid": null,
+      "fetchedAt": "2026-11-01T20:20:19.595Z",
+      "taxon": {
+        "qid": "Q33602",
+        "scientificName": "Ailuropoda melanoleuca",
+        "iucnStatus": "VU",
+        "iucnStatusQid": "Q278113",
+        "iucnAssessedAt": null,
+        "iucnTaxonId": "712",
+        "sitelinks": {
+          "fr": "Panda géant",
+          "en": "Giant panda"
+        }
+      },
+      "rarity": "rare",
+      "translations": {
+        "fr": {
+          "wikipediaTitle": "Panda géant",
+          "name": "Panda géant",
+          "extract": "Le Panda géant , parfois désigné sous le nom de Grand Panda, ou plus rarement sous celui d’Ours panda, est un mammifère de l’ordre des Carnivores et de la famille des Ursidés, endémique de Chine. Il se caractérise par son pelage blanc parsemé de taches noires autour des yeux, sur les oreilles, les pattes et les épaules. Son corps est de forme arrondie ; les adultes mesurent généralement entre 1,2 et 1,9 mètre de longueur, pour un poids situé entre 100 et 115 kg. Les mâles sont généralement 10 à 20 % plus grands que les femelles. Autrefois désigné sous le nom spécifique d’Ailuropode, il s’agit d’un animal unique en son genre (Ailuropoda), dont il est la seule espèce actuelle : Ailuropoda melanoleuca, « l’Ailuropode noir et blanc ».",
+          "description": "Le Panda géant , parfois désigné sous le nom de Grand Panda, ou plus rarement sous celui d’Ours panda, est un mammifère de l’ordre des Carnivores et de la famille des Ursidés, endémique de Chine. Il se caractérise par son pelage blanc parsemé de taches noires autour des yeux, sur les oreilles, les pattes et les épaules. Son corps est de forme arrondie ; les adultes mesurent généralement entre 1,2 et 1,9 mètre de longueur, pour un poids situé entre 100 et 115 kg."
+        },
+        "en": {
+          "wikipediaTitle": "Giant panda",
+          "name": "Giant panda",
+          "extract": "The giant panda, also known as the panda bear or simply panda, is a bear species endemic to China. It is characterised by its white coat with black patches around the eyes, ears, legs and shoulders. Its body is rotund; adult individuals weigh 100 to 115 kg and are typically 1.2 to 1.9 m long. It is sexually dimorphic, with males being typically 10–20% larger than females. A thumb is visible on its forepaw, which helps in holding bamboo in place for feeding. It has large molar teeth and expanded temporal fossae to meet its dietary requirements. It can digest starch and is mostly herbivorous with a diet consisting almost entirely of bamboo and bamboo shoots.",
+          "description": "The giant panda, also known as the panda bear or simply panda, is a bear species endemic to China. It is characterised by its white coat with black patches around the eyes, ears, legs and shoulders. Its body is rotund; adult individuals weigh 100 to 115 kg and are typically 1.2 to 1.9 m long. It is sexually dimorphic, with males being typically 10–20% larger than females. A thumb is visible on its forepaw, which helps in holding bamboo in place for feeding."
+        }
+      },
+      "nameOverrides": {},
+      "imageSearchedAt": "2026-11-01T20:20:33.408Z",
+      "imageCandidates": [
+        {
+          "pixabayId": 7803988,
+          "pageUrl": "https://pixabay.com/photos/panda-bear-panda-mammal-zoo-bear-7803988/",
+          "previewUrl": "https://cdn.pixabay.com/photo/2023/02/21/10/45/panda-bear-7803988_150.jpg",
+          "user": "jbooba",
+          "tags": "panda bear, panda, mammal, zoo, bear, giant panda, wildlife, animal, nature, black and white",
+          "score": 6.14,
+          "query": "Giant panda"
+        },
+        {
+          "pixabayId": 7559560,
+          "pageUrl": "https://pixabay.com/photos/giant-panda-panda-animal-mammal-7559560/",
+          "previewUrl": "https://cdn.pixabay.com/photo/2022/10/31/11/16/giant-panda-7559560_150.jpg",
+          "user": "NathalieBurblis",
+          "tags": "giant panda, panda, animal, mammal, china, conservation, biodiversity, nature, wildlife, giant panda, giant panda, giant panda, giant panda, giant panda, panda, panda, panda",
+          "score": 6.13,
+          "query": "Giant panda"
+        },
+        {
+          "pixabayId": 7716924,
+          "pageUrl": "https://pixabay.com/photos/giant-panda-panda-endangered-animals-7716924/",
+          "previewUrl": "https://cdn.pixabay.com/photo/2023/01/13/21/36/giant-panda-7716924_150.jpg",
+          "user": "素君",
+          "tags": "giant panda, panda, endangered animals, mammal, beijing zoo, world heritage, nature, winter, animal",
+          "score": 6.12,
+          "query": "Giant panda"
+        }
+      ],
+      "image": {
+        "pixabayId": 7803988,
+        "pageUrl": "https://pixabay.com/photos/panda-bear-panda-mammal-zoo-bear-7803988/",
+        "user": "jbooba",
+        "tags": "panda bear, panda, mammal, zoo, bear, giant panda, wildlife, animal, black and white",
+        "source": "auto",
+        "localPath": "data/cards/images/ailuropoda-melanoleuca.webp",
+        "contentType": "image/webp"
+      },
+      "approved": false,
+      "flags": [],
+      "status": "published",
+      "publishedAt": "2026-11-12T16:33:55.889Z"
+    },
+    "panthera-tigris": {
+      "slug": "panthera-tigris",
+      "scientificName": "Panthera tigris",
+      "pinnedQid": null,
+      "fetchedAt": "2026-11-01T20:20:20.028Z",
+      "taxon": {
+        "qid": "Q19939",
+        "scientificName": "Panthera tigris",
+        "iucnStatus": "EN",
+        "iucnStatusQid": "Q96377276",
+        "iucnAssessedAt": null,
+        "iucnTaxonId": "15955",
+        "sitelinks": {
+          "fr": "Tigre",
+          "en": "Tiger"
+        }
+      },
+      "rarity": "epic",
+      "translations": {
+        "fr": {
+          "wikipediaTitle": "Tigre",
+          "name": "Tigre",
+          "extract": "Le Tigre est une espèce de mammifères carnivores de la famille des félidés (Felidae) du genre Panthera.",
+          "description": "Le Tigre est une espèce de mammifères carnivores de la famille des félidés (Felidae) du genre Panthera."
+        },
+        "en": {
+          "wikipediaTitle": "Tiger",
+          "name": "Tiger",
+          "extract": "The tiger is a large cat and a member of the genus Panthera native to Asia. It has a powerful, muscular body with a large head and paws, a long tail and orange fur that fades to white in parts, with black, mostly vertical stripes. It is traditionally classified into nine subspecies, though some recognise only two subspecies, the mainland Asian tiger and the Sunda Islands tiger.",
+          "description": "The tiger is a large cat and a member of the genus Panthera native to Asia. It has a powerful, muscular body with a large head and paws, a long tail and orange fur that fades to white in parts, with black, mostly vertical stripes. It is traditionally classified into nine subspecies, though some recognise only two subspecies, the mainland Asian tiger and the Sunda Islands tiger."
+        }
+      },
+      "nameOverrides": {},
+      "imageSearchedAt": "2026-11-01T20:20:34.780Z",
+      "imageCandidates": [
+        {
+          "pixabayId": 3524926,
+          "pageUrl": "https://pixabay.com/photos/tiger-animal-zoo-large-cat-stripes-3524926/",
+          "previewUrl": "https://cdn.pixabay.com/photo/2018/07/08/21/59/tiger-3524926_150.jpg",
+          "user": "Schwoaze",
+          "tags": "tiger, animal, zoo, large cat, stripes, feline, mammal, nature, wildlife, wildlife photography, big cat, panthera tigris, animal world, tiger, tiger, tiger, tiger, tiger",
+          "score": 10.22,
+          "query": "Panthera tigris"
+        },
+        {
+          "pixabayId": 4335400,
+          "pageUrl": "https://pixabay.com/photos/tiger-panthera-tigris-big-cat-4335400/",
+          "previewUrl": "https://cdn.pixabay.com/photo/2019/07/13/18/23/tiger-4335400_150.jpg",
+          "user": "manfredrichter",
+          "tags": "tiger, panthera tigris, big cat, predator, striped, strip, wildcat, dangerous, majestic, sublime, noble, carnivores, mammal, zoo, portrait, big, tiger, tiger, tiger, tiger, tiger",
+          "score": 10.16,
+          "query": "Panthera tigris"
+        },
+        {
+          "pixabayId": 5809732,
+          "pageUrl": "https://pixabay.com/photos/tiger-panthera-tigris-big-cat-5809732/",
+          "previewUrl": "https://cdn.pixabay.com/photo/2020/12/06/18/58/tiger-5809732_150.jpg",
+          "user": "manfredrichter",
+          "tags": "tiger, panthera tigris, big cat, feline, striped, striped fur, beast, predator, carnivore, mammal, zoo, portrait, wild animal, wildlife, animal world, animal, animal photography",
+          "score": 10.15,
+          "query": "Panthera tigris"
+        }
+      ],
+      "image": {
+        "pixabayId": 3524926,
+        "pageUrl": "https://pixabay.com/photos/tiger-animal-zoo-large-cat-stripes-3524926/",
+        "user": "Schwoaze",
+        "tags": "tiger, animal, zoo, large cat, stripes, feline, mammal, nature, wildlife, wildlife photography, big cat, panthera tigris, animal world",
+        "source": "auto",
+        "localPath": "data/cards/images/panthera-tigris.webp",
+        "contentType": "image/webp"
+      },
+      "approved": false,
+      "flags": [],
+      "status": "published",
+      "publishedAt": "2026-11-12T16:33:56.482Z"
+    },
+    "diceros-bicornis": {
+      "slug": "diceros-bicornis",
+      "scientificName": "Diceros bicornis",
+      "pinnedQid": null,
+      "fetchedAt": "2026-11-01T20:20:20.761Z",
+      "taxon": {
+        "qid": "Q95036",
+        "scientificName": "Diceros bicornis",
+        "iucnStatus": "CR",
+        "iucnStatusQid": "Q219127",
+        "iucnAssessedAt": null,
+        "iucnTaxonId": "6557",
+        "sitelinks": {
+          "fr": "Rhinocéros noir",
+          "en": "Black rhinoceros"
+        }
+      },
+      "rarity": "legendary",
+      "translations": {
+        "fr": {
+          "wikipediaTitle": "Rhinocéros noir",
+          "name": "Rhinocéros noir",
+          "extract": "Le Rhinocéros noir, qui vit en Afrique, est la seule espèce du genre Diceros, l'un des quatre genres de rhinocéros.",
+          "description": "Le Rhinocéros noir, qui vit en Afrique, est la seule espèce du genre Diceros, l'un des quatre genres de rhinocéros."
+        },
+        "en": {
+          "wikipediaTitle": "Black rhinoceros",
+          "name": "Black rhinoceros",
+          "extract": "The black rhinoceros, also called the black rhino or the hooked-lip rhinoceros, is a species of rhinoceros native to East and Southern Africa, including Angola, Botswana, Eswatini, Kenya, Lesotho, Malawi, Mozambique, Namibia, South Africa, Tanzania, Zambia, and Zimbabwe. Although the species is referred to as black, its colours vary from brown to grey. It is the only extant species of the genus Diceros.",
+          "description": "The black rhinoceros, also called the black rhino or the hooked-lip rhinoceros, is a species of rhinoceros native to East and Southern Africa, including Angola, Botswana, Eswatini, Kenya, Lesotho, Malawi, Mozambique, Namibia, South Africa, Tanzania, Zambia, and Zimbabwe. Although the species is referred to as black, its colours vary from brown to grey. It is the only extant species of the genus Diceros."
+        }
+      },
+      "nameOverrides": {},
+      "imageSearchedAt": "2026-11-01T20:20:36.926Z",
+      "imageCandidates": [
+        {
+          "pixabayId": 7112057,
+          "pageUrl": "https://pixabay.com/photos/black-rhino-black-rhinoceros-rhino-7112057/",
+          "previewUrl": "https://cdn.pixabay.com/photo/2022/04/04/18/25/black-rhino-7112057_150.jpg",
+          "user": "RosZie",
+          "tags": "black rhino, black rhinoceros, rhino, africa, namibia, wildlife, watering hole, safari, mammal, wilderness, black rhino, black rhino, black rhino, black rhino, black rhino",
+          "score": 4.14,
+          "query": "Black rhinoceros"
+        },
+        {
+          "pixabayId": 8762188,
+          "pageUrl": "https://pixabay.com/photos/rhino-rhinoceros-8762188/",
+          "previewUrl": "https://cdn.pixabay.com/photo/2024/05/14/21/45/rhino-8762188_150.jpg",
+          "user": "RheaHoldstock",
+          "tags": "rhino, rhinoceros, southern white rhino, white rhino, animal, mammal, nature, monochrome",
+          "score": 2.19,
+          "query": "Black rhinoceros"
+        },
+        {
+          "pixabayId": 1285199,
+          "pageUrl": "https://pixabay.com/photos/rhinoceros-safari-rhino-mammal-1285199/",
+          "previewUrl": "https://cdn.pixabay.com/photo/2016/03/28/09/41/rhinoceros-1285199_150.jpg",
+          "user": "Pexels",
+          "tags": "rhinoceros, safari, rhino, mammal, animal, wildlife, black and white, kruger, zoo, park, nature, calf, walk, monochrome, bull, wild, big, african elephant, large, gray nature, gray animals, gray walking, gray park, gray elephant, rhinoceros, rhinoceros, rhinoceros, rhino, rhino, rhino, rhino, rhino, bull",
+          "score": 2.18,
+          "query": "Black rhinoceros"
+        }
+      ],
+      "image": {
+        "pixabayId": 7112057,
+        "pageUrl": "https://pixabay.com/photos/black-rhino-black-rhinoceros-rhino-7112057/",
+        "user": "RosZie",
+        "tags": "black rhino, black rhinoceros, rhino, africa, namibia, wildlife, watering hole, safari, mammal, wilderness",
+        "source": "auto",
+        "localPath": "data/cards/images/diceros-bicornis.webp",
+        "contentType": "image/webp"
+      },
+      "approved": false,
+      "flags": [],
+      "status": "published",
+      "publishedAt": "2026-11-12T16:33:57.175Z"
+    },
+    "elaphurus-davidianus": {
+      "slug": "elaphurus-davidianus",
+      "scientificName": "Elaphurus davidianus",
+      "pinnedQid": null,
+      "fetchedAt": "2026-11-01T20:20:21.190Z",
+      "taxon": {
+        "qid": "Q207906",
+        "scientificName": "Elaphurus davidianus",
+        "iucnStatus": "EW",
+        "iucnStatusQid": "Q239509",
+        "iucnAssessedAt": null,
+        "iucnTaxonId": "7121",
+        "sitelinks": {
+          "fr": "Cerf du père David",
+          "en": "Père David's deer"
+        }
+      },
+      "rarity": "mythic",
+      "translations": {
+        "fr": {
+          "wikipediaTitle": "Cerf du père David",
+          "name": "Cerf du père David",
+          "extract": "Le cerf du père David, appelé aussi localement Milu 麋鹿, mílù, est un cervidé qui ne vit plus qu'en captivité. Il vivait dans des zones humides où il pâturait l'herbe et les plantes aquatiques. Il est originaire des plaines du nord-est et du centre-ouest de la Chine.",
+          "description": "Le cerf du père David, appelé aussi localement Milu 麋鹿, mílù, est un cervidé qui ne vit plus qu'en captivité. Il vivait dans des zones humides où il pâturait l'herbe et les plantes aquatiques. Il est originaire des plaines du nord-est et du centre-ouest de la Chine."
+        },
+        "en": {
+          "wikipediaTitle": "Père David's deer",
+          "name": "Père David's deer",
+          "extract": "Père David's deer, also known as the milu or elaphure, is a species of deer native to the subtropical river valleys of China. It grazes mainly on grass and aquatic plants. It is the only extant member of the genus Elaphurus. Some experts suggest demoting Elaphurus to a subgenus of Cervus. Based on genetic comparisons, Père David's deer is closely related to Eld's deer.",
+          "description": "Père David's deer, also known as the milu or elaphure, is a species of deer native to the subtropical river valleys of China. It grazes mainly on grass and aquatic plants. It is the only extant member of the genus Elaphurus. Some experts suggest demoting Elaphurus to a subgenus of Cervus. Based on genetic comparisons, Père David's deer is closely related to Eld's deer."
+        }
+      },
+      "nameOverrides": {},
+      "imageSearchedAt": "2026-11-01T20:20:38.284Z",
+      "imageCandidates": [
+        {
+          "pixabayId": 7244834,
+          "pageUrl": "https://pixabay.com/photos/animals-cervus-grassland-7244834/",
+          "previewUrl": "https://cdn.pixabay.com/photo/2022/06/05/20/25/animals-7244834_150.jpg",
+          "user": "Erik_Karits",
+          "tags": "animals, cervus, grassland, tallinn zoo, mammal, nature, eating, père david's deer, deer, milu, elaphurus davidianus",
+          "score": 10.1,
+          "query": "Elaphurus davidianus"
+        },
+        {
+          "pixabayId": 1437525,
+          "pageUrl": "https://pixabay.com/photos/rock-squirrel-rodent-croissant-1437525/",
+          "previewUrl": "https://cdn.pixabay.com/photo/2016/06/05/15/12/croissant-1437525_150.jpg",
+          "user": "Katzophon",
+          "tags": "rock squirrel, rodent, croissant, animals, cute, wildlife, nibble, sciurotamias davidianus",
+          "score": 0,
+          "query": "Elaphurus davidianus"
+        }
+      ],
+      "image": {
+        "pixabayId": 7244834,
+        "pageUrl": "https://pixabay.com/photos/animals-cervus-grassland-7244834/",
+        "user": "Erik_Karits",
+        "tags": "animals, cervus, grassland, tallinn zoo, mammal, nature, eating, père david's deer, deer, milu, elaphurus davidianus",
+        "source": "auto",
+        "localPath": "data/cards/images/elaphurus-davidianus.webp",
+        "contentType": "image/webp"
+      },
+      "approved": false,
+      "flags": [],
+      "status": "published",
+      "publishedAt": "2026-11-12T16:33:57.902Z"
+    }
+  }
+}
