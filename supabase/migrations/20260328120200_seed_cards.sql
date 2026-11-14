@@ -1,0 +1,1 @@
+-- Sprint 2 SQL seed retired: catalogue is loaded from data/cards-seed.json (npm run db:seed).
