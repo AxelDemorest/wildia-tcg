@@ -4,8 +4,8 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { hasLocale } from "next-intl";
 import { routing } from "@/i18n/routing";
-import { googleSansFlex } from "@/lib/fonts/google-sans-flex";
-import { lexend } from "@/lib/fonts/lexend";
+import { googleSansFlex } from "@/app/fonts/google-sans-flex";
+import { lexend } from "@/app/fonts/lexend";
 import "../globals.css";
 
 const geistMono = Geist_Mono({
