@@ -1,6 +1,6 @@
 import Image, { type StaticImageData } from "next/image";
 import girafeAsset from "@/assets/brand/girafe.png";
-import { momoTrustDisplay } from "@/lib/fonts/momo-trust-display";
+import { momoTrustDisplay } from "@/app/fonts/momo-trust-display";
 
 type Props = {
   className?: string;

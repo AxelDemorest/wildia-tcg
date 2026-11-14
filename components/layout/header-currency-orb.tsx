@@ -12,20 +12,9 @@ function formatCompact(value: number): string {
 
 export async function HeaderCurrencyOrb({ userId }: Props) {
   const t = await getTranslations("Economy");
+  const economy = await syncUserEconomy(userId).catch(() => null);
 
-  try {
-    const { balance } = await syncUserEconomy(userId);
-    const formatted = formatCompact(balance);
-
-    return (
-      <div
-        className="flex h-10 min-w-10 items-center justify-center rounded-full border-2 border-white bg-surface px-3 shadow-sm ring-1 ring-black/10"
-        title={`${Math.floor(balance).toLocaleString()} ${t("currencyShort")}`}
-      >
-        <span className="text-sm font-bold tabular-nums tracking-tight text-foreground">{formatted}</span>
-      </div>
-    );
-  } catch {
+  if (!economy) {
     return (
       <div
         className="flex h-10 min-w-10 items-center justify-center rounded-full border-2 border-white bg-surface px-3 text-xs text-muted shadow-sm ring-1 ring-black/10"
@@ -36,4 +25,15 @@ export async function HeaderCurrencyOrb({ userId }: Props) {
       </div>
     );
   }
+
+  return (
+    <div
+      className="flex h-10 min-w-10 items-center justify-center rounded-full border-2 border-white bg-surface px-3 shadow-sm ring-1 ring-black/10"
+      title={`${Math.floor(economy.balance).toLocaleString()} ${t("currencyShort")}`}
+    >
+      <span className="text-sm font-bold tabular-nums tracking-tight text-foreground">
+        {formatCompact(economy.balance)}
+      </span>
+    </div>
+  );
 }
