@@ -15,6 +15,7 @@
     "format:check": "prettier --check .",
     "db:migrate": "supabase db push --linked",
     "db:reset": "supabase db reset",
+    "db:pull-cards": "tsx scripts/db/pull-cards.mts",
     "cards:fetch": "tsx scripts/cards/fetch.mts",
     "cards:images": "tsx scripts/cards/images.mts",
     "cards:review": "tsx scripts/cards/review.mts",
