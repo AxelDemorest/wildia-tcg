@@ -1,26 +1,313 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f6f7f9;
+  --background-shine:
+    radial-gradient(circle at 50% 0%, rgb(255 255 255 / 0.85), transparent 58%),
+    radial-gradient(circle at 80% 20%, rgb(255 255 255 / 0.45), transparent 42%);
+  --foreground: #14231a;
+  --surface: #ffffff;
+  --muted: #5c6b62;
+  --border: #e2e3e8;
+  --brand: #0d7a4e;
+  --brand-strong: #045a38;
+  --secondary: #045a38;
+  --ink: #13231a;
+  --accent: #c9a227;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --shadow-card: 0 8px 24px -12px rgb(13 122 78 / 0.35);
+  --shadow-how-card: 0 28px 48px -24px rgb(19 35 26 / 0.55);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --color-surface: var(--surface);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-secondary: var(--secondary);
+  --color-ink: var(--ink);
+  --color-accent: var(--accent);
+  --font-sans: var(--font-lexend);
   --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-google-sans-flex);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background-color: var(--background);
 }
 
 body {
-  background: var(--background);
+  min-height: 100%;
+  background-color: var(--background);
+  background-image: var(--background-shine);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
 }
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display), var(--font-sans), system-ui, sans-serif;
+}
+
+/*
+ * Trading card. Everything is sized in container-query units (cqw) so the
+ * layout scales with the card width, whatever the grid or the reveal size.
+ */
+.tcg-card {
+  --card-edge: #dfe9d6;
+  --card-face: #f5f7ef;
+  --card-leaf-light: #cfe2c5;
+  --card-leaf-mid: #a8d08c;
+  --card-leaf-dark: #6aab45;
+
+  container-type: inline-size;
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 2 / 3;
+  width: 100%;
+  /* cqw would resolve against an ancestor here, so use width/height percentages (2:3 card). */
+  border-radius: 6% / 4%;
+  background-color: var(--card-edge);
+  box-shadow: inset 0 0 0 1px rgb(19 35 26 / 0.06);
+  isolation: isolate;
+}
+
+/* Palette follows the rarity tag colour. */
+.tcg-card[data-rarity="common"] {
+  --card-edge: #e6e6e3;
+  --card-face: #f7f7f5;
+  --card-leaf-light: #d6d6d2;
+  --card-leaf-mid: #b0b0ab;
+  --card-leaf-dark: #8a8a85;
+}
+
+.tcg-card[data-rarity="uncommon"] {
+  --card-edge: #dfe9d6;
+  --card-face: #f5f7ef;
+  --card-leaf-light: #cfe2c5;
+  --card-leaf-mid: #a8d08c;
+  --card-leaf-dark: #6aab45;
+}
+
+.tcg-card[data-rarity="rare"] {
+  --card-edge: #d9e8f2;
+  --card-face: #f3f8fc;
+  --card-leaf-light: #c3dcee;
+  --card-leaf-mid: #8fc3e4;
+  --card-leaf-dark: #4a9dd0;
+}
+
+.tcg-card[data-rarity="epic"] {
+  --card-edge: #e6dff2;
+  --card-face: #f8f5fc;
+  --card-leaf-light: #d6c9ec;
+  --card-leaf-mid: #b9a3dd;
+  --card-leaf-dark: #8b66c4;
+}
+
+.tcg-card[data-rarity="legendary"] {
+  --card-edge: #f4e8c8;
+  --card-face: #fdf9ee;
+  --card-leaf-light: #f1dc9f;
+  --card-leaf-mid: #e9c261;
+  --card-leaf-dark: #d49a12;
+}
+
+.tcg-card[data-rarity="mythic"] {
+  --card-edge: #f6dbe1;
+  --card-face: #fdf5f7;
+  --card-leaf-light: #f3c2cd;
+  --card-leaf-mid: #ec8fa4;
+  --card-leaf-dark: #d93c62;
+}
+
+.tcg-card-face {
+  position: absolute;
+  inset: 2.6cqw 2.6cqw 2.6cqw 4cqw;
+  border-radius: 4.5cqw;
+  background-color: var(--card-face);
+}
+
+.tcg-card-deco {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.tcg-card-deco-front {
+  z-index: 2;
+}
+
+.tcg-card-body {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2.4cqw;
+  padding: 6cqw 5cqw 5cqw 6cqw;
+}
+
+.tcg-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2.5cqw;
+  min-height: 11cqw;
+  padding-left: 11cqw;
+}
+
+.tcg-card-name {
+  min-width: 0;
+  color: var(--ink);
+  font-size: max(11px, 6.4cqw);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tcg-card-seal {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 8.5cqw;
+  height: 8.5cqw;
+  border-radius: 50%;
+  color: #fff;
+  font-size: max(8px, 3.6cqw);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.tcg-card-art {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  border: max(2px, 0.8cqw) solid #fff;
+  border-radius: 4cqw;
+  background-color: #1b2733;
+  box-shadow: 0 1px 3px rgb(19 35 26 / 0.12);
+}
+
+/* Thin inner white frame; stays on the edges so the animal remains visible. */
+.tcg-card-ornament {
+  position: absolute;
+  inset: 2.4cqw;
+  border: max(1px, 0.3cqw) solid rgb(255 255 255 / 0.7);
+  border-radius: 2.6cqw;
+  pointer-events: none;
+}
+
+.tcg-card-art-wave {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: var(--card-leaf-light);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.tcg-card-footer {
+  display: flex;
+  align-items: center;
+  gap: 2cqw;
+  min-height: 13cqw;
+  padding: 0 3cqw;
+  border-radius: 9999px;
+  background-color: #fbfcf7;
+  box-shadow: inset 0 0 0 1px rgb(19 35 26 / 0.05);
+}
+
+.tcg-card-footer > span:first-child {
+  padding: 1.4cqw 4cqw;
+  font-size: max(9px, 3.6cqw);
+  letter-spacing: 0.12em;
+}
+
+.tcg-card-quantity {
+  border-radius: 9999px;
+  background-color: var(--brand-strong);
+  padding: 0.6cqw 2.5cqw;
+  color: #fff;
+  font-size: max(10px, 3.6cqw);
+  font-weight: 700;
+}
+
+/* Coming-soon contest card: 3D tilt + glare driven by CSS variables (see TiltCard). */
+.contest-tilt {
+  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(1);
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.contest-tilt[data-active="true"] {
+  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(1.04);
+  transition: transform 0.12s ease-out;
+  will-change: transform;
+}
+
+.contest-tilt-glare {
+  position: absolute;
+  inset: 0;
+  border-radius: 4.5% / 3%;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    radial-gradient(
+      circle at var(--gx, 50%) var(--gy, 50%),
+      rgb(255 255 255 / 0.55) 0%,
+      rgb(255 255 255 / 0.16) 30%,
+      transparent 62%
+    ),
+    linear-gradient(
+      115deg,
+      transparent 30%,
+      rgb(255 255 255 / 0.12) 45%,
+      rgb(255 255 255 / 0.04) 55%,
+      transparent 70%
+    );
+  transition: opacity 0.4s ease;
+}
+
+.contest-tilt[data-active="true"] .contest-tilt-glare {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contest-tilt,
+  .contest-tilt[data-active="true"] {
+    transform: none;
+    transition: none;
+  }
+
+  .contest-tilt-glare {
+    display: none;
+  }
+}
+
+@utility bg-ink {
+  background-color: var(--ink);
+}
+
+@utility text-secondary {
+  color: var(--secondary);
+}
+
+
