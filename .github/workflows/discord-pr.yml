@@ -6,6 +6,9 @@
 # 1. Discord: channel settings → Integrations → Webhooks → New Webhook, copy its URL.
 # 2. GitHub: Settings → Secrets and variables → Actions → New repository secret,
 #    name DISCORD_WEBHOOK_URL, value the webhook URL.
+# 3. Optional, to ping a role on every message: Settings → Secrets and variables → Actions →
+#    Variables, name DISCORD_OWNERS_ROLE_ID, value the role ID (Discord developer mode,
+#    right-click the role → Copy Role ID). Left empty, messages mention no one.
 # Without the secret (or on PRs from forks, which get no secrets) the job does nothing.
 
 name: Discord PR notifications
@@ -39,6 +42,7 @@ jobs:
           HEAD: ${{ github.event.pull_request.head.ref }}
           BASE: ${{ github.event.pull_request.base.ref }}
           MERGED_BY: ${{ github.event.pull_request.merged_by.login }}
+          OWNERS_ROLE_ID: ${{ vars.DISCORD_OWNERS_ROLE_ID }}
         run: |
           if [ "$ACTION" = "closed" ] && [ "$BASE" = "main" ]; then
             heading="🚀 Mise en prod"
@@ -53,15 +57,24 @@ jobs:
             detail="par **${AUTHOR}** · \`${HEAD}\` → \`${BASE}\`"
             color=3447003
           fi
-          # allowed_mentions.parse = [] keeps @everyone or @here in a title from pinging anyone.
+          # Only a numeric role ID is used; anything else means no mention.
+          role=""
+          case "$OWNERS_ROLE_ID" in
+            ''|*[!0-9]*) ;;
+            *) role="$OWNERS_ROLE_ID" ;;
+          esac
+          # allowed_mentions: parse = [] keeps @everyone or @here in a title from pinging
+          # anyone; roles lets through only the configured role. Mentions only ping from
+          # content, not from inside an embed.
           jq -n \
             --arg heading "$heading" \
             --arg title "#${NUMBER} ${TITLE}" \
             --arg url "$URL" \
             --arg detail "$detail" \
             --argjson color "$color" \
+            --arg role "$role" \
             '{
-              allowed_mentions: {parse: []},
+              allowed_mentions: {parse: [], roles: (if $role == "" then [] else [$role] end)},
               embeds: [{
                 author: {name: $heading},
                 title: ($title | .[0:256]),
@@ -69,5 +82,5 @@ jobs:
                 description: $detail,
                 color: $color
               }]
-            }' \
+            } + (if $role == "" then {} else {content: "<@&\($role)>"} end)' \
           | curl --fail-with-body -sS -H "Content-Type: application/json" -d @- "$DISCORD_WEBHOOK_URL"
