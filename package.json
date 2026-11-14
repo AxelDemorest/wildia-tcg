@@ -2,25 +2,55 @@
   "name": "tcg",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "db:migrate": "supabase db push --linked",
+    "db:reset": "supabase db reset",
+    "cards:fetch": "tsx scripts/cards/fetch.mts",
+    "cards:images": "tsx scripts/cards/images.mts",
+    "cards:review": "tsx scripts/cards/review.mts",
+    "cards:webp": "tsx scripts/cards/webp.mts",
+    "cards:publish": "tsx scripts/cards/publish.mts",
+    "cards:build": "npm run cards:fetch && npm run cards:images && npm run cards:review && npm run cards:webp",
+    "test": "vitest run",
+    "test:integration": "vitest run tests/**/*.integration.test.ts"
   },
   "dependencies": {
+    "@react-three/drei": "^10.7.9",
+    "@react-three/fiber": "^9.8.2",
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.118.0",
     "next": "16.4.3",
+    "next-intl": "^4.14.9",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "server-only": "^0.0.1",
+    "three": "^0.187.0",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/three": "^0.187.0",
     "eslint": "^9",
     "eslint-config-next": "16.4.3",
+    "prettier": "^3.6.2",
+    "sharp": "^0.35.5",
+    "supabase": "^2.122.0",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "tsx": "^4.23.15",
+    "typescript": "^5",
+    "vitest": "^3.2.4"
   }
 }

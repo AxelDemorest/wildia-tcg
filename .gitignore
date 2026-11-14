@@ -32,6 +32,16 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
+
+# card import: downloaded photos and API cache (work.json stays versioned)
+/data/cards/images/
+/data/cards/.cache/
+/data/cards/work.json.tmp
+
+# local / temp
+.cursor/
+.tmp-preview/
 
 # vercel
 .vercel
