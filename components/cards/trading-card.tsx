@@ -3,7 +3,7 @@ import { CardBack } from "@/components/cards/card-back";
 import { CardImage } from "@/components/cards/card-image";
 import { IucnSeal } from "@/components/cards/iucn-seal";
 import { RarityBadge } from "@/components/cards/rarity-badge";
-import { rarityGlowClass } from "@/lib/cards/rarity";
+import { cardShine } from "@/lib/cards/rarity";
 import type { CardSide, CatalogCard } from "@/lib/cards/types";
 
 type Props = {
@@ -15,27 +15,23 @@ type Props = {
   quantity?: number;
 };
 
-/* Drawn on a 200×300 grid, the card's own 2:3 ratio, so nothing gets stretched. */
-function CornerSwoosh() {
+/* Drawn on a 200×300 grid, the card's own 2:3 ratio, so nothing gets stretched. Echoes the bands of the back. */
+function CornerBands() {
   return (
-    <svg className="tcg-card-deco" viewBox="0 0 200 300" aria-hidden>
-      <path d="M0 0H66C44 6 28 20 19 42C14 56 9 72 0 88Z" fill="var(--card-leaf-light)" />
-      <path d="M0 0H46C31 5 19 15 13 29C9 37 5 45 0 52Z" fill="var(--card-leaf-dark)" />
+    <svg className="tcg-card-deco" viewBox="0 0 200 300" preserveAspectRatio="none" aria-hidden>
+      <path d="M0 0H128C78 12 36 48 16 108C10 126 5 146 0 166Z" opacity="0.45" />
+      <path d="M0 0H84C50 14 24 42 10 86C6 98 3 110 0 122Z" opacity="0.5" />
+      <path d="M200 136C196 204 170 262 104 300H200Z" opacity="0.45" />
+      <path d="M200 196C194 244 174 278 140 300H200Z" opacity="0.5" />
     </svg>
   );
 }
 
-function ArtOrnament() {
-  return <div className="tcg-card-ornament" aria-hidden />;
-}
-
-function CornerWaves() {
+function Divider() {
   return (
-    <svg className="tcg-card-deco tcg-card-deco-front" viewBox="0 0 200 300" aria-hidden>
-      <path d="M92 300C138 294 178 262 200 204V300Z" fill="var(--card-leaf-light)" />
-      <path d="M118 300C154 293 183 270 200 228V300Z" fill="var(--card-leaf-mid)" />
-      <path d="M140 300C170 292 190 275 200 246V300Z" fill="var(--card-leaf-dark)" />
-    </svg>
+    <div className="tcg-card-divider" aria-hidden>
+      <span />
+    </div>
   );
 }
 
@@ -44,18 +40,15 @@ export function TradingCard({ card, side = "front", href, priorityImage, quantit
 
   const content = (
     <article
+      data-side="front"
       data-rarity={card.rarity}
-      className={`tcg-card shadow-[var(--shadow-card)] transition hover:-translate-y-0.5 hover:shadow-lg ${rarityGlowClass(card.rarity)}`}
+      data-shine={cardShine(card.rarity)}
+      className="tcg-card"
     >
-      <div className="tcg-card-face" aria-hidden />
-      <CornerSwoosh />
+      <CornerBands />
+      <div className="tcg-card-frame" aria-hidden />
 
       <div className="tcg-card-body">
-        <header className="tcg-card-header">
-          <h2 className="tcg-card-name">{card.name}</h2>
-          {card.iucn_status && <IucnSeal status={card.iucn_status} />}
-        </header>
-
         <div className="tcg-card-art">
           <CardImage
             fill
@@ -64,11 +57,13 @@ export function TradingCard({ card, side = "front", href, priorityImage, quantit
             imagePath={card.image_path}
             priority={priorityImage}
           />
-          <ArtOrnament />
-          <svg className="tcg-card-art-wave" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden>
-            <path d="M76 100C89 99 97 94 100 85V100Z" />
-          </svg>
+          {card.iucn_status && <IucnSeal status={card.iucn_status} />}
         </div>
+
+        <Divider />
+        <h2 className="tcg-card-name">
+          <span>{card.name}</span>
+        </h2>
 
         <footer className="tcg-card-footer">
           <RarityBadge rarity={card.rarity} />
@@ -80,7 +75,7 @@ export function TradingCard({ card, side = "front", href, priorityImage, quantit
         </footer>
       </div>
 
-      <CornerWaves />
+      <div className="tcg-card-shine" aria-hidden />
     </article>
   );
 
@@ -88,7 +83,7 @@ export function TradingCard({ card, side = "front", href, priorityImage, quantit
     return (
       <Link
         href={href}
-        className="block rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+        className="tcg-card-link block rounded-[6%/4%] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
       >
         {content}
       </Link>

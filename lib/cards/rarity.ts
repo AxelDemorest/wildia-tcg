@@ -30,15 +30,20 @@ export function rarityAccentClass(rarity: CardRarity): string {
   }
 }
 
-/** Soft outer glow for the highest rarities; other cards keep the default shadow. */
-export function rarityGlowClass(rarity: CardRarity): string {
+/** How the card face catches the light: matte, fixed reflections, or a sheen on hover. */
+export type CardShine = "none" | "static" | "hover";
+
+export function cardShine(rarity: CardRarity): CardShine {
   switch (rarity) {
+    case "common":
+    case "uncommon":
+      return "none";
+    case "rare":
+    case "epic":
+      return "static";
     case "legendary":
-      return "shadow-amber-300/60";
     case "mythic":
-      return "shadow-rose-400/70";
-    default:
-      return "";
+      return "hover";
   }
 }
 
