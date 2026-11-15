@@ -9,6 +9,9 @@ export default defineConfig({
     include: ["tests/**/*.integration.test.ts"],
     testTimeout: 20_000,
     hookTimeout: 30_000,
+    // One file at a time: a booster opened in one file must not draw a card that another
+    // file is about to delete.
+    fileParallelism: false,
   },
   resolve: {
     alias: {

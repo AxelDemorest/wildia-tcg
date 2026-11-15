@@ -5,6 +5,7 @@
  * from the environment, or from .env.local when they are not set. Any URL other than a local
  * one stops the run: these tests create and delete users.
  */
+import { execFileSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { randomUUID } from "node:crypto";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
@@ -33,10 +34,27 @@ const options = { auth: { persistSession: false, autoRefreshToken: false } };
 /** Service role client: bypasses RLS, used to arrange and inspect state. */
 export const admin = createClient(url, serviceRoleKey, options);
 
+/** Anyone on the internet: the public anon key, nobody signed in. */
+export const visitor = createClient(url, anonKey, options);
+
+/**
+ * Runs one read-only SQL statement on the local database (supabase db query --local), for
+ * checks the Data API cannot see, such as privileges in the Postgres catalog.
+ */
+export function sql<Row = Record<string, unknown>>(statement: string): Row[] {
+  const output = execFileSync(
+    "npx",
+    ["supabase", "db", "query", "--local", "-o", "json", statement],
+    { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
+  );
+  return JSON.parse(output).rows as Row[];
+}
+
 export type Player = { id: string; client: SupabaseClient };
 
 const createdUsers: string[] = [];
 const createdCards: string[] = [];
+const createdBoosters: string[] = [];
 
 /** Creates a confirmed user and returns a client signed in as that user, like the app's. */
 export async function createPlayer(): Promise<Player> {
@@ -75,12 +93,58 @@ export async function createCard(rarity: string, farmRateBase = 0): Promise<stri
   return data.id;
 }
 
-/** Deletes the users then the cards created by this test file. Call it from afterAll. */
+/** Adds an active booster that only draws the given rarities. */
+export async function createBooster(
+  rarityWeights: Record<string, number>,
+  costCoins = 100,
+  isActive = true,
+): Promise<string> {
+  const { data, error } = await admin
+    .from("booster_definitions")
+    .insert({
+      slug: `test-${randomUUID()}`,
+      cost_coins: costCoins,
+      rarity_weights: rarityWeights,
+      is_active: isActive,
+    })
+    .select("id")
+    .single();
+  if (error) throw error;
+  createdBoosters.push(data.id);
+  return data.id;
+}
+
+/** Credits coins the way an admin adjustment would. */
+export async function giveCoins(userId: string, amount: number): Promise<void> {
+  const { error } = await admin
+    .from("currency_ledger")
+    .insert({ user_id: userId, amount, type: "admin_adjust" });
+  if (error) throw error;
+}
+
+export async function balanceOf(userId: string): Promise<number> {
+  const { data, error } = await admin
+    .from("currency_ledger")
+    .select("amount")
+    .eq("user_id", userId);
+  if (error) throw error;
+  return data.reduce((sum, row) => sum + Number(row.amount), 0);
+}
+
+/**
+ * Deletes the users, then the boosters and cards created by this test file (their draws and
+ * inventories go with the users). Call it from afterAll.
+ */
 export async function cleanup(): Promise<void> {
   const failures: string[] = [];
   for (const id of createdUsers.splice(0)) {
     const { error } = await admin.auth.admin.deleteUser(id);
     if (error) failures.push(`compte ${id} : ${error.message}`);
+  }
+  const boosters = createdBoosters.splice(0);
+  if (boosters.length > 0) {
+    const { error } = await admin.from("booster_definitions").delete().in("id", boosters);
+    if (error) failures.push(`boosters : ${error.message}`);
   }
   const cards = createdCards.splice(0);
   if (cards.length > 0) {

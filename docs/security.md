@@ -29,6 +29,21 @@ Voir aussi `docs/rate-limiting.md`.
 4. Tester avec le rôle anon dans le SQL editor Supabase
 5. Documenter les exceptions (RPC, triggers `security definer`)
 
+## Checklist nouvelle fonction SQL
+
+Toute fonction du schéma `public` est appelable par l’API (`POST /rest/v1/rpc/<nom>`) par ceux qui ont `EXECUTE`. Depuis la migration `restrict_rpc_execute`, une fonction créée par une migration n’est exécutable que par son propriétaire et le service role : les privilèges par défaut de Supabase (qui donnaient `EXECUTE` à `anon` et `authenticated` en direct) et celui de Postgres pour `PUBLIC` sont retirés.
+
+1. Si le joueur doit appeler la fonction, l’autoriser explicitement, et rien de plus :
+   ```sql
+   grant execute on function public.ma_fonction(args) to authenticated;
+   ```
+   Les triggers et les fonctions appelées depuis une fonction `SECURITY DEFINER` n’en ont pas besoin.
+2. Une fonction `SECURITY DEFINER` qui accepte un `p_user_id` doit refuser un appel sans `auth.uid()` venant d’`anon` : un visiteur n’a pas d’`auth.uid()` non plus. Le plus simple est de ne pas lui donner `EXECUTE`.
+3. `set search_path = ''` et noms qualifiés (`public.table`).
+4. Ajouter un test dans `tests/integration/rpc-access.integration.test.ts` : refusé pour un visiteur, refusé ou limité pour un joueur, accepté pour le bon appelant.
+
+Droits actuels : `grant_card`, `user_currency_balance` et `pick_weighted_rarity` → service role seulement ; `sync_user_economy` et `open_booster_pack` → joueur connecté (sur son propre compte) et service role.
+
 ## Modèles de policies
 
 **Lecture publique (catalogue)**

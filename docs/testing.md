@@ -21,12 +21,14 @@ npm run test:integration     # vitest.integration.config.ts → tests/**/*.integ
 
 - Les clés viennent de l’environnement, ou de `.env.local` à défaut.
 - `tests/integration/supabase.ts` **refuse toute URL qui n’est pas locale** : ces tests créent et suppriment des comptes.
-- Chaque test crée ses comptes (`test-…@example.test`) et ses cartes (`test-…`), puis les supprime à la fin du fichier. Ils ne dépendent pas du catalogue local.
+- Chaque test crée ses comptes (`test-…@example.test`), ses cartes et ses boosters (`test-…`), puis les supprime à la fin du fichier. Ils ne dépendent pas du catalogue local. Les fichiers tournent l’un après l’autre, pour qu’un booster ouvert dans un fichier ne tire pas une carte qu’un autre fichier va supprimer.
 
-Couvert aujourd’hui (`economy-guards.integration.test.ts`) :
+Couvert aujourd’hui :
 
-- Un joueur ne peut pas modifier son horloge de farm ni `created_at`, ni mettre en vitrine une carte qu’il ne possède pas ; il peut toujours enregistrer les champs du profil et de la bannière.
-- `currency_ledger` : ni le joueur ni le service role ne peuvent modifier ou effacer une ligne ; la suppression d’un compte efface ses lignes.
+- `economy-guards.integration.test.ts` :
+  - un joueur ne peut pas modifier son horloge de farm ni `created_at`, ni mettre en vitrine une carte qu’il ne possède pas ; il peut toujours enregistrer les champs du profil et de la bannière ;
+  - `currency_ledger` : ni le joueur ni le service role ne peuvent modifier ou effacer une ligne ; la suppression d’un compte efface ses lignes.
+- `rpc-access.integration.test.ts` : qui peut appeler chaque fonction SQL par l’API. Un visiteur ne peut rien appeler ; `grant_card` est réservé au serveur ; `sync_user_economy` et `open_booster_pack` marchent pour le joueur sur son propre compte et refusent le compte d’un autre.
 
 Scénarios `user_cards` encore à écrire (`user-cards-rls.integration.test.ts`, aujourd’hui vide et ignoré sans `RUN_SUPABASE_INTEGRATION=1`) :
 
