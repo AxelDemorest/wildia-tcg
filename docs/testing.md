@@ -33,12 +33,13 @@ Couvert aujourd’hui :
   - farm : la formule `floor(Σ taux × copies × secondes × multiplicateur)` et sa trace dans le journal, le multiplicateur d’`economy_config`, rien d’écrit sous une pièce, rien sans cartes, et un seul crédit quand plusieurs synchronisations arrivent en même temps ;
   - boosters : prix débité une fois, une carte par emplacement de la bonne rareté, tirage enregistré (`draw_logs`, `booster_purchase` relié au tirage), cartes ajoutées à l’inventaire, doublons compris ; refus si le solde est trop bas ou le booster inactif, sans rien débiter ; le farm est compté avant de vérifier le prix ; deux ouvertures simultanées pour le prix d’une → une seule passe ;
   - tirage de rareté : suit les poids, chaque tirage indépendant même dans une seule requête, jamais une rareté de poids nul, `common` si aucun poids.
+- `security-matrix.integration.test.ts` : pour chaque table et chaque bucket, ce que peuvent faire un visiteur, le joueur propriétaire et un autre joueur.
+  - Données d’un joueur (`user_cards`, `user_card_grants`, `currency_ledger`, `draw_logs`) : visibles par leur propriétaire seulement ; personne ne peut en ajouter, modifier ou supprimer par l’API, propriétaire compris.
+  - Données de jeu (`cards`, `card_translations`, `booster_definitions`, `economy_config`) : lisibles par tous, non modifiables par l’API ; les boosters inactifs sont invisibles.
+  - `profiles` : un profil privé n’est visible que par son propriétaire, un profil public par tous ; personne d’autre ne le modifie ; ni création ni suppression par l’API.
+  - `contest_entries` (e-mails du concours) : ni lisible ni modifiable par les joueurs et les visiteurs.
+  - Storage : `card-art` lisible par tous, écriture réservée au serveur ; `profile-banners` lisible par tous, chaque joueur n’écrit et ne supprime que dans son dossier.
+
+Pour vérifier qu’un test détecte bien une régression, ouvrir volontairement une brèche sur la base locale (par exemple `create policy … for insert to authenticated with check (true)`), lancer le test, puis supprimer la policy.
 
 Pas encore couvert : le repli de `open_booster_pack` quand aucune carte n’existe pour la rareté tirée (il prend alors une carte au hasard dans tout le catalogue). Le catalogue local a des cartes de chaque rareté, donc le test demanderait un catalogue vide.
-
-Scénarios `user_cards` encore à écrire (`user-cards-rls.integration.test.ts`, aujourd’hui vide et ignoré sans `RUN_SUPABASE_INTEGRATION=1`) :
-
-1. Utilisateur A connecté : `SELECT` sur `user_cards` retourne uniquement ses lignes.
-2. Utilisateur B : aucune ligne de A (0 rows, pas d’erreur fatale).
-3. Client anon : pas de `SELECT` sur `user_cards` (policy `authenticated` only).
-4. `grant_card` : appel RPC depuis le client anon → refus ; via service role → OK + entrée `user_card_grants`.
