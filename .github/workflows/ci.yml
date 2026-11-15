@@ -3,8 +3,8 @@ name: CI
 on:
   push:
     branches: [main, dev]
+  # Every PR, whatever its base: stacked PRs target the branch of the PR below them.
   pull_request:
-    branches: [main, dev]
 
 jobs:
   quality:
