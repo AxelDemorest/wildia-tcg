@@ -66,10 +66,10 @@ h6 {
  * container, whatever the grid or the reveal size.
  */
 .tcg-card {
-  --card-base: #163a25;
-  --card-base-deep: #0a1d12;
-  --card-band: #2f7048;
-  --card-line: #a6d98f;
+  --card-base: #0e3a32;
+  --card-base-deep: #06201b;
+  --card-band: #1f6f5f;
+  --card-line: #8fe0c4;
   --card-glow: rgb(13 122 78 / 0.35);
 
   container-type: inline-size;
@@ -98,10 +98,10 @@ h6 {
 }
 
 .tcg-card[data-rarity="uncommon"] {
-  --card-base: #163a25;
-  --card-base-deep: #0a1d12;
-  --card-band: #2f7048;
-  --card-line: #a6d98f;
+  --card-base: #0e3a32;
+  --card-base-deep: #06201b;
+  --card-band: #1f6f5f;
+  --card-line: #8fe0c4;
 }
 
 .tcg-card[data-rarity="rare"] {
@@ -120,7 +120,6 @@ h6 {
   --card-glow: rgb(139 102 196 / 0.5);
 }
 
-/* Green and gold, like the back: the legendary face is the brand itself. */
 .tcg-card[data-rarity="legendary"] {
   --card-base: #13301f;
   --card-base-deep: #07150d;
@@ -322,12 +321,12 @@ h6 {
 .tcg-card[data-shine="hover"] .tcg-card-shine {
   background: linear-gradient(
     125deg,
-    transparent 18%,
-    rgb(255 255 255 / 0.16) 30%,
-    transparent 40%,
-    transparent 62%,
-    rgb(255 255 255 / 0.09) 72%,
-    transparent 80%
+    transparent 16%,
+    rgb(255 255 255 / 0.24) 30%,
+    transparent 42%,
+    transparent 60%,
+    rgb(255 255 255 / 0.14) 72%,
+    transparent 82%
   );
   mix-blend-mode: screen;
 }

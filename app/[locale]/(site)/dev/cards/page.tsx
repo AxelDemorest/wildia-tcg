@@ -33,7 +33,7 @@ export default async function DevCardsPage({ params }: Props) {
             </p>
             <div className="grid grid-cols-2 gap-3">
               <TradingCard card={card} quantity={index + 1} priorityImage={index < 3} />
-              <TradingCard card={card} side="back" />
+              <TradingCard side="back" />
             </div>
           </li>
         ))}

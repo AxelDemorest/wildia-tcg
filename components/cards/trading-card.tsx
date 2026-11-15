@@ -4,18 +4,25 @@ import { CardImage } from "@/components/cards/card-image";
 import { IucnSeal } from "@/components/cards/iucn-seal";
 import { RarityBadge } from "@/components/cards/rarity-badge";
 import { cardShine } from "@/lib/cards/rarity";
-import type { CardSide, CatalogCard } from "@/lib/cards/types";
+import type { CatalogCard } from "@/lib/cards/types";
 
-type Props = {
+type FrontProps = {
+  side?: "front";
   card: CatalogCard;
-  /** On the back, `card`, `href` and `quantity` are ignored: nothing about the species reaches the page. */
-  side?: CardSide;
   href?: string;
   priorityImage?: boolean;
   quantity?: number;
 };
 
-/* Drawn on a 200×300 grid, the card's own 2:3 ratio, so nothing gets stretched. Echoes the bands of the back. */
+/** The back takes no card: nothing about the species may reach the page before it is turned. */
+type BackProps = {
+  side: "back";
+  priorityImage?: boolean;
+};
+
+type Props = FrontProps | BackProps;
+
+/* Drawn on a 200×300 grid, the card's own 2:3 ratio, so nothing gets stretched. */
 function CornerBands() {
   return (
     <svg className="tcg-card-deco" viewBox="0 0 200 300" preserveAspectRatio="none" aria-hidden>
@@ -35,8 +42,10 @@ function Divider() {
   );
 }
 
-export function TradingCard({ card, side = "front", href, priorityImage, quantity }: Props) {
-  if (side === "back") return <CardBack priority={priorityImage} />;
+export function TradingCard(props: Props) {
+  if (props.side === "back") return <CardBack priority={props.priorityImage} />;
+
+  const { card, href, priorityImage, quantity } = props;
 
   const content = (
     <article
