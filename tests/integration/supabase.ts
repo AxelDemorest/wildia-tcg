@@ -50,7 +50,7 @@ export function sql<Row = Record<string, unknown>>(statement: string): Row[] {
   return JSON.parse(output).rows as Row[];
 }
 
-export type Player = { id: string; email: string; client: SupabaseClient };
+export type Player = { id: string; email: string; password: string; client: SupabaseClient };
 
 const createdUsers: string[] = [];
 const createdCards: string[] = [];
@@ -76,7 +76,17 @@ export async function createPlayer(metadata?: Record<string, unknown>): Promise<
   const client = createClient(url, anonKey, options);
   const { error: signInError } = await client.auth.signInWithPassword({ email, password });
   if (signInError) throw signInError;
-  return { id: data.user.id, email, client };
+  return { id: data.user.id, email, password, client };
+}
+
+/** Tracks a user created another way (e.g. through the signup page) so cleanup deletes it. */
+export async function adoptUserByEmail(email: string): Promise<string> {
+  const { data, error } = await admin.auth.admin.listUsers({ perPage: 1000 });
+  if (error) throw error;
+  const user = data.users.find((u) => u.email === email);
+  if (!user) throw new Error(`Aucun compte pour ${email}`);
+  createdUsers.push(user.id);
+  return user.id;
 }
 
 /** Deletes a player's account now, as the dashboard or an account deletion would. */
