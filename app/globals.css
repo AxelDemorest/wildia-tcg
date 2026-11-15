@@ -131,6 +131,10 @@ h6 {
   --card-leaf-dark: #d93c62;
 }
 
+.tcg-card-back {
+  background-color: #112a1c;
+}
+
 .tcg-card-face {
   position: absolute;
   inset: 2.6cqw 2.6cqw 2.6cqw 4cqw;

@@ -34,6 +34,10 @@ _Avoid_: Token, asset
 Face générique affichée tant qu’une carte n’est pas retournée pendant une révélation, sans indice de rareté ni d’espèce.
 _Avoid_: Card back (libellé UI)
 
+**Face de carte** :
+Côté visible d’une carte retournée : nom de l’espèce, illustration en aperçu, rareté, statut UICN et, dans le classeur, quantité possédée. Même silhouette et même esprit que le dos de carte ; sa couleur et sa brillance trahissent la rareté. C’est la seule représentation d’une carte sur le site, quelle que soit sa taille.
+_Avoid_: Recto, card front, vignette (quand on parle de la carte elle-même)
+
 **Classeur** :
 Inventaire des cartes qu’un joueur possède : une ligne par espèce avec sa quantité ; l’écran de tri du classeur et la vitrine en monde classeur s’appuient sur le même inventaire (une représentation par espèce en 3D).
 _Avoid_: Collection (comme nom d’écran), binder

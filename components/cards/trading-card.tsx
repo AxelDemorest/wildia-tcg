@@ -1,12 +1,15 @@
 import { Link } from "@/i18n/navigation";
+import { CardBack } from "@/components/cards/card-back";
 import { CardImage } from "@/components/cards/card-image";
 import { IucnSeal } from "@/components/cards/iucn-seal";
 import { RarityBadge } from "@/components/cards/rarity-badge";
 import { rarityGlowClass } from "@/lib/cards/rarity";
-import type { CatalogCard } from "@/lib/cards/types";
+import type { CardSide, CatalogCard } from "@/lib/cards/types";
 
 type Props = {
   card: CatalogCard;
+  /** On the back, `card`, `href` and `quantity` are ignored: nothing about the species reaches the page. */
+  side?: CardSide;
   href?: string;
   priorityImage?: boolean;
   quantity?: number;
@@ -36,7 +39,9 @@ function CornerWaves() {
   );
 }
 
-export function TradingCard({ card, href, priorityImage, quantity }: Props) {
+export function TradingCard({ card, side = "front", href, priorityImage, quantity }: Props) {
+  if (side === "back") return <CardBack priority={priorityImage} />;
+
   const content = (
     <article
       data-rarity={card.rarity}

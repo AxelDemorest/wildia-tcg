@@ -9,6 +9,9 @@ export const CARD_RARITIES = [
 
 export type CardRarity = (typeof CARD_RARITIES)[number];
 
+/** Face de carte (species, rarity, art) or dos de carte (brand visual only). */
+export type CardSide = "front" | "back";
+
 /** Global IUCN Red List categories, least to most threatened, then unassessed. */
 export const IUCN_STATUSES = ["LC", "NT", "VU", "EN", "CR", "EW", "EX", "DD", "NE"] as const;
 
