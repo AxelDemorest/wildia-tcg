@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import type { CollectionSortOption } from "@/server/inventory/queries";
+import type { CollectionSortOption } from "@/lib/inventory/collection";
 
 const SORTS: CollectionSortOption[] = ["rarity", "name", "quantity"];
 
