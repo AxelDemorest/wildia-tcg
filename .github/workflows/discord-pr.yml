@@ -1,4 +1,5 @@
-# Posts a message in a Discord channel when a pull request to dev or main:
+# Posts a message in a Discord channel when a pull request, whatever its base (stacked PRs
+# target the branch of the PR below them):
 # - becomes reviewable: opened as a regular PR, or a draft marked "Ready for review";
 # - is merged. A merge into main is a production release and gets its own message.
 #
@@ -15,7 +16,6 @@ name: Discord PR notifications
 
 on:
   pull_request:
-    branches: [dev, main]
     types: [opened, ready_for_review, closed]
 
 permissions: {}

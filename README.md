@@ -144,7 +144,7 @@ git switch -c feat/ma-modif
 gh pr create --base dev
 ```
 
-Les PR vers `dev` et `main` sont annoncées sur Discord (`.github/workflows/discord-pr.yml`).
+Toutes les PR sont annoncées sur Discord, PR empilées comprises ; une fusion dans `main` est annoncée comme une mise en prod (`.github/workflows/discord-pr.yml`).
 
 ---
 
