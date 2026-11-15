@@ -53,14 +53,34 @@ Parcours complets dans un vrai navigateur (Chromium), contre `npm run dev` et le
 ```bash
 npx playwright install chromium   # une fois, télécharge le navigateur
 npx supabase start                # si ce n’est pas déjà fait
-npm run db:pull-cards             # le parcours booster tire dans le vrai catalogue
 npm run test:e2e                  # réutilise le serveur de dev s’il tourne sur :3000, sinon le lance
 ```
 
-Les comptes sont créés et supprimés par les tests, avec les mêmes outils que les tests d’intégration (`tests/integration/supabase.ts`, qui refuse toute URL non locale). Les parcours tournent l’un après l’autre, car ils partagent le serveur et la base.
+Les comptes et les cartes sont créés et supprimés par les tests, avec les mêmes outils que les tests d’intégration (`tests/integration/supabase.ts`, qui refuse toute URL non locale). Le parcours booster ajoute sa propre carte : il marche sur une base vide (en CI, chaque emplacement retombe sur elle) comme avec le catalogue de `db:pull-cards`. Les parcours tournent l’un après l’autre, car ils partagent le serveur et la base.
+
+Pour reproduire la CI en local (build de production servi par `next start`, sur un autre port que le serveur de dev) : `CI=1 E2E_PORT=3100 npm run test:e2e`.
 
 - `locale-routing.spec.ts` : `/` → `/fr` ; une page sans langue garde son chemin (`/cards` → `/fr/cards`) ; un navigateur en anglais arrive sur `/en` ; une langue explicite est gardée.
 - `signup-profile.spec.ts` : inscription par le formulaire, profil public rempli (pseudo, bio, visibilité), puis page joueur affichée en étant déconnecté.
 - `open-booster.spec.ts` : connexion, ouverture d’un booster standard, révélation des 5 cartes, solde débité de 150 pièces, et chaque carte tirée retrouvée dans le classeur.
 
 En cas d’échec, la trace Playwright est gardée dans `test-results/` (`npx playwright show-trace …`).
+
+## Couverture
+
+```bash
+npm run test:coverage   # tests unitaires + couverture de lib/ (v8)
+```
+
+La couverture ne mesure que les tests unitaires, donc `lib/`. `server/`, la base et l’interface sont couverts par les tests d’intégration et E2E, qui ne produisent pas de couverture par ligne : pour eux, la règle est qu’une fonction SQL ou une policy a au moins un test « autorisé » et un test « refusé ».
+
+## CI (`.github/workflows/ci.yml`)
+
+Sur chaque PR, quelle que soit sa base (PR empilées comprises), et sur chaque push vers `main` et `dev` :
+
+| Job                 | Étapes                                                                                                                                                                                                                                                                          |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `quality`           | `npm ci`, lint (règles d’architecture comprises), typecheck (`next typegen` + `tsc`), build, tests unitaires avec couverture ; le tableau de couverture s’affiche dans le résumé du run                                                                                         |
+| `integration & e2e` | Supabase local démarré depuis `supabase/migrations` (une migration cassée échoue ici, pas en prod), puis `npm run test:integration`, puis les parcours Playwright contre le build de production ; en cas d’échec, les traces sont jointes au run (`playwright-traces`, 7 jours) |
+
+Le job Supabase ne lance que la base, l’authentification, l’API, le Storage et la passerelle (`-x studio,postgres-meta,mailpit,imgproxy,supavisor`). Les clés utilisées sont les clés de démo du Supabase local, identiques sur toutes les machines : ce ne sont pas des secrets.

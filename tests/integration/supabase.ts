@@ -38,8 +38,9 @@ export const admin = createClient(url, serviceRoleKey, options);
 export const visitor = createClient(url, anonKey, options);
 
 /**
- * Runs one read-only SQL statement on the local database (supabase db query --local), for
- * checks the Data API cannot see, such as privileges in the Postgres catalog.
+ * Runs one SQL statement on the local database (supabase db query --local) and returns its
+ * rows, for what the Data API cannot do: reading the Postgres catalog, or using the
+ * database's own clock. To change rows, wrap the change in a CTE that the statement selects.
  */
 export function sql<Row = Record<string, unknown>>(statement: string): Row[] {
   const output = execFileSync(
@@ -108,6 +109,17 @@ export async function createCard(rarity: string, farmRateBase = 0): Promise<stri
   return data.id;
 }
 
+/** Adds a throwaway card the app can display: with French and English names. */
+export async function createCatalogCard(rarity: string, name: string): Promise<string> {
+  const cardId = await createCard(rarity);
+  const { error } = await admin.from("card_translations").insert([
+    { card_id: cardId, locale: "fr", name, description: "Carte créée par un test." },
+    { card_id: cardId, locale: "en", name, description: "Card created by a test." },
+  ]);
+  if (error) throw error;
+  return cardId;
+}
+
 /** Adds a booster that only draws the given rarities. */
 export async function createBooster(
   rarityWeights: Record<string, number>,
@@ -168,13 +180,25 @@ export async function ledgerOf(userId: string, type?: string): Promise<LedgerRow
   return data.map((row) => ({ ...row, amount: Number(row.amount) }));
 }
 
-/** Moves the player's farm clock back, as if they had been away for that long. */
+/**
+ * Moves the player's farm clock back, as if they had been away for that long. Uses the
+ * database's clock, the one sync_user_economy measures with: the test machine's clock can
+ * be a little off from the database container's, enough to lose a coin.
+ */
 export async function setAwayFor(userId: string, seconds: number): Promise<void> {
-  const { error } = await admin
-    .from("profiles")
-    .update({ last_economy_sync_at: new Date(Date.now() - seconds * 1000).toISOString() })
-    .eq("id", userId);
-  if (error) throw error;
+  if (!/^[0-9a-f-]{36}$/.test(userId) || !Number.isFinite(seconds)) {
+    throw new Error("setAwayFor : identifiant ou durée invalide");
+  }
+  const [row] = sql<{ moved: number }>(
+    `with moved as (
+       update public.profiles
+       set last_economy_sync_at = now() - make_interval(secs => ${seconds})
+       where id = '${userId}'
+       returning id
+     )
+     select count(*)::int as moved from moved`,
+  );
+  if (row?.moved !== 1) throw new Error(`setAwayFor : profil ${userId} introuvable`);
 }
 
 /**

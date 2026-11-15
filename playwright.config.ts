@@ -1,25 +1,32 @@
 import { defineConfig, devices } from "@playwright/test";
 
-// End-to-end journeys in a real browser, against `npm run dev` and the local Supabase
+// End-to-end journeys in a real browser, against the app and the local Supabase
 // (npx supabase start). The e2e helpers refuse any non-local Supabase URL.
+//
+// Locally: reuses the dev server on :3000, or starts `npm run dev`.
+// In CI: builds and serves the production app (`next build` + `next start`).
+const port = Number(process.env.E2E_PORT ?? 3000);
+const baseURL = `http://localhost:${port}`;
+
 export default defineConfig({
   testDir: "e2e",
-  // One journey at a time: they share the dev server and the local database.
+  // One journey at a time: they share the server and the local database.
   workers: 1,
   fullyParallel: false,
   retries: process.env.CI ? 1 : 0,
-  reporter: process.env.CI ? "github" : "list",
+  reporter: process.env.CI ? [["github"], ["list"]] : "list",
   use: {
-    baseURL: "http://localhost:3000",
+    baseURL,
     locale: "fr-FR",
     trace: "retain-on-failure",
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: {
-    command: "npm run dev",
-    url: "http://localhost:3000/fr",
-    // Reuse the dev server already running locally; CI starts its own.
+    command: process.env.CI
+      ? `npm run build && npm run start -- --port ${port}`
+      : `npm run dev -- --port ${port}`,
+    url: `${baseURL}/fr`,
     reuseExistingServer: !process.env.CI,
-    timeout: 180_000,
+    timeout: 300_000,
   },
 });

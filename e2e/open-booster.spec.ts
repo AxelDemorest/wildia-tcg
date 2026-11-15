@@ -1,14 +1,22 @@
+import { randomUUID } from "node:crypto";
 import { expect, test } from "@playwright/test";
 import {
   admin,
   balanceOf,
   cleanup,
+  createCatalogCard,
   createPlayer,
   giveCoins,
   type Player,
 } from "../tests/integration/supabase";
 
-// Uses the real "standard" booster, so the local catalogue needs cards (npm run db:pull-cards).
+// Uses the real "standard" booster. The test adds one displayable card so the catalogue is
+// never empty: on an empty database (CI), every slot falls back to it; locally it simply
+// joins the cards pulled from prod.
+test.beforeAll(async () => {
+  await createCatalogCard("common", `Carte E2E ${randomUUID().slice(0, 8)}`);
+});
+
 test.afterAll(cleanup);
 
 async function drawnCardNames(player: Player): Promise<string[]> {

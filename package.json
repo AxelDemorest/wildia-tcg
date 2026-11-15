@@ -23,6 +23,7 @@
     "cards:publish": "tsx scripts/cards/publish.mts",
     "cards:build": "npm run cards:fetch && npm run cards:images && npm run cards:review && npm run cards:webp",
     "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "test:integration": "vitest run --config vitest.integration.config.ts",
     "test:e2e": "playwright test"
   },
@@ -46,6 +47,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/three": "^0.187.0",
+    "@vitest/coverage-v8": "4.1.12",
     "eslint": "^9",
     "eslint-config-next": "16.4.3",
     "prettier": "^3.6.2",
