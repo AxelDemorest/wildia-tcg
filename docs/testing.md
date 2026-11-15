@@ -29,6 +29,12 @@ Couvert aujourd’hui :
   - un joueur ne peut pas modifier son horloge de farm ni `created_at`, ni mettre en vitrine une carte qu’il ne possède pas ; il peut toujours enregistrer les champs du profil et de la bannière ;
   - `currency_ledger` : ni le joueur ni le service role ne peuvent modifier ou effacer une ligne ; la suppression d’un compte efface ses lignes.
 - `rpc-access.integration.test.ts` : qui peut appeler chaque fonction SQL par l’API. Un visiteur ne peut rien appeler ; `grant_card` est réservé au serveur ; `sync_user_economy` et `open_booster_pack` marchent pour le joueur sur son propre compte et refusent le compte d’un autre.
+- `economy-boosters.integration.test.ts` :
+  - farm : la formule `floor(Σ taux × copies × secondes × multiplicateur)` et sa trace dans le journal, le multiplicateur d’`economy_config`, rien d’écrit sous une pièce, rien sans cartes, et un seul crédit quand plusieurs synchronisations arrivent en même temps ;
+  - boosters : prix débité une fois, une carte par emplacement de la bonne rareté, tirage enregistré (`draw_logs`, `booster_purchase` relié au tirage), cartes ajoutées à l’inventaire, doublons compris ; refus si le solde est trop bas ou le booster inactif, sans rien débiter ; le farm est compté avant de vérifier le prix ; deux ouvertures simultanées pour le prix d’une → une seule passe ;
+  - tirage de rareté : suit les poids, chaque tirage indépendant même dans une seule requête, jamais une rareté de poids nul, `common` si aucun poids.
+
+Pas encore couvert : le repli de `open_booster_pack` quand aucune carte n’existe pour la rareté tirée (il prend alors une carte au hasard dans tout le catalogue). Le catalogue local a des cartes de chaque rareté, donc le test demanderait un catalogue vide.
 
 Scénarios `user_cards` encore à écrire (`user-cards-rls.integration.test.ts`, aujourd’hui vide et ignoré sans `RUN_SUPABASE_INTEGRATION=1`) :
 

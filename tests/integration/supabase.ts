@@ -93,11 +93,12 @@ export async function createCard(rarity: string, farmRateBase = 0): Promise<stri
   return data.id;
 }
 
-/** Adds an active booster that only draws the given rarities. */
+/** Adds a booster that only draws the given rarities. */
 export async function createBooster(
   rarityWeights: Record<string, number>,
   costCoins = 100,
   isActive = true,
+  slots = 5,
 ): Promise<string> {
   const { data, error } = await admin
     .from("booster_definitions")
@@ -106,6 +107,7 @@ export async function createBooster(
       cost_coins: costCoins,
       rarity_weights: rarityWeights,
       is_active: isActive,
+      slots,
     })
     .select("id")
     .single();
@@ -129,6 +131,35 @@ export async function balanceOf(userId: string): Promise<number> {
     .eq("user_id", userId);
   if (error) throw error;
   return data.reduce((sum, row) => sum + Number(row.amount), 0);
+}
+
+export type LedgerRow = {
+  amount: number;
+  type: string;
+  reference_id: string | null;
+  metadata: Record<string, unknown>;
+};
+
+/** The player's coin movements, oldest first, optionally of one type only. */
+export async function ledgerOf(userId: string, type?: string): Promise<LedgerRow[]> {
+  let query = admin
+    .from("currency_ledger")
+    .select("amount, type, reference_id, metadata")
+    .eq("user_id", userId)
+    .order("created_at");
+  if (type) query = query.eq("type", type);
+  const { data, error } = await query;
+  if (error) throw error;
+  return data.map((row) => ({ ...row, amount: Number(row.amount) }));
+}
+
+/** Moves the player's farm clock back, as if they had been away for that long. */
+export async function setAwayFor(userId: string, seconds: number): Promise<void> {
+  const { error } = await admin
+    .from("profiles")
+    .update({ last_economy_sync_at: new Date(Date.now() - seconds * 1000).toISOString() })
+    .eq("id", userId);
+  if (error) throw error;
 }
 
 /**
