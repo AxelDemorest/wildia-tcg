@@ -48,7 +48,10 @@ export function sql<Row = Record<string, unknown>>(statement: string): Row[] {
     ["supabase", "db", "query", "--local", "-o", "json", statement],
     { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
   );
-  return JSON.parse(output).rows as Row[];
+  // A plain array of rows, or { rows, boundary, warning } when the CLI detects it runs under
+  // an AI coding agent (it then marks the rows as untrusted data).
+  const parsed = JSON.parse(output) as Row[] | { rows: Row[] };
+  return Array.isArray(parsed) ? parsed : parsed.rows;
 }
 
 export type Player = { id: string; email: string; password: string; client: SupabaseClient };
