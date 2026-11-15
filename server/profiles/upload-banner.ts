@@ -1,24 +1,18 @@
 import "server-only";
 
+import { bannerStoragePath, checkBannerFile } from "@/lib/profiles/banner-file";
 import { createClient } from "@/lib/supabase/server";
-
-const MAX_BYTES = 2 * 1024 * 1024;
-const ALLOWED = new Set(["image/jpeg", "image/png", "image/webp"]);
 
 export async function uploadProfileBanner(
   userId: string,
   file: File,
 ): Promise<{ storagePath: string }> {
-  if (!ALLOWED.has(file.type)) {
-    throw new Error("invalid_type");
-  }
-  if (file.size > MAX_BYTES) {
-    throw new Error("too_large");
+  const check = checkBannerFile(file);
+  if (!check.ok) {
+    throw new Error(check.error);
   }
 
-  const ext =
-    file.type === "image/png" ? "png" : file.type === "image/webp" ? "webp" : "jpg";
-  const storagePath = `${userId}/banner.${ext}`;
+  const storagePath = bannerStoragePath(userId, check.extension);
 
   const supabase = await createClient();
   const buffer = Buffer.from(await file.arrayBuffer());

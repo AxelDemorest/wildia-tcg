@@ -42,9 +42,10 @@ Pas de cron par joueur : le farm offline est rattrapé au prochain sync.
 | `stripe_purchase` | + achat réel (Sprint 8) |
 | `admin_adjust` | ajustement manuel (réservé) |
 
-Le ledger est **append-only** (triggers bloquent UPDATE/DELETE).
+Le ledger est **append-only** (triggers bloquent UPDATE/DELETE). Seule exception : la suppression d’un compte efface ses lignes, en cascade.
 
 ## Sécurité
 
 - `sync_user_economy` : uniquement pour `auth.uid() = p_user_id` (ou service role).
+- `profiles.last_economy_sync_at` n’est pas modifiable par le joueur (droits par colonne) : la reculer créditerait le temps écoulé depuis cette date.
 - Écritures ledger hors farm : Server Actions + service role (Sprint 5+).

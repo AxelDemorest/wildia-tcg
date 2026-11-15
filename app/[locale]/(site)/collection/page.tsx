@@ -6,7 +6,8 @@ import { TradingCard } from "@/components/cards/trading-card";
 import { Surface } from "@/components/ui/surface";
 import { Link } from "@/i18n/navigation";
 import { requireUser } from "@/server/auth/require-user";
-import { listUserCollection, type CollectionSortOption } from "@/server/inventory/queries";
+import type { CollectionSortOption } from "@/lib/inventory/collection";
+import { listUserCollection } from "@/server/inventory/queries";
 
 type Props = {
   params: Promise<{ locale: string }>;

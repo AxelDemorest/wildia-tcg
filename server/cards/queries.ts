@@ -1,6 +1,7 @@
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
+import { pickTranslation } from "@/lib/cards/translation";
 import type { CardRarity, CardStats, CatalogCard, IucnStatus } from "@/lib/cards/types";
 
 type CardQueryRow = {
@@ -32,9 +33,7 @@ const CARD_COLUMNS = `
 `;
 
 function mapCard(row: CardQueryRow, locale: string): CatalogCard | null {
-  const translation =
-    row.card_translations.find((t) => t.locale === locale) ??
-    row.card_translations.find((t) => t.locale === "fr");
+  const translation = pickTranslation(row.card_translations, locale);
   if (!translation) return null;
 
   return {

@@ -1,16 +1,7 @@
 import "server-only";
 
-import { z } from "zod";
+import { updateProfileInputSchema, type UpdateProfileInput } from "@/lib/profiles/profile-form";
 import { createClient } from "@/lib/supabase/server";
-
-export const updateProfileInputSchema = z.object({
-  bio: z.string().max(500).optional().nullable(),
-  isPublic: z.boolean(),
-  featuredCardId: z.string().uuid().nullable(),
-  displayName: z.string().min(1).max(40).optional().nullable(),
-});
-
-export type UpdateProfileInput = z.infer<typeof updateProfileInputSchema>;
 
 async function userOwnsCard(userId: string, cardId: string): Promise<boolean> {
   const supabase = await createClient();
@@ -25,10 +16,7 @@ async function userOwnsCard(userId: string, cardId: string): Promise<boolean> {
   return (data?.quantity ?? 0) > 0;
 }
 
-export async function updateUserProfile(
-  userId: string,
-  input: UpdateProfileInput,
-): Promise<void> {
+export async function updateUserProfile(userId: string, input: UpdateProfileInput): Promise<void> {
   const parsed = updateProfileInputSchema.parse(input);
 
   if (parsed.featuredCardId) {
