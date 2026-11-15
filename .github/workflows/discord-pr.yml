@@ -1,0 +1,86 @@
+# Posts a message in a Discord channel when a pull request to dev or main:
+# - becomes reviewable: opened as a regular PR, or a draft marked "Ready for review";
+# - is merged. A merge into main is a production release and gets its own message.
+#
+# Setup (repository owner only):
+# 1. Discord: channel settings → Integrations → Webhooks → New Webhook, copy its URL.
+# 2. GitHub: Settings → Secrets and variables → Actions → New repository secret,
+#    name DISCORD_WEBHOOK_URL, value the webhook URL.
+# 3. Optional, to ping a role on every message: Settings → Secrets and variables → Actions →
+#    Variables, name DISCORD_OWNERS_ROLE_ID, value the role ID (Discord developer mode,
+#    right-click the role → Copy Role ID). Left empty, messages mention no one.
+# Without the secret (or on PRs from forks, which get no secrets) the job does nothing.
+
+name: Discord PR notifications
+
+on:
+  pull_request:
+    branches: [dev, main]
+    types: [opened, ready_for_review, closed]
+
+permissions: {}
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    if: >-
+      (github.event.action == 'opened' && !github.event.pull_request.draft) ||
+      github.event.action == 'ready_for_review' ||
+      (github.event.action == 'closed' && github.event.pull_request.merged)
+    env:
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+    steps:
+      - name: Post to Discord
+        if: env.DISCORD_WEBHOOK_URL != ''
+        # PR fields go through env, never straight into the script: a PR title is user input.
+        env:
+          ACTION: ${{ github.event.action }}
+          NUMBER: ${{ github.event.pull_request.number }}
+          TITLE: ${{ github.event.pull_request.title }}
+          URL: ${{ github.event.pull_request.html_url }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+          HEAD: ${{ github.event.pull_request.head.ref }}
+          BASE: ${{ github.event.pull_request.base.ref }}
+          MERGED_BY: ${{ github.event.pull_request.merged_by.login }}
+          OWNERS_ROLE_ID: ${{ vars.DISCORD_OWNERS_ROLE_ID }}
+        run: |
+          if [ "$ACTION" = "closed" ] && [ "$BASE" = "main" ]; then
+            heading="🚀 Mise en prod"
+            detail="\`${HEAD}\` → \`main\`, fusionnée par **${MERGED_BY}**"
+            color=15844367
+          elif [ "$ACTION" = "closed" ]; then
+            heading="✅ PR fusionnée"
+            detail="fusionnée par **${MERGED_BY}** dans \`${BASE}\`"
+            color=3066993
+          else
+            heading="🔍 PR à relire"
+            detail="par **${AUTHOR}** · \`${HEAD}\` → \`${BASE}\`"
+            color=3447003
+          fi
+          # Only a numeric role ID is used; anything else means no mention.
+          role=""
+          case "$OWNERS_ROLE_ID" in
+            ''|*[!0-9]*) ;;
+            *) role="$OWNERS_ROLE_ID" ;;
+          esac
+          # allowed_mentions: parse = [] keeps @everyone or @here in a title from pinging
+          # anyone; roles lets through only the configured role. Mentions only ping from
+          # content, not from inside an embed.
+          jq -n \
+            --arg heading "$heading" \
+            --arg title "#${NUMBER} ${TITLE}" \
+            --arg url "$URL" \
+            --arg detail "$detail" \
+            --argjson color "$color" \
+            --arg role "$role" \
+            '{
+              allowed_mentions: {parse: [], roles: (if $role == "" then [] else [$role] end)},
+              embeds: [{
+                author: {name: $heading},
+                title: ($title | .[0:256]),
+                url: $url,
+                description: $detail,
+                color: $color
+              }]
+            } + (if $role == "" then {} else {content: "<@&\($role)>"} end)' \
+          | curl --fail-with-body -sS -H "Content-Type: application/json" -d @- "$DISCORD_WEBHOOK_URL"
