@@ -1,10 +1,13 @@
 import "server-only";
 
-import { compareRarity } from "@/lib/cards/rarity";
-import type { CardRarity, CardStats, CatalogCard, IucnStatus } from "@/lib/cards/types";
+import { pickTranslation } from "@/lib/cards/translation";
+import type { CardRarity, CardStats, IucnStatus } from "@/lib/cards/types";
+import {
+  sortCollection,
+  type CollectionCard,
+  type CollectionSortOption,
+} from "@/lib/inventory/collection";
 import { createClient } from "@/lib/supabase/server";
-
-export type CollectionCard = CatalogCard & { quantity: number };
 
 type CardEmbed = {
   id: string;
@@ -22,8 +25,6 @@ type Row = {
   quantity: number;
   cards: CardEmbed | CardEmbed[] | null;
 };
-
-export type CollectionSortOption = "rarity" | "name" | "quantity";
 
 export async function getUserCardQuantity(userId: string, cardId: string): Promise<number> {
   const supabase = await createClient();
@@ -74,9 +75,7 @@ export async function listUserCollection(
     .map((row) => {
       const card = Array.isArray(row.cards) ? row.cards[0] : row.cards;
       if (!card) return null;
-      const translation =
-        card.card_translations.find((t) => t.locale === locale) ??
-        card.card_translations.find((t) => t.locale === "fr");
+      const translation = pickTranslation(card.card_translations, locale);
       if (!translation) return null;
 
       return {
@@ -96,24 +95,4 @@ export async function listUserCollection(
     .filter((c): c is CollectionCard => c !== null);
 
   return sortCollection(items, sort);
-}
-
-function sortCollection(
-  items: CollectionCard[],
-  sort: CollectionSortOption,
-): CollectionCard[] {
-  const copy = [...items];
-  switch (sort) {
-    case "name":
-      return copy.sort((a, b) => a.name.localeCompare(b.name, "fr"));
-    case "quantity":
-      return copy.sort((a, b) => b.quantity - a.quantity);
-    case "rarity":
-    default:
-      return copy.sort((a, b) => {
-        const byRarity = compareRarity(b.rarity, a.rarity);
-        if (byRarity !== 0) return byRarity;
-        return a.name.localeCompare(b.name, "fr");
-      });
-  }
 }

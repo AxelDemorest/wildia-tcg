@@ -6,7 +6,9 @@
 npm test
 ```
 
-Couvre la validation des grants (`grantCardInputSchema`), le flag `ENABLE_DEV_GRANTS`, et le calcul farm (`computeFarmAccrual`).
+Tests de la logique pure de `lib/`, à côté de chaque module (`lib/**/*.test.ts`) : rareté UICN et ordre des raretés, calcul du farm, tirage pondéré, import des cartes, validation des grants et du formulaire de profil, e-mail du concours, bannière (type, taille, chemin), choix de la traduction, tri du classeur, lecture du résultat d’ouverture de booster, IP de la limite de débit, URL publiques du Storage, variables d’environnement, limite de débit.
+
+Les fichiers de `server/` importent `server-only` et ne se chargent pas hors de Next. Leur logique testable vit donc dans `lib/`, que `server/` appelle. Quand du code de `server/` mérite un test, l’extraire dans `lib/` (sans Next ni Supabase) plutôt que de le simuler.
 
 Les conventions de couches (Supabase isolé, `lib/` sans Next) sont documentées dans **`docs/architecture.md`** et appliquées par **`npm run lint`** (`no-restricted-imports`).
 

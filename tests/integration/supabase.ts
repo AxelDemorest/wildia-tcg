@@ -50,20 +50,25 @@ export function sql<Row = Record<string, unknown>>(statement: string): Row[] {
   return JSON.parse(output).rows as Row[];
 }
 
-export type Player = { id: string; client: SupabaseClient };
+export type Player = { id: string; email: string; client: SupabaseClient };
 
 const createdUsers: string[] = [];
 const createdCards: string[] = [];
 const createdBoosters: string[] = [];
 
-/** Creates a confirmed user and returns a client signed in as that user, like the app's. */
-export async function createPlayer(): Promise<Player> {
+/**
+ * Creates a confirmed user and returns a client signed in as that user, like the app's.
+ * `metadata` is what a client may send at signup (raw_user_meta_data), e.g. display_name.
+ * The e-mail's name part is 41 characters long, one more than a display name allows.
+ */
+export async function createPlayer(metadata?: Record<string, unknown>): Promise<Player> {
   const email = `test-${randomUUID()}@example.test`;
   const password = randomUUID();
   const { data, error } = await admin.auth.admin.createUser({
     email,
     password,
     email_confirm: true,
+    user_metadata: metadata,
   });
   if (error) throw error;
   createdUsers.push(data.user.id);
@@ -71,7 +76,7 @@ export async function createPlayer(): Promise<Player> {
   const client = createClient(url, anonKey, options);
   const { error: signInError } = await client.auth.signInWithPassword({ email, password });
   if (signInError) throw signInError;
-  return { id: data.user.id, client };
+  return { id: data.user.id, email, client };
 }
 
 /** Deletes a player's account now, as the dashboard or an account deletion would. */

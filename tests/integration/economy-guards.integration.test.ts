@@ -15,6 +15,42 @@ import {
 
 afterAll(cleanup);
 
+describe("profiles created at signup (handle_new_user)", () => {
+  async function signupProfile(metadata?: Record<string, unknown>) {
+    const player = await createPlayer(metadata);
+    const { data, error } = await admin
+      .from("profiles")
+      .select("display_name, locale")
+      .eq("id", player.id)
+      .single();
+    if (error) throw error;
+    return { player, profile: data };
+  }
+
+  it("takes the display name from the e-mail, cut to 40 characters", async () => {
+    const { player, profile } = await signupProfile();
+
+    expect(profile.display_name).toBe(player.email.split("@")[0].slice(0, 40));
+  });
+
+  it("trims and cuts a display name sent at signup", async () => {
+    const { profile } = await signupProfile({ display_name: `  ${"x".repeat(100)}  ` });
+
+    expect(profile.display_name).toBe("x".repeat(40));
+  });
+
+  it("falls back to the e-mail when the display name sent is blank", async () => {
+    const { player, profile } = await signupProfile({ display_name: "   " });
+
+    expect(profile.display_name).toBe(player.email.split("@")[0].slice(0, 40));
+  });
+
+  it("keeps the language sent at signup only if the site supports it", async () => {
+    expect((await signupProfile({ locale: "en" })).profile.locale).toBe("en");
+    expect((await signupProfile({ locale: "xx" })).profile.locale).toBe("fr");
+  });
+});
+
 async function readProfile(id: string) {
   const { data, error } = await admin
     .from("profiles")
@@ -125,6 +161,39 @@ describe("profiles: what a player may change on their own row", () => {
       bio: "Bio de test",
       is_public: true,
     });
+  });
+
+  // The profile page validates these limits (lib/profiles/profile-form.ts), but players can
+  // write these columns through the API directly, so the database holds the same limits.
+  it.each([
+    ["a display name over 40 characters", { display_name: "x".repeat(41) }],
+    ["a blank display name", { display_name: "   " }],
+    ["a bio over 500 characters", { bio: "x".repeat(501) }],
+  ])("cannot save %s", async (_label, change) => {
+    const player = await createPlayer();
+    const before = await readProfile(player.id);
+
+    const { error } = await player.client.from("profiles").update(change).eq("id", player.id);
+
+    expect(error?.code).toBe("23514");
+    expect(await readProfile(player.id)).toEqual(before);
+  });
+
+  it("cannot point their banner at another player's file or at any other address", async () => {
+    const player = await createPlayer();
+    const other = await createPlayer();
+
+    for (const banner_url of [
+      `${other.id}/banner.png`,
+      `${player.id}/../${other.id}/banner.png`,
+      "https://example.com/banner.png",
+    ]) {
+      const { error } = await player.client
+        .from("profiles")
+        .update({ banner_url })
+        .eq("id", player.id);
+      expect(error?.code).toBe("23514");
+    }
   });
 });
 
