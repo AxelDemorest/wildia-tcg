@@ -51,13 +51,17 @@ export function TradingCard({ card, side = "front", href, priorityImage, quantit
       <div className="tcg-card-body">
         <div className="tcg-card-art">
           <CardImage
-            fill
             slug={card.slug}
             name={card.name}
             imagePath={card.image_path}
             priority={priorityImage}
           />
           {card.iucn_status && <IucnSeal status={card.iucn_status} />}
+          {quantity !== undefined && quantity > 1 && (
+            <span className="tcg-card-quantity" aria-label={`×${quantity}`}>
+              ×{quantity}
+            </span>
+          )}
         </div>
 
         <Divider />
@@ -67,11 +71,6 @@ export function TradingCard({ card, side = "front", href, priorityImage, quantit
 
         <footer className="tcg-card-footer">
           <RarityBadge rarity={card.rarity} />
-          {quantity !== undefined && quantity > 1 && (
-            <span className="tcg-card-quantity" aria-label={`×${quantity}`}>
-              ×{quantity}
-            </span>
-          )}
         </footer>
       </div>
 

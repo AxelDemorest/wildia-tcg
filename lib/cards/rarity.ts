@@ -46,20 +46,3 @@ export function cardShine(rarity: CardRarity): CardShine {
       return "hover";
   }
 }
-
-export function rarityFrameClass(rarity: CardRarity): string {
-  switch (rarity) {
-    case "common":
-      return "ring-zinc-200";
-    case "uncommon":
-      return "ring-emerald-200";
-    case "rare":
-      return "ring-sky-300";
-    case "epic":
-      return "ring-violet-300";
-    case "legendary":
-      return "ring-amber-400 shadow-amber-200/60";
-    case "mythic":
-      return "ring-rose-500 shadow-rose-300/70";
-  }
-}
