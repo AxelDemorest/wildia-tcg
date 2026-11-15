@@ -41,6 +41,7 @@ yarn-error.log*
 
 # local / temp
 .cursor/
+.agents/
 .tmp-preview/
 
 # vercel
