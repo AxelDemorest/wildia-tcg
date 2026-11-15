@@ -1,7 +1,5 @@
 import { Link } from "@/i18n/navigation";
-import { CardImage } from "@/components/cards/card-image";
-import { RarityBadge } from "@/components/cards/rarity-badge";
-import { rarityFrameClass } from "@/lib/cards/rarity";
+import { TradingCard } from "@/components/cards/trading-card";
 import type { CatalogCard } from "@/lib/cards/types";
 
 type Props = {
@@ -43,19 +41,8 @@ export function HomeRecentDraws({ cards, kicker, title, cta, empty }: Props) {
           aria-label={title}
         >
           {cards.map((card) => (
-            <li key={card.id} className="min-w-[7.5rem] flex-1 basis-0 sm:min-w-[8.5rem]">
-              <Link
-                href={`/cards/${card.slug}`}
-                className={`group relative block overflow-hidden rounded-xl bg-surface p-1.5 shadow-[var(--shadow-card)] ring-2 transition duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1.5 hover:shadow-lg ${rarityFrameClass(card.rarity)}`}
-              >
-                <CardImage slug={card.slug} name={card.name} imagePath={card.image_path} />
-                <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent px-2 pb-2 pt-10">
-                  <p className="truncate text-xs font-semibold text-white">{card.name}</p>
-                  <div className="mt-1 scale-90 origin-left">
-                    <RarityBadge rarity={card.rarity} />
-                  </div>
-                </div>
-              </Link>
+            <li key={card.id} className="min-w-[7.5rem] flex-1 basis-0 pt-2 sm:min-w-[8.5rem]">
+              <TradingCard card={card} href={`/cards/${card.slug}`} />
             </li>
           ))}
         </ul>

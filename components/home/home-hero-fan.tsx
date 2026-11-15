@@ -1,6 +1,4 @@
-import { Link } from "@/i18n/navigation";
-import { CardImage } from "@/components/cards/card-image";
-import { rarityFrameClass } from "@/lib/cards/rarity";
+import { TradingCard } from "@/components/cards/trading-card";
 import type { CatalogCard } from "@/lib/cards/types";
 
 const FAN_SIZE = 4;
@@ -34,21 +32,7 @@ export function HomeHeroFan({ cards }: Props) {
             >
               {/* Lifts along the card's own axis: it slides out of the fan, keeping its tilt. */}
               <div className="transition-[translate] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/fan:-translate-y-8 group-focus-within/fan:-translate-y-8 motion-reduce:transition-none sm:group-hover/fan:-translate-y-10 sm:group-focus-within/fan:-translate-y-10">
-                <Link
-                  href={`/cards/${card.slug}`}
-                  className="block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
-                >
-                  <div
-                    className={`aspect-[2/3] w-full overflow-hidden rounded-xl bg-surface p-1.5 shadow-[var(--shadow-card)] ring-2 transition-shadow duration-500 group-hover/fan:shadow-[0_24px_40px_-16px_rgb(19_35_26_/_0.5)] ${rarityFrameClass(card.rarity)}`}
-                  >
-                    <CardImage
-                      slug={card.slug}
-                      name={card.name}
-                      imagePath={card.image_path}
-                      priority={index < 2}
-                    />
-                  </div>
-                </Link>
+                <TradingCard card={card} href={`/cards/${card.slug}`} priorityImage={index < 2} />
               </div>
             </div>
           );

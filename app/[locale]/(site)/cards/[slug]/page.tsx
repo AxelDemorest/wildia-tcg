@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { CardImage } from "@/components/cards/card-image";
 import { IucnBadge } from "@/components/cards/iucn-badge";
 import { RarityBadge } from "@/components/cards/rarity-badge";
+import { TradingCard } from "@/components/cards/trading-card";
 import { Badge } from "@/components/ui/badge";
 import { Surface } from "@/components/ui/surface";
 import { Link } from "@/i18n/navigation";
-import { rarityFrameClass } from "@/lib/cards/rarity";
 import { getUser } from "@/server/auth/require-user";
 import { getCatalogCardBySlug } from "@/server/cards/queries";
 import { getUserCardQuantity } from "@/server/inventory/queries";
@@ -48,10 +47,8 @@ export default async function CardDetailPage({ params }: Props) {
       </Link>
 
       <div className="mt-6 grid gap-8 md:grid-cols-[minmax(0,280px)_1fr]">
-        <div
-          className={`overflow-hidden rounded-xl bg-surface p-2 ring-2 ${rarityFrameClass(card.rarity)}`}
-        >
-          <CardImage slug={card.slug} name={card.name} imagePath={card.image_path} priority />
+        <div className="mx-auto w-full max-w-[280px] md:mx-0">
+          <TradingCard card={card} priorityImage />
         </div>
         <div className="space-y-4">
           <div>

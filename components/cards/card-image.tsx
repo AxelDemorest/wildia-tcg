@@ -6,18 +6,16 @@ type Props = {
   name: string;
   imagePath: string | null;
   priority?: boolean;
-  /** Fills its (positioned) parent edge to edge, without aspect ratio or rounding. */
-  fill?: boolean;
 };
 
-export function CardImage({ slug, name, imagePath, priority, fill }: Props) {
+/** Species art; fills its (positioned) parent edge to edge, the card face's preview window. */
+export function CardImage({ slug, name, imagePath, priority }: Props) {
   const url = getCardArtPublicUrl(imagePath);
-  const boxClass = fill ? "absolute inset-0" : "aspect-[2/3] w-full rounded-md";
 
   if (!url) {
     return (
       <div
-        className={`flex ${boxClass} items-center justify-center bg-gradient-to-br from-emerald-100 via-teal-50 to-amber-100 p-4 text-center`}
+        className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-emerald-100 via-teal-50 to-amber-100 p-4 text-center"
         aria-hidden
       >
         <span className="text-xs font-semibold uppercase tracking-widest text-emerald-800/70">
@@ -28,7 +26,7 @@ export function CardImage({ slug, name, imagePath, priority, fill }: Props) {
   }
 
   return (
-    <div className={`${fill ? "absolute inset-0" : "relative aspect-[2/3] w-full rounded-md"} overflow-hidden bg-zinc-100`}>
+    <div className="absolute inset-0 overflow-hidden bg-zinc-100">
       <Image
         src={url}
         alt={name}
