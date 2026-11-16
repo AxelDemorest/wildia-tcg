@@ -1,5 +1,6 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { BoosterShop } from "@/components/boosters/booster-shop";
+import { PageHeader } from "@/components/ui/page-header";
 import { getUser } from "@/server/auth/require-user";
 import { listActiveBoosters } from "@/server/boosters/queries";
 
@@ -13,11 +14,8 @@ export default async function BoostersPage({ params }: Props) {
   const boosters = await listActiveBoosters().catch(() => []);
 
   return (
-    <div className="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6">
-      <header className="mb-8 space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight text-brand-strong">{t("title")}</h1>
-        <p className="max-w-2xl text-muted">{t("subtitle")}</p>
-      </header>
+    <div className="flex w-full flex-col gap-5">
+      <PageHeader title={t("title")} subtitle={t("subtitle")} />
       <BoosterShop
         locale={locale}
         boosters={boosters.map((b) => ({

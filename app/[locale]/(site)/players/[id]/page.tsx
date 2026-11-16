@@ -49,20 +49,20 @@ export default async function PublicPlayerPage({ params }: Props) {
   const isOwn = viewer?.id === profile.id;
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-4 py-10 sm:px-6">
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-5">
       <div
-        className={`relative h-40 overflow-hidden rounded-xl bg-gradient-to-r from-brand/20 to-emerald-100 ring-1 ring-border ${bannerUrl ? "bg-cover bg-center" : ""}`}
+        className={`relative h-48 overflow-hidden rounded-2xl border border-white/[0.06] bg-[linear-gradient(115deg,#04211a_0%,#0b4a33_38%,#17684a_72%,#0a2a1f_100%)] ${bannerUrl ? "bg-cover bg-center" : ""}`}
         style={bannerUrl ? { backgroundImage: `url(${bannerUrl})` } : undefined}
       >
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
         <div className="absolute bottom-4 left-4 right-4">
-          <h1 className="text-2xl font-bold text-white drop-shadow">
+          <h1 className="text-2xl font-extrabold uppercase tracking-tight text-white drop-shadow sm:text-3xl">
             {profile.display_name ?? t("anonymousName")}
           </h1>
         </div>
       </div>
 
-      <Surface className="mt-6 space-y-4 p-6">
+      <Surface className="space-y-4 p-6">
         {profile.bio ? (
           <p className="whitespace-pre-wrap text-sm leading-relaxed text-foreground">{profile.bio}</p>
         ) : (
@@ -70,7 +70,7 @@ export default async function PublicPlayerPage({ params }: Props) {
         )}
 
         {isOwn && (
-          <Link href="/settings/profile" className="text-sm font-medium text-brand hover:underline">
+          <Link href="/settings/profile" className="text-sm font-semibold text-brand transition hover:text-secondary">
             {t("editProfile")}
           </Link>
         )}
@@ -81,8 +81,8 @@ export default async function PublicPlayerPage({ params }: Props) {
       </Surface>
 
       {featured && (
-        <section className="mt-8">
-          <h2 className="mb-4 text-lg font-semibold text-brand-strong">{t("featuredTitle")}</h2>
+        <section className="rounded-2xl border border-border bg-surface/80 p-6 backdrop-blur-md">
+          <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted">{t("featuredTitle")}</h2>
           <div className="max-w-xs">
             <TradingCard card={featured} href={`/cards/${featured.slug}`} priorityImage />
           </div>

@@ -17,10 +17,10 @@ export function CardImage({ slug, name, imagePath, priority, fill }: Props) {
   if (!url) {
     return (
       <div
-        className={`flex ${boxClass} items-center justify-center bg-gradient-to-br from-emerald-100 via-teal-50 to-amber-100 p-4 text-center`}
+        className={`flex ${boxClass} items-center justify-center bg-gradient-to-br from-[#0b2a1f] via-[#10241c] to-[#1b4a37] p-4 text-center`}
         aria-hidden
       >
-        <span className="text-xs font-semibold uppercase tracking-widest text-emerald-800/70">
+        <span className="text-xs font-semibold uppercase tracking-widest text-white/50">
           {slug}
         </span>
       </div>
@@ -28,7 +28,7 @@ export function CardImage({ slug, name, imagePath, priority, fill }: Props) {
   }
 
   return (
-    <div className={`${fill ? "absolute inset-0" : "relative aspect-[2/3] w-full rounded-md"} overflow-hidden bg-zinc-100`}>
+    <div className={`${fill ? "absolute inset-0" : "relative aspect-[2/3] w-full rounded-md"} overflow-hidden bg-[#0f1a15]`}>
       <Image
         src={url}
         alt={name}

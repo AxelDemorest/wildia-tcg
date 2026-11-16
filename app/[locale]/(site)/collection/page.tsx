@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { CollectionEconomyBanner } from "@/components/collection/collection-economy-banner";
 import { CollectionSort } from "@/components/collection/collection-sort";
 import { TradingCard } from "@/components/cards/trading-card";
+import { PageHeader } from "@/components/ui/page-header";
 import { Surface } from "@/components/ui/surface";
 import { Link } from "@/i18n/navigation";
 import { requireUser } from "@/server/auth/require-user";
@@ -37,43 +38,42 @@ export default async function CollectionPage({ params, searchParams }: Props) {
   }
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
-      <header className="mb-8 space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight text-brand-strong">{t("title")}</h1>
-        <p className="max-w-2xl text-muted">{t("subtitle")}</p>
-      </header>
+    <div className="flex w-full flex-col gap-5">
+      <PageHeader title={t("title")} subtitle={t("subtitle")} />
 
       <CollectionEconomyBanner userId={user.id} />
 
       {cards.length > 0 && (
-        <Suspense fallback={<p className="text-sm text-muted">{t("loadingSort")}</p>}>
-          <CollectionSort />
-        </Suspense>
+        <Surface className="px-5 py-4">
+          <Suspense fallback={<p className="text-sm text-muted">{t("loadingSort")}</p>}>
+            <CollectionSort />
+          </Suspense>
+        </Surface>
       )}
 
       {loadError ? (
-        <Surface className="mt-8 p-6 text-center text-sm text-red-700">{loadError}</Surface>
+        <Surface className="p-6 text-center text-sm text-red-300">{loadError}</Surface>
       ) : cards.length === 0 ? (
-        <Surface className="mt-8 p-10 text-center">
+        <Surface className="p-10 text-center">
           <p className="text-lg font-medium text-foreground">{t("emptyTitle")}</p>
           <p className="mt-2 text-sm text-muted">{t("emptyBody")}</p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Link
               href="/cards"
-              className="rounded-md border border-border bg-surface px-4 py-2 text-sm font-medium hover:bg-zinc-50"
+              className="rounded-xl border border-white/15 bg-white/[0.04] px-4 py-2 text-sm font-medium transition hover:bg-white/[0.08]"
             >
               {t("ctaCatalog")}
             </Link>
             <Link
               href="/boosters"
-              className="rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-strong"
+              className="rounded-xl bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-strong"
             >
               {t("ctaBoosters")}
             </Link>
           </div>
         </Surface>
       ) : (
-        <ul className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-6">
+        <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-6 2xl:grid-cols-5">
           {cards.map((card, index) => (
             <li key={card.id} className="min-w-0">
               <TradingCard

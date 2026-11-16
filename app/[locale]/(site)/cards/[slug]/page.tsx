@@ -5,7 +5,6 @@ import { CardImage } from "@/components/cards/card-image";
 import { IucnBadge } from "@/components/cards/iucn-badge";
 import { RarityBadge } from "@/components/cards/rarity-badge";
 import { Badge } from "@/components/ui/badge";
-import { Surface } from "@/components/ui/surface";
 import { Link } from "@/i18n/navigation";
 import { rarityFrameClass } from "@/lib/cards/rarity";
 import { getUser } from "@/server/auth/require-user";
@@ -42,77 +41,85 @@ export default async function CardDetailPage({ params }: Props) {
   const owns = quantity > 0;
 
   return (
-    <div className="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6">
-      <Link href="/cards" className="text-sm font-medium text-brand hover:underline">
-        ← {t("backToCatalog")}
+    <div className="flex w-full flex-col gap-5">
+      <Link
+        href="/cards"
+        className="inline-flex w-fit items-center gap-1.5 text-sm font-medium text-muted transition hover:text-white"
+      >
+        <span aria-hidden>←</span> {t("backToCatalog")}
       </Link>
 
-      <div className="mt-6 grid gap-8 md:grid-cols-[minmax(0,280px)_1fr]">
-        <div
-          className={`overflow-hidden rounded-xl bg-surface p-2 ring-2 ${rarityFrameClass(card.rarity)}`}
-        >
-          <CardImage slug={card.slug} name={card.name} imagePath={card.image_path} priority />
-        </div>
-        <div className="space-y-4">
-          <div>
-            <div className="flex flex-wrap items-center gap-3">
-              <h1 className="text-3xl font-bold text-brand-strong">{card.name}</h1>
-              <RarityBadge rarity={card.rarity} />
-              {owns && (
-                <Badge className="border-emerald-200 bg-emerald-50 text-emerald-800">
-                  {t("ownedBadge", { count: quantity })}
-                </Badge>
+      <section className="relative isolate overflow-hidden rounded-2xl border border-border bg-surface/80 p-5 backdrop-blur-md sm:p-8">
+        <div aria-hidden className="absolute -left-20 -top-20 size-80 rounded-full bg-brand/15 blur-3xl" />
+        <div aria-hidden className="absolute -bottom-32 right-0 size-80 rounded-full bg-[#2fa876]/15 blur-3xl" />
+
+        <div className="relative grid gap-8 md:grid-cols-[minmax(0,280px)_1fr]">
+          <div
+            className={`overflow-hidden rounded-xl bg-[#0f1a15] p-2 shadow-[var(--shadow-card)] ring-2 ${rarityFrameClass(card.rarity)}`}
+          >
+            <CardImage slug={card.slug} name={card.name} imagePath={card.image_path} priority />
+          </div>
+          <div className="space-y-5">
+            <div>
+              <div className="flex flex-wrap items-center gap-3">
+                <h1 className="text-3xl font-extrabold uppercase tracking-tight text-foreground">{card.name}</h1>
+                <RarityBadge rarity={card.rarity} />
+                {owns && (
+                  <Badge className="border-emerald-400/40 bg-emerald-400/10 text-emerald-300">
+                    {t("ownedBadge", { count: quantity })}
+                  </Badge>
+                )}
+              </div>
+              {card.scientific_name && (
+                <p className="mt-1 text-lg italic text-muted">{card.scientific_name}</p>
               )}
             </div>
-            {card.scientific_name && (
-              <p className="mt-1 text-lg italic text-muted">{card.scientific_name}</p>
+            {card.iucn_status && (
+              <div className="flex flex-wrap items-center gap-2 text-sm text-muted">
+                <span>{t("iucn.title")}</span>
+                <IucnBadge status={card.iucn_status} withLabel />
+              </div>
+            )}
+            <p className="leading-relaxed text-white/85">{card.description}</p>
+            <div className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-4">
+              <h2 className="text-xs font-semibold uppercase tracking-wider text-muted">{t("stats")}</h2>
+              <dl className="mt-3 grid grid-cols-3 gap-4 text-center">
+                <div>
+                  <dt className="text-xs uppercase text-muted">PWR</dt>
+                  <dd className="text-2xl font-bold tabular-nums">{card.stats.power}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs uppercase text-muted">DEF</dt>
+                  <dd className="text-2xl font-bold tabular-nums">{card.stats.defense}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs uppercase text-muted">SPD</dt>
+                  <dd className="text-2xl font-bold tabular-nums">{card.stats.speed}</dd>
+                </div>
+              </dl>
+            </div>
+            {!owns && (
+              <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-brand/25 bg-brand/[0.06] p-4">
+                <p className="text-sm text-white/75">{t("notOwnedHint")}</p>
+                <div className="flex flex-wrap gap-2">
+                  <Link
+                    href="/boosters"
+                    className="rounded-xl bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-strong"
+                  >
+                    {t("ctaBoosters")}
+                  </Link>
+                  <Link
+                    href="/collection"
+                    className="rounded-xl border border-white/15 bg-white/[0.04] px-4 py-2 text-sm font-medium transition hover:bg-white/[0.08]"
+                  >
+                    {t("ctaCollection")}
+                  </Link>
+                </div>
+              </div>
             )}
           </div>
-          {card.iucn_status && (
-            <div className="flex flex-wrap items-center gap-2 text-sm text-muted">
-              <span>{t("iucn.title")}</span>
-              <IucnBadge status={card.iucn_status} withLabel />
-            </div>
-          )}
-          <p className="leading-relaxed text-foreground">{card.description}</p>
-          <Surface className="p-4">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-muted">{t("stats")}</h2>
-            <dl className="mt-3 grid grid-cols-3 gap-4 text-center">
-              <div>
-                <dt className="text-xs uppercase text-muted">PWR</dt>
-                <dd className="text-2xl font-semibold">{card.stats.power}</dd>
-              </div>
-              <div>
-                <dt className="text-xs uppercase text-muted">DEF</dt>
-                <dd className="text-2xl font-semibold">{card.stats.defense}</dd>
-              </div>
-              <div>
-                <dt className="text-xs uppercase text-muted">SPD</dt>
-                <dd className="text-2xl font-semibold">{card.stats.speed}</dd>
-              </div>
-            </dl>
-          </Surface>
-          {!owns && (
-            <Surface className="flex flex-wrap items-center justify-between gap-4 p-4">
-              <p className="text-sm text-muted">{t("notOwnedHint")}</p>
-              <div className="flex flex-wrap gap-2">
-                <Link
-                  href="/boosters"
-                  className="rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-strong"
-                >
-                  {t("ctaBoosters")}
-                </Link>
-                <Link
-                  href="/collection"
-                  className="rounded-md border border-border bg-surface px-4 py-2 text-sm font-medium hover:bg-zinc-50"
-                >
-                  {t("ctaCollection")}
-                </Link>
-              </div>
-            </Surface>
-          )}
         </div>
-      </div>
+      </section>
     </div>
   );
 }

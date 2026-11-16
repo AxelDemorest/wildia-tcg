@@ -28,7 +28,7 @@ export function DevGrantForm({ locale, cards }: Props) {
           id="cardId"
           name="cardId"
           required
-          className="mt-1 w-full rounded-md border border-border bg-surface px-3 py-2 text-sm"
+          className="mt-1.5 w-full rounded-xl border border-border bg-[#16161b] px-3 py-2.5 text-sm text-white focus:border-brand/60 focus:outline-none focus:ring-2 focus:ring-brand/30"
         >
           <option value="">{t("cardPlaceholder")}</option>
           {cards.map((card) => (
@@ -49,11 +49,11 @@ export function DevGrantForm({ locale, cards }: Props) {
           min={1}
           max={99}
           defaultValue={1}
-          className="mt-1 w-full rounded-md border border-border bg-surface px-3 py-2 text-sm"
+          className="mt-1.5 w-full rounded-xl border border-border bg-[#16161b] px-3 py-2.5 text-sm text-white focus:border-brand/60 focus:outline-none focus:ring-2 focus:ring-brand/30"
         />
       </div>
       {state.message && !state.ok && (
-        <p className="text-sm text-red-600" role="alert">{t(`error.${state.message}`)}</p>
+        <p className="text-sm text-red-300" role="alert">{t(`error.${state.message}`)}</p>
       )}
       {state.ok && <p className="text-sm text-brand">{t("success")}</p>}
       <Button type="submit" disabled={pending}>

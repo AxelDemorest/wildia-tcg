@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { CoinIcon } from "@/components/ui/icons";
 import { syncUserEconomy } from "@/server/economy/sync-balance";
 
 type Props = { userId: string };
@@ -10,30 +11,26 @@ function formatCompact(value: number): string {
   return n.toLocaleString();
 }
 
+const pillClass =
+  "inline-flex h-9 items-center gap-2 rounded-xl border border-border bg-surface py-1.5 pl-2 pr-3 text-sm font-bold tabular-nums";
+
 export async function HeaderCurrencyOrb({ userId }: Props) {
   const t = await getTranslations("Economy");
   const economy = await syncUserEconomy(userId).catch(() => null);
 
   if (!economy) {
     return (
-      <div
-        className="flex h-10 min-w-10 items-center justify-center rounded-full border-2 border-white bg-surface px-3 text-xs text-muted shadow-sm ring-1 ring-black/10"
-        title={t("balanceError")}
-        aria-label={t("balanceUnavailable")}
-      >
-        —
+      <div className={`${pillClass} text-muted`} title={t("balanceError")} aria-label={t("balanceUnavailable")}>
+        <CoinIcon className="size-5 opacity-50" />—
       </div>
     );
   }
 
   return (
-    <div
-      className="flex h-10 min-w-10 items-center justify-center rounded-full border-2 border-white bg-surface px-3 shadow-sm ring-1 ring-black/10"
-      title={`${Math.floor(economy.balance).toLocaleString()} ${t("currencyShort")}`}
-    >
-      <span className="text-sm font-bold tabular-nums tracking-tight text-foreground">
-        {formatCompact(economy.balance)}
-      </span>
+    <div className={pillClass} title={`${Math.floor(economy.balance).toLocaleString()} ${t("currencyShort")}`}>
+      <CoinIcon className="size-5" />
+      {formatCompact(economy.balance)}
+      <span className="hidden text-xs font-medium text-muted sm:inline">{t("currencyShort")}</span>
     </div>
   );
 }

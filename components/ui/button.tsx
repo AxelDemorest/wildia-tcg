@@ -11,10 +11,10 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
 
 const variantClass: Record<Variant, string> = {
   primary:
-    "bg-brand text-white hover:bg-brand-strong focus-visible:ring-brand disabled:bg-zinc-300 disabled:text-zinc-500",
+    "bg-brand font-semibold text-white hover:bg-brand-strong focus-visible:ring-brand disabled:bg-white/10 disabled:text-white/40",
   secondary:
-    "border border-border bg-surface text-foreground hover:bg-zinc-50 focus-visible:ring-brand",
-  ghost: "text-brand hover:bg-emerald-50 focus-visible:ring-brand",
+    "border border-white/15 bg-white/[0.04] text-foreground hover:bg-white/[0.08] focus-visible:ring-brand",
+  ghost: "text-brand hover:bg-brand/10 focus-visible:ring-brand",
 };
 
 const sizeClass: Record<Size, string> = {
@@ -33,7 +33,7 @@ export function Button({
   return (
     <button
       type={type}
-      className={`inline-flex items-center justify-center rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed ${variantClass[variant]} ${sizeClass[size]} ${className}`}
+      className={`inline-flex items-center justify-center rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed ${variantClass[variant]} ${sizeClass[size]} ${className}`}
       {...rest}
     >
       {children}

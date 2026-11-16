@@ -48,7 +48,7 @@ export function ProfileSettingsForm({
         <form action={profileAction} className="space-y-4">
           <input type="hidden" name="locale" value={locale} />
           <div>
-            <label htmlFor="displayName" className="block text-sm font-medium">
+            <label htmlFor="displayName" className="block text-sm font-medium text-white/85">
               {t("displayName")}
             </label>
             <input
@@ -56,11 +56,11 @@ export function ProfileSettingsForm({
               name="displayName"
               defaultValue={displayName ?? ""}
               maxLength={40}
-              className="mt-1 w-full rounded-md border border-border bg-surface px-3 py-2 text-sm"
+              className="mt-1.5 w-full rounded-xl border border-border bg-[#16161b] px-3 py-2.5 text-sm text-white focus:border-brand/60 focus:outline-none focus:ring-2 focus:ring-brand/30"
             />
           </div>
           <div>
-            <label htmlFor="bio" className="block text-sm font-medium">
+            <label htmlFor="bio" className="block text-sm font-medium text-white/85">
               {t("bio")}
             </label>
             <textarea
@@ -69,18 +69,18 @@ export function ProfileSettingsForm({
               defaultValue={bio ?? ""}
               maxLength={500}
               rows={4}
-              className="mt-1 w-full rounded-md border border-border bg-surface px-3 py-2 text-sm"
+              className="mt-1.5 w-full rounded-xl border border-border bg-[#16161b] px-3 py-2.5 text-sm text-white focus:border-brand/60 focus:outline-none focus:ring-2 focus:ring-brand/30"
             />
           </div>
           <div>
-            <label htmlFor="featuredCardId" className="block text-sm font-medium">
+            <label htmlFor="featuredCardId" className="block text-sm font-medium text-white/85">
               {t("featuredCard")}
             </label>
             <select
               id="featuredCardId"
               name="featuredCardId"
               defaultValue={featuredCardId ?? ""}
-              className="mt-1 w-full rounded-md border border-border bg-surface px-3 py-2 text-sm"
+              className="mt-1.5 w-full rounded-xl border border-border bg-[#16161b] px-3 py-2.5 text-sm text-white focus:border-brand/60 focus:outline-none focus:ring-2 focus:ring-brand/30"
             >
               <option value="">{t("featuredNone")}</option>
               {ownedCards.map((card) => (
@@ -96,12 +96,12 @@ export function ProfileSettingsForm({
               name="isPublic"
               value="true"
               defaultChecked={isPublic}
-              className="rounded border-border"
+              className="size-4 rounded border-border accent-[var(--brand)]"
             />
             {t("isPublic")}
           </label>
           {profileState.message && !profileState.ok && (
-            <p className="text-sm text-red-600" role="alert">
+            <p className="text-sm text-red-300" role="alert">
               {t(`error.${profileState.message}`)}
             </p>
           )}
@@ -113,7 +113,7 @@ export function ProfileSettingsForm({
       </Surface>
 
       <Surface className="p-6">
-        <h2 className="text-lg font-semibold text-brand-strong">{t("bannerTitle")}</h2>
+        <h2 className="text-lg font-bold text-foreground">{t("bannerTitle")}</h2>
         <p className="mt-1 text-sm text-muted">{t("bannerHint")}</p>
         <form action={bannerAction} className="mt-4 space-y-3">
           <input type="hidden" name="locale" value={locale} />
@@ -121,10 +121,10 @@ export function ProfileSettingsForm({
             type="file"
             name="banner"
             accept="image/png,image/jpeg,image/webp"
-            className="block w-full text-sm"
+            className="block w-full text-sm text-muted file:mr-3 file:rounded-xl file:border-0 file:bg-white/[0.08] file:px-3 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-white/[0.12]"
           />
           {bannerState.message && !bannerState.ok && (
-            <p className="text-sm text-red-600" role="alert">
+            <p className="text-sm text-red-300" role="alert">
               {t(`bannerError.${bannerState.message}`)}
             </p>
           )}

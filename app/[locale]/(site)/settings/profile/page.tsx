@@ -1,4 +1,5 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { PageHeader } from "@/components/ui/page-header";
 import { ProfileSettingsForm } from "@/components/profile/profile-settings-form";
 import { getProfileBannerPublicUrl } from "@/lib/profiles/banner-url";
 import { requireUser } from "@/server/auth/require-user";
@@ -21,18 +22,19 @@ export default async function ProfileSettingsPage({ params }: Props) {
   const bannerUrl = getProfileBannerPublicUrl(profile?.banner_url);
 
   return (
-    <div className="mx-auto w-full max-w-2xl px-4 py-10 sm:px-6">
-      <header className="mb-8 space-y-2">
-        <h1 className="text-3xl font-bold text-brand-strong">{t("settingsTitle")}</h1>
-        <p className="text-sm text-muted">{t("settingsSubtitle")}</p>
-        <Link href={`/players/${user.id}`} className="text-sm font-medium text-brand hover:underline">
+    <div className="mx-auto flex w-full max-w-3xl flex-col gap-5">
+      <PageHeader title={t("settingsTitle")} subtitle={t("settingsSubtitle")}>
+        <Link
+          href={`/players/${user.id}`}
+          className="inline-flex text-sm font-semibold text-secondary transition hover:text-white"
+        >
           {t("viewPublic")}
         </Link>
-      </header>
+      </PageHeader>
 
       {bannerUrl && (
         <div
-          className="mb-8 h-32 rounded-xl bg-cover bg-center ring-1 ring-border"
+          className="h-32 rounded-2xl bg-cover bg-center ring-1 ring-border"
           style={{ backgroundImage: `url(${bannerUrl})` }}
           role="img"
           aria-label={t("bannerPreview")}
