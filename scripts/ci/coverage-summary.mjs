@@ -1,8 +1,18 @@
 // Prints the unit test coverage of lib/ as a Markdown table, for $GITHUB_STEP_SUMMARY.
 // Reads coverage/coverage-summary.json, written by `npm run test:coverage`.
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 
-const { total } = JSON.parse(readFileSync("coverage/coverage-summary.json", "utf8"));
+const SUMMARY_PATH = "coverage/coverage-summary.json";
+
+if (!existsSync(SUMMARY_PATH)) {
+  console.log("### Couverture des tests unitaires (`lib/`)\n");
+  console.log(
+    "_Rapport indisponible : exécutez `npm run test:coverage` avec `@vitest/coverage-v8` installé._",
+  );
+  process.exit(0);
+}
+
+const { total } = JSON.parse(readFileSync(SUMMARY_PATH, "utf8"));
 
 const rows = [
   ["Lignes", total.lines],
