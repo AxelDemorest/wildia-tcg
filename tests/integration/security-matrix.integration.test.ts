@@ -51,6 +51,10 @@ beforeAll(async () => {
     p_user_id: owner.id,
   });
   if (error) throw error;
+
+  // ... and an offre boutique, stored by its first read.
+  const offer = await owner.client.rpc("get_booster_shop_offer");
+  if (offer.error) throw offer.error;
 });
 
 afterAll(cleanup);
@@ -72,7 +76,7 @@ async function visibleCount(
 }
 
 type Row = Record<string, unknown>;
-type OwnedTableCase = { table: string; insert: () => Row; update: Row };
+type OwnedTableCase = { table: string; insert: () => Row; update: () => Row };
 type GameDataCase = {
   table: string;
   key: string;
@@ -85,22 +89,32 @@ describe.each<OwnedTableCase>([
   {
     table: "user_cards",
     insert: () => ({ user_id: owner.id, card_id: cardId, quantity: 99 }),
-    update: { quantity: 99 },
+    update: () => ({ quantity: 99 }),
   },
   {
     table: "user_card_grants",
     insert: () => ({ user_id: owner.id, card_id: cardId, quantity: 99, source: "api" }),
-    update: { quantity: 99 },
+    update: () => ({ quantity: 99 }),
   },
   {
     table: "currency_ledger",
     insert: () => ({ user_id: owner.id, amount: 1_000_000, type: "admin_adjust" }),
-    update: { amount: 1_000_000 },
+    update: () => ({ amount: 1_000_000 }),
   },
   {
     table: "draw_logs",
     insert: () => ({ user_id: owner.id, booster_id: activeBoosterId, results: [], roll_seed: "x" }),
-    update: { results: [] },
+    update: () => ({ results: [] }),
+  },
+  {
+    table: "booster_shop_slots",
+    insert: () => ({
+      user_id: owner.id,
+      window_index: 0,
+      slot_index: 0,
+      booster_id: activeBoosterId,
+    }),
+    update: () => ({ booster_id: inactiveBoosterId }),
   },
 ])("$table: a player's own rows", ({ table, insert, update }) => {
   it("are visible to their owner only", async () => {
@@ -118,7 +132,7 @@ describe.each<OwnedTableCase>([
     for (const client of [owner.client, other.client, visitor]) {
       const inserted = await client.from(table).insert(insert());
       expect(inserted.error?.code).toBe("42501");
-      await client.from(table).update(update).eq("user_id", owner.id);
+      await client.from(table).update(update()).eq("user_id", owner.id);
       await client.from(table).delete().eq("user_id", owner.id);
     }
 

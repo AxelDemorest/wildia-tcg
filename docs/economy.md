@@ -44,6 +44,10 @@ Pas de cron par joueur : le farm offline est rattrapé au prochain sync.
 
 Le ledger est **append-only** (triggers bloquent UPDATE/DELETE). Seule exception : la suppression d’un compte efface ses lignes, en cascade.
 
+## Boutique boosters
+
+- `booster_shop_slot_count` (`economy_config`) : nombre d’emplacements de l’offre boutique, arrondi et borné entre 0 et 20, 6 par défaut.
+
 ## Sécurité
 
 - `sync_user_economy` : uniquement pour `auth.uid() = p_user_id` (ou service role).

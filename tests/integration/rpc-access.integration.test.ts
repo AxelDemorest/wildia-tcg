@@ -33,8 +33,12 @@ describe("function privileges, for every function in public", () => {
     expect(callableBy("anon")).toEqual([]);
   });
 
-  it("players can only call sync_user_economy and open_booster_pack", () => {
-    expect(callableBy("authenticated")).toEqual(["open_booster_pack", "sync_user_economy"]);
+  it("players can only call get_booster_shop_offer, open_booster_pack and sync_user_economy", () => {
+    expect(callableBy("authenticated")).toEqual([
+      "get_booster_shop_offer",
+      "open_booster_pack",
+      "sync_user_economy",
+    ]);
   });
 
   it("a function added by a future migration is callable by the server only, until granted", () => {
@@ -200,6 +204,21 @@ describe("open_booster_pack", () => {
   });
 });
 
+describe("get_booster_shop_offer", () => {
+  it("cannot be called by a visitor", async () => {
+    const { data, error } = await visitor.rpc("get_booster_shop_offer");
+
+    expect(error?.code).toBe("42501");
+    expect(data).toBeNull();
+  });
+
+  it("refuses a call without a signed-in player, even with the service role", async () => {
+    const { error } = await admin.rpc("get_booster_shop_offer");
+
+    expect(error?.message).toBe("not authenticated");
+  });
+});
+
 describe("internal helpers", () => {
   it.each(["user_currency_balance", "pick_weighted_rarity"])(
     "%s is not callable from the API by visitors or players",
@@ -213,6 +232,18 @@ describe("internal helpers", () => {
 
       expect(fromVisitor.error?.code).toBe("42501");
       expect(fromPlayer.error?.code).toBe("42501");
+    },
+  );
+
+  it.each(["private.booster_shop_window()", "private.pick_shop_booster()"])(
+    "%s is executable by neither anon nor authenticated",
+    (fn) => {
+      const [row] = sql<{ anon: boolean; authenticated: boolean }>(
+        `select has_function_privilege('anon', '${fn}', 'EXECUTE') as anon,
+                has_function_privilege('authenticated', '${fn}', 'EXECUTE') as authenticated`,
+      );
+
+      expect(row).toEqual({ anon: false, authenticated: false });
     },
   );
 });
