@@ -6,13 +6,11 @@ type Props = {
   name: string;
   imagePath: string | null;
   priority?: boolean;
-  /** Fills its (positioned) parent edge to edge, without aspect ratio or rounding. */
-  fill?: boolean;
 };
 
-export function CardImage({ slug, name, imagePath, priority, fill }: Props) {
+/** Species art; fills its (positioned) parent edge to edge, the card face's preview window. */
+export function CardImage({ slug, name, imagePath, priority }: Props) {
   const url = getCardArtPublicUrl(imagePath);
-  const boxClass = fill ? "absolute inset-0" : "aspect-[2/3] w-full rounded-md";
 
   if (!url) {
     return (

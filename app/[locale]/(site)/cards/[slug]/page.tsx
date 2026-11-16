@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { CardImage } from "@/components/cards/card-image";
 import { IucnBadge } from "@/components/cards/iucn-badge";
 import { RarityBadge } from "@/components/cards/rarity-badge";
+import { TradingCard } from "@/components/cards/trading-card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "@/i18n/navigation";
-import { rarityFrameClass } from "@/lib/cards/rarity";
 import { getUser } from "@/server/auth/require-user";
 import { getCatalogCardBySlug } from "@/server/cards/queries";
 import { getUserCardQuantity } from "@/server/inventory/queries";

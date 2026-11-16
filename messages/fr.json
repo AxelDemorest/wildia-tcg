@@ -138,6 +138,7 @@
     "emptyBody": "Essayez un autre filtre ou lancez le seed de développement.",
     "errorLoad": "Impossible de charger le catalogue.",
     "backToCatalog": "Retour au catalogue",
+    "cardBack": "Dos de carte WILDIA",
     "stats": "Statistiques",
     "ownedBadge": "Dans votre collection · ×{count}",
     "notOwnedHint": "Vous ne possédez pas encore cette carte. Farmez des pièces ou ouvrez des boosters.",
@@ -226,6 +227,10 @@
       "invalid": "Données invalides.",
       "failed": "Échec de l’attribution."
     }
+  },
+  "DevCards": {
+    "title": "Chrome des cartes",
+    "subtitle": "Une carte par rareté, face et dos. Réservé au développement local."
   },
   "Profile": {
     "settingsTitle": "Profil public",

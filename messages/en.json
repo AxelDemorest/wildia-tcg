@@ -138,6 +138,7 @@
     "emptyBody": "Try another filter or run the development seed.",
     "errorLoad": "Could not load the catalog.",
     "backToCatalog": "Back to catalog",
+    "cardBack": "WILDIA card back",
     "stats": "Stats",
     "ownedBadge": "In your collection · ×{count}",
     "notOwnedHint": "You don't own this card yet. Farm coins or open boosters.",
@@ -226,6 +227,10 @@
       "invalid": "Invalid input.",
       "failed": "Grant failed."
     }
+  },
+  "DevCards": {
+    "title": "Card chrome",
+    "subtitle": "One card per rarity, front and back. Local development only."
   },
   "Profile": {
     "settingsTitle": "Public profile",
