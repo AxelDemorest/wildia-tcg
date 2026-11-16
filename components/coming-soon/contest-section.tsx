@@ -20,8 +20,6 @@ async function loadContestCard(locale: string): Promise<CatalogCard | null> {
 export async function ContestSection({ locale }: Props) {
   const t = await getTranslations("ComingSoon");
   const card = await loadContestCard(locale);
-  const cardName = card?.name ?? t("contestCardFallback");
-
   return (
     <section aria-labelledby="contest-title" className="mt-auto pt-10">
       <div

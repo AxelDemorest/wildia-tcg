@@ -53,10 +53,8 @@ export default async function CardDetailPage({ params }: Props) {
         <div aria-hidden className="absolute -bottom-32 right-0 size-80 rounded-full bg-[#2fa876]/15 blur-3xl" />
 
         <div className="relative grid gap-8 md:grid-cols-[minmax(0,280px)_1fr]">
-          <div
-            className={`overflow-hidden rounded-xl bg-[#0f1a15] p-2 shadow-[var(--shadow-card)] ring-2 ${rarityFrameClass(card.rarity)}`}
-          >
-            <CardImage slug={card.slug} name={card.name} imagePath={card.image_path} priority />
+          <div className="mx-auto w-full max-w-[280px] md:mx-0">
+            <TradingCard card={card} priorityImage />
           </div>
           <div className="space-y-5">
             <div>

@@ -89,7 +89,7 @@ export async function SiteChat({ locale }: Props) {
                 </p>
               </div>
               <span className="relative block h-[5.5rem] w-[3.7rem] shrink-0 rotate-6 overflow-hidden rounded-lg shadow-[0_10px_24px_-8px_rgb(0_0_0_/_0.8)] ring-2 ring-amber-200/80">
-                <CardImage slug={showcase.slug} name={showcase.name} imagePath={showcase.image_path} fill />
+                <CardImage slug={showcase.slug} name={showcase.name} imagePath={showcase.image_path} />
               </span>
             </div>
           </li>

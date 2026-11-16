@@ -15,7 +15,7 @@ export function CardImage({ slug, name, imagePath, priority }: Props) {
   if (!url) {
     return (
       <div
-        className={`flex ${boxClass} items-center justify-center bg-gradient-to-br from-[#0b2a1f] via-[#10241c] to-[#1b4a37] p-4 text-center`}
+        className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#0b2a1f] via-[#10241c] to-[#1b4a37] p-4 text-center"
         aria-hidden
       >
         <span className="text-xs font-semibold uppercase tracking-widest text-white/50">
@@ -26,7 +26,7 @@ export function CardImage({ slug, name, imagePath, priority }: Props) {
   }
 
   return (
-    <div className={`${fill ? "absolute inset-0" : "relative aspect-[2/3] w-full rounded-md"} overflow-hidden bg-[#0f1a15]`}>
+    <div className="absolute inset-0 overflow-hidden bg-[#0f1a15]">
       <Image
         src={url}
         alt={name}
