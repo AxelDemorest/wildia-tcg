@@ -14,6 +14,7 @@
 
 - **Lecture catalogue** (`cards`, `card_translations`) : client anon, policies `SELECT` publiques.
 - **Inventaire** (`user_cards`) : `SELECT` own user only ; écritures via RPC `grant_card` (service role) ou Server Actions.
+- **Boutique boosters** (`booster_shop_slots`) : `SELECT` own user only ; aucune policy d’écriture, les lignes sont écrites uniquement par la RPC `get_booster_shop_offer` (`SECURITY DEFINER`).
 - **Ledger, tirages** (sprints suivants) : écritures via Server Actions + service role ou RPC `SECURITY DEFINER`, pas d’`INSERT` direct depuis le navigateur. `currency_ledger` est append-only (trigger `private.currency_ledger_append_only`), même pour le service role ; seule la suppression d’un compte efface ses lignes, en cascade depuis `auth.users`.
 - **Storage `card-art`** : lecture publique ; écriture réservée au service role.
 - **Storage `profile-banners`** : lecture publique ; upload/update/delete par l’utilisateur authentifié dans son dossier `{user_id}/`.
@@ -42,7 +43,7 @@ Toute fonction du schéma `public` est appelable par l’API (`POST /rest/v1/rpc
 3. `set search_path = ''` et noms qualifiés (`public.table`).
 4. Ajouter un test dans `tests/integration/rpc-access.integration.test.ts` : refusé pour un visiteur, refusé ou limité pour un joueur, accepté pour le bon appelant.
 
-Droits actuels : `grant_card`, `user_currency_balance` et `pick_weighted_rarity` → service role seulement ; `sync_user_economy` et `open_booster_pack` → joueur connecté (sur son propre compte) et service role.
+Droits actuels : `grant_card`, `user_currency_balance` et `pick_weighted_rarity` → service role seulement ; `sync_user_economy` et `open_booster_pack` → joueur connecté (sur son propre compte) et service role ; `get_booster_shop_offer` → joueur connecté seulement (sur son propre compte, via `auth.uid()`, sans paramètre) ; `private.booster_shop_window` et `private.pick_shop_booster` → aucun rôle de l’API (schéma `private` non exposé).
 
 ## Modèles de policies
 

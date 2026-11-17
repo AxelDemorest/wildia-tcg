@@ -129,6 +129,7 @@ export async function createBooster(
   costCoins = 100,
   isActive = true,
   slots = 5,
+  shopWeight?: number,
 ): Promise<string> {
   const { data, error } = await admin
     .from("booster_definitions")
@@ -138,12 +139,49 @@ export async function createBooster(
       rarity_weights: rarityWeights,
       is_active: isActive,
       slots,
+      // Omitted: the database default (1), so the booster is offered by the boutique.
+      ...(shopWeight === undefined ? {} : { shop_weight: shopWeight }),
     })
     .select("id")
     .single();
   if (error) throw error;
   createdBoosters.push(data.id);
   return data.id;
+}
+
+/** The current fenêtre boutique index, on the database's clock (180 s windows). */
+export function shopWindowNow(): number {
+  const [row] = sql<{ window_index: number }>(
+    "select floor(extract(epoch from now()) / 180)::int as window_index",
+  );
+  return row.window_index;
+}
+
+/**
+ * Waits for the next fenêtre boutique when fewer than `seconds` remain in the current one, so
+ * a test comparing two reads is not split by a window change.
+ */
+export async function waitForShopWindowMargin(seconds = 10): Promise<void> {
+  const [row] = sql<{ remaining: number }>(
+    "select (180 - mod(extract(epoch from now())::numeric, 180))::float8 as remaining",
+  );
+  if (row.remaining < seconds) {
+    await new Promise((resolve) => setTimeout(resolve, (row.remaining + 1) * 1000));
+  }
+}
+
+export type ShopSlotRow = { window_index: number; slot_index: number; booster_id: string };
+
+/** The stored offre boutique rows of a player, oldest window first, in emplacement order. */
+export async function shopSlotsOf(userId: string): Promise<ShopSlotRow[]> {
+  const { data, error } = await admin
+    .from("booster_shop_slots")
+    .select("window_index, slot_index, booster_id")
+    .eq("user_id", userId)
+    .order("window_index")
+    .order("slot_index");
+  if (error) throw error;
+  return data.map((row) => ({ ...row, window_index: Number(row.window_index) }));
 }
 
 /** Credits coins the way an admin adjustment would. */
