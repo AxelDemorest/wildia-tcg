@@ -53,21 +53,23 @@ export function HeaderProfileMenu({
         aria-controls={menuId}
         aria-label={avatarAlt}
         onClick={() => setOpen((value) => !value)}
-        className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border-2 border-white bg-zinc-200 shadow-sm ring-1 ring-black/10 transition hover:ring-black/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+        className="relative size-9 shrink-0 overflow-hidden rounded-xl bg-gradient-to-br from-brand to-[#3fb985] p-[2px] transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
-        <Image src={avatarUrl} alt="" fill sizes="40px" className="object-cover" />
+        <span className="relative block size-full overflow-hidden rounded-[10px]">
+          <Image src={avatarUrl} alt="" fill sizes="36px" className="object-cover" />
+        </span>
       </button>
 
       {open && (
         <div
           id={menuId}
           role="menu"
-          className="absolute right-0 top-[calc(100%+0.35rem)] z-50 min-w-[11rem] overflow-hidden rounded-lg border border-border bg-surface py-1 shadow-lg"
+          className="absolute right-0 top-[calc(100%+0.5rem)] z-50 min-w-[12rem] overflow-hidden rounded-xl border border-border bg-panel/95 py-1.5 shadow-[var(--shadow-card)] backdrop-blur-md"
         >
           <Link
             href={`/players/${userId}`}
             role="menuitem"
-            className="block px-3 py-2 text-sm text-foreground hover:bg-black/[0.04]"
+            className="block px-3.5 py-2 text-sm text-foreground hover:bg-white/[0.05]"
             onClick={() => setOpen(false)}
           >
             {profileLabel}
@@ -75,7 +77,7 @@ export function HeaderProfileMenu({
           <Link
             href="/settings/profile"
             role="menuitem"
-            className="block px-3 py-2 text-sm text-foreground hover:bg-black/[0.04]"
+            className="block px-3.5 py-2 text-sm text-foreground hover:bg-white/[0.05]"
             onClick={() => setOpen(false)}
           >
             {settingsLabel}
@@ -89,7 +91,7 @@ export function HeaderProfileMenu({
             <button
               type="submit"
               role="menuitem"
-              className="block w-full px-3 py-2 text-left text-sm text-brand-strong hover:bg-black/[0.04]"
+              className="block w-full px-3.5 py-2 text-left text-sm text-red-300 hover:bg-white/[0.05]"
             >
               {logoutLabel}
             </button>

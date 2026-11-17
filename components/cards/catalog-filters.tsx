@@ -3,6 +3,7 @@
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { chipClass } from "@/components/ui/chip";
 import { CARD_RARITIES, type CardRarity } from "@/lib/cards/types";
 
 export function CatalogFilters() {
@@ -29,7 +30,7 @@ export function CatalogFilters() {
       <button
         type="button"
         onClick={() => setRarity(null)}
-        className={`rounded-full border px-3 py-1 text-sm transition ${!current ? "border-brand bg-emerald-50 text-brand-strong" : "border-border bg-surface text-muted hover:border-zinc-300"}`}
+        className={chipClass(!current)}
       >
         {t("filterAll")}
       </button>
@@ -38,7 +39,7 @@ export function CatalogFilters() {
           key={rarity}
           type="button"
           onClick={() => setRarity(rarity)}
-          className={`rounded-full border px-3 py-1 text-sm capitalize transition ${current === rarity ? "border-brand bg-emerald-50 text-brand-strong" : "border-border bg-surface text-muted hover:border-zinc-300"}`}
+          className={`capitalize ${chipClass(current === rarity)}`}
         >
           {t(`rarity.${rarity}`)}
         </button>

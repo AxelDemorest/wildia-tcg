@@ -93,24 +93,24 @@ export function BoosterShop({ locale, boosters, isLoggedIn }: Props) {
   }
 
   return (
-    <div className="space-y-8">
-      <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2">
+    <div className="space-y-5">
+      <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-1">
         {boosters.map((booster) => (
           <button
             key={booster.id}
             type="button"
             onClick={() => setSelectedId(booster.id)}
-            className={`min-w-[min(100%,280px)] shrink-0 snap-center rounded-xl border p-4 text-left transition ${
+            className={`relative min-w-[min(100%,280px)] shrink-0 snap-center overflow-hidden rounded-2xl border p-5 text-left transition ${
               selected?.id === booster.id
-                ? "border-brand bg-emerald-50 ring-2 ring-brand/30"
-                : "border-border bg-surface hover:border-zinc-300"
+                ? "border-brand/60 bg-[linear-gradient(135deg,rgb(31_122_82_/_0.22),rgb(63_185_133_/_0.12))]"
+                : "border-border bg-surface/80 hover:border-white/20"
             }`}
           >
-            <p className="text-lg font-semibold text-brand-strong">
+            <p className="text-lg font-bold text-foreground">
               {t(`pack.${booster.slug}.name`)}
             </p>
             <p className="mt-1 text-sm text-muted">{t(`pack.${booster.slug}.description`)}</p>
-            <p className="mt-3 text-sm font-medium">
+            <p className="mt-3 text-sm font-semibold text-amber-300">
               {t("cost", { amount: booster.costCoins })} · {t("slots", { count: booster.slots })}
             </p>
           </button>
@@ -122,7 +122,7 @@ export function BoosterShop({ locale, boosters, isLoggedIn }: Props) {
           <p className="text-muted">{t("loginRequired")}</p>
           <Link
             href="/login"
-            className="mt-4 inline-flex rounded-md bg-brand px-4 py-2 text-sm font-medium text-white"
+            className="mt-4 inline-flex rounded-xl bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-strong"
           >
             {t("loginCta")}
           </Link>
@@ -133,14 +133,18 @@ export function BoosterShop({ locale, boosters, isLoggedIn }: Props) {
             {pending ? t("opening") : t("open", { name: t(`pack.${selected.slug}.name`) })}
           </Button>
           {error && (
-            <p className="text-sm text-red-600" role="alert">{error}</p>
+            <p className="text-sm text-red-300" role="alert">{error}</p>
           )}
         </div>
       )}
 
       {revealed && revealed.length > 0 && (
-        <section className="space-y-4" aria-live="polite">
-          <h2 className="text-lg font-semibold">{t("revealTitle")}</h2>
+        <section
+          className="relative isolate space-y-5 overflow-hidden rounded-2xl border border-border bg-surface/80 p-5 backdrop-blur-md sm:p-6"
+          aria-live="polite"
+        >
+          <div aria-hidden className="absolute left-1/2 top-24 -z-10 size-80 -translate-x-1/2 rounded-full bg-brand/20 blur-3xl" />
+          <h2 className="text-lg font-bold uppercase tracking-tight">{t("revealTitle")}</h2>
           <div className="mx-auto max-w-xs">
             <TradingCard
               card={{
@@ -188,7 +192,7 @@ export function BoosterShop({ locale, boosters, isLoggedIn }: Props) {
               </ul>
               <Link
                 href="/collection"
-                className="inline-flex rounded-md bg-brand px-4 py-2 text-sm font-medium text-white"
+                className="inline-flex rounded-xl bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-strong"
               >
                 {t("goCollection")}
               </Link>

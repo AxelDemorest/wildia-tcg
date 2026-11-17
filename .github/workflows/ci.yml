@@ -24,7 +24,7 @@ jobs:
       - run: npm run build
       - run: npm run test:coverage
       - name: Coverage summary
-        if: always()
+        if: success()
         run: node scripts/ci/coverage-summary.mjs >> "$GITHUB_STEP_SUMMARY"
 
   # The database side (SQL functions, RLS, storage, migrations) and the browser journeys,

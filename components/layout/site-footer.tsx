@@ -41,16 +41,16 @@ export async function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="mt-auto border-t border-border bg-surface">
-      <div className="mx-auto w-full max-w-7xl px-4 pb-8 pt-12 sm:px-6 sm:pt-16">
+    <footer className="mt-auto rounded-2xl border border-border bg-surface/80 backdrop-blur-md">
+      <div className="mx-auto w-full max-w-7xl px-5 pb-6 pt-10 sm:px-8 sm:pt-12">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,2fr)] lg:gap-16">
           <div className="max-w-sm">
             <Link
               href="/"
               aria-label="WILDIA TCG"
-              className="inline-flex items-center gap-2.5 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+              className="inline-flex items-center gap-1.5 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
             >
-              <BrandLogo alt="" aria-hidden className="h-10 w-auto" />
+              <BrandLogo alt="" aria-hidden className="h-9 w-auto" />
               <BrandWordmark />
             </Link>
             <p className="mt-4 text-pretty text-sm leading-relaxed text-muted">{t("footerTagline")}</p>
@@ -59,7 +59,7 @@ export async function SiteFooter() {
           <nav aria-label={t("footerNavLabel")} className="grid grid-cols-2 gap-8 sm:grid-cols-3">
             {columns.map((column) => (
               <div key={column.title}>
-                <h2 className="text-sm font-bold tracking-tight text-foreground">{column.title}</h2>
+                <h2 className="text-xs font-semibold uppercase tracking-wider text-foreground">{column.title}</h2>
                 <ul className="mt-4 space-y-2.5">
                   {column.links.map((link) => (
                     <li key={link.href}>
@@ -77,7 +77,7 @@ export async function SiteFooter() {
           </nav>
         </div>
 
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-6 text-sm text-muted sm:flex-row">
+        <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-white/[0.05] pt-5 text-sm text-muted sm:flex-row">
           <p className="text-center sm:text-left">{t("footerCopyright", { year })}</p>
           <LocaleSwitcher />
         </div>

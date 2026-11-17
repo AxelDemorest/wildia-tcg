@@ -1,29 +1,32 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f6f7f9;
+  color-scheme: dark;
+  --background: #141414;
   --background-shine:
-    radial-gradient(circle at 50% 0%, rgb(255 255 255 / 0.85), transparent 58%),
-    radial-gradient(circle at 80% 20%, rgb(255 255 255 / 0.45), transparent 42%);
-  --foreground: #14231a;
-  --surface: #ffffff;
-  --muted: #5c6b62;
-  --border: #e2e3e8;
-  --brand: #0d7a4e;
-  --brand-strong: #045a38;
-  --secondary: #045a38;
+    radial-gradient(circle at 15% 0%, rgb(31 122 82 / 0.08), transparent 40%),
+    radial-gradient(circle at 85% 10%, rgb(63 185 133 / 0.05), transparent 38%);
+  --foreground: #ffffff;
+  --surface: #1a1a1f;
+  --panel: #1e1e24;
+  --muted: #9ca3af;
+  --border: #2a2a32;
+  --brand: #1f7a52;
+  --brand-strong: #17623f;
+  --secondary: #5fc79a;
   --ink: #13231a;
-  --accent: #c9a227;
+  --accent: #f5c04a;
   --radius-md: 0.75rem;
   --radius-lg: 1rem;
-  --shadow-card: 0 8px 24px -12px rgb(13 122 78 / 0.35);
-  --shadow-how-card: 0 28px 48px -24px rgb(19 35 26 / 0.55);
+  --shadow-card: 0 18px 40px -18px rgb(0 0 0 / 0.85);
+  --shadow-how-card: 0 30px 60px -28px rgb(0 0 0 / 0.9);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-surface: var(--surface);
+  --color-panel: var(--panel);
   --color-muted: var(--muted);
   --color-border: var(--border);
   --color-brand: var(--brand);

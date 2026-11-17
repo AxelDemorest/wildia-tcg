@@ -9,7 +9,7 @@ type Props = {
 export function Surface({ children, className = "" }: Props) {
   return (
     <div
-      className={`rounded-lg border border-border bg-surface shadow-sm ${className}`}
+      className={`rounded-2xl border border-border bg-surface/80 shadow-[var(--shadow-card)] backdrop-blur-md ${className}`}
     >
       {children}
     </div>
