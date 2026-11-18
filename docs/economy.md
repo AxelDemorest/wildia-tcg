@@ -47,6 +47,8 @@ Le ledger est **append-only** (triggers bloquent UPDATE/DELETE). Seule exception
 ## Boutique boosters
 
 - `booster_shop_slot_count` (`economy_config`) : nombre d’emplacements de l’offre boutique, arrondi et borné entre 0 et 20, 6 par défaut.
+- Ouvrir un emplacement débite le prix **courant** du booster (pas celui du moment où l’offre a été tirée) et l’emplacement reste **épuisé** jusqu’à la fin de la fenêtre.
+- Refus, sans rien débiter : `window_closed`, `slot_not_found`, `slot_exhausted`, `booster_unavailable` (définition désactivée), `insufficient_balance`.
 
 ## Sécurité
 

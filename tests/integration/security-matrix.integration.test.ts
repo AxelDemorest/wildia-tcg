@@ -7,6 +7,7 @@
 import { randomUUID } from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { parseBoosterShopOffer } from "@/lib/boosters/shop";
 import {
   admin,
   cleanup,
@@ -16,6 +17,8 @@ import {
   giveCoins,
   grantCard,
   visitor,
+  waitForShopWindowMargin,
+  setShopSlot,
   type Player,
 } from "./supabase";
 
@@ -52,10 +55,20 @@ beforeAll(async () => {
   });
   if (error) throw error;
 
-  // ... and an offre boutique, stored by its first read.
+  // ... and an offre boutique, stored by its first read (not split by a window change).
+  await waitForShopWindowMargin(30);
   const offer = await owner.client.rpc("get_booster_shop_offer");
   if (offer.error) throw offer.error;
-});
+
+  // ... one emplacement of it opened, so it carries opened_at and draw_id.
+  const windowIndex = parseBoosterShopOffer(offer.data).windowIndex;
+  await setShopSlot(owner.id, windowIndex, 0, activeBoosterId);
+  const slot = await owner.client.rpc("open_booster_shop_slot", {
+    p_window_index: windowIndex,
+    p_slot_index: 0,
+  });
+  if (slot.error) throw slot.error;
+}, 45_000);
 
 afterAll(cleanup);
 
@@ -114,7 +127,8 @@ describe.each<OwnedTableCase>([
       slot_index: 0,
       booster_id: activeBoosterId,
     }),
-    update: () => ({ booster_id: inactiveBoosterId }),
+    // Also "un-exhausts" the opened emplacement: a player must not get it back that way.
+    update: () => ({ booster_id: inactiveBoosterId, opened_at: null, draw_id: null }),
   },
 ])("$table: a player's own rows", ({ table, insert, update }) => {
   it("are visible to their owner only", async () => {

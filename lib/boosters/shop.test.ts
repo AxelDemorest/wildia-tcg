@@ -9,10 +9,12 @@ describe("parseBoosterShopOffer", () => {
       slots: [
         {
           slot_index: 0,
+          exhausted: false,
           booster: { id: "b1", slug: "starter", cost_coins: "150.0000", slots: 5 },
         },
         {
           slot_index: 1,
+          exhausted: true,
           booster: { id: "b2", slug: "premium", cost_coins: 400, slots: "7" },
         },
       ],
@@ -22,8 +24,16 @@ describe("parseBoosterShopOffer", () => {
       windowIndex: 9_876_543,
       endsAt: "2026-11-16T10:03:00+00:00",
       slots: [
-        { slotIndex: 0, booster: { id: "b1", slug: "starter", costCoins: 150, slots: 5 } },
-        { slotIndex: 1, booster: { id: "b2", slug: "premium", costCoins: 400, slots: 7 } },
+        {
+          slotIndex: 0,
+          exhausted: false,
+          booster: { id: "b1", slug: "starter", costCoins: 150, slots: 5 },
+        },
+        {
+          slotIndex: 1,
+          exhausted: true,
+          booster: { id: "b2", slug: "premium", costCoins: 400, slots: 7 },
+        },
       ],
     });
   });

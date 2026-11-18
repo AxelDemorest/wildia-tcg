@@ -9,6 +9,7 @@ import {
   cleanup,
   createBooster,
   createPlayer,
+  moveShopOffer,
   shopSlotsOf,
   shopWindowNow,
   sql,
@@ -19,7 +20,7 @@ import {
 afterAll(cleanup);
 
 // A window change between two reads of a test would make them differ.
-beforeEach(() => waitForShopWindowMargin(10), 30_000);
+beforeEach(() => waitForShopWindowMargin(30), 45_000);
 
 async function readOffer(player: Player): Promise<BoosterShopOffer> {
   const { data, error } = await player.client.rpc("get_booster_shop_offer");
@@ -40,15 +41,6 @@ async function setShopWeight(boosterId: string, shopWeight: number): Promise<voi
     .from("booster_definitions")
     .update({ shop_weight: shopWeight })
     .eq("id", boosterId);
-  if (error) throw error;
-}
-
-/** Moves a player's stored offre boutique to another window, optionally onto one définition. */
-async function moveOffer(userId: string, windowIndex: number, boosterId?: string): Promise<void> {
-  const { error } = await admin
-    .from("booster_shop_slots")
-    .update({ window_index: windowIndex, ...(boosterId ? { booster_id: boosterId } : {}) })
-    .eq("user_id", userId);
   if (error) throw error;
 }
 
@@ -122,7 +114,7 @@ describe("offre boutique, persistance", () => {
     const player = await createPlayer();
     const first = await readOffer(player);
     const witness = await createWitness();
-    await moveOffer(player.id, first.windowIndex, witness);
+    await moveShopOffer(player.id, first.windowIndex, witness);
 
     const second = await readOffer(player);
 
@@ -183,7 +175,7 @@ describe("fenêtre boutique", () => {
     const player = await createPlayer();
     const first = await readOffer(player);
     const witness = await createWitness();
-    await moveOffer(player.id, first.windowIndex - 1, witness);
+    await moveShopOffer(player.id, first.windowIndex - 1, witness);
 
     const next = await readOffer(player);
 
@@ -199,8 +191,8 @@ describe("fenêtre boutique", () => {
     const bystander = await createPlayer();
     const readerOffer = await readOffer(reader);
     await readOffer(bystander);
-    await moveOffer(reader.id, readerOffer.windowIndex - 1);
-    await moveOffer(bystander.id, readerOffer.windowIndex - 1);
+    await moveShopOffer(reader.id, readerOffer.windowIndex - 1);
+    await moveShopOffer(bystander.id, readerOffer.windowIndex - 1);
     const bystanderBefore = await shopSlotsOf(bystander.id);
 
     await readOffer(reader);
@@ -273,7 +265,7 @@ describe("tirage des types de booster", () => {
       const smaller = await readOffer(player);
       await setShopSlotCount(original);
       const sameWindow = await readOffer(player);
-      await moveOffer(player.id, smaller.windowIndex - 1);
+      await moveShopOffer(player.id, smaller.windowIndex - 1);
       const nextWindow = await readOffer(player);
 
       expect(smaller.slots).toHaveLength(3);
