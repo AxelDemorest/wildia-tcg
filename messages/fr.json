@@ -188,21 +188,25 @@
     "slots": "{count} cartes",
     "loginRequired": "Connectez-vous pour ouvrir un booster.",
     "loginCta": "Se connecter",
-    "open": "Ouvrir {name}",
+    "open": "Ouvrir {name}, emplacement {position}",
+    "openCta": "Ouvrir",
+    "exhausted": "Épuisé",
+    "countdownLabel": "Nouvelle offre dans",
     "opening": "Ouverture…",
     "emptyBoosters": "Aucun booster disponible pour le moment.",
     "revealTitle": "Vos tirages",
     "revealNext": "Carte suivante ({current}/{total})",
     "revealDone": "Booster ouvert !",
     "goCollection": "Voir mon classeur",
+    "packKicker": "Booster",
     "pack": {
       "standard": {
         "name": "Booster standard",
-        "description": "5 cartes — bon équilibre pour compléter la collection."
+        "short": "Standard"
       },
       "premium": {
         "name": "Booster premium",
-        "description": "5 cartes — meilleures chances sur les raretés élevées."
+        "short": "Premium"
       }
     },
     "error": {
@@ -210,7 +214,11 @@
       "invalid": "Requête invalide.",
       "insufficient_balance": "Solde insuffisant. Farmez ou attendez un peu.",
       "failed": "Impossible d’ouvrir le booster.",
-      "rate_limited": "Trop d’ouvertures rapides. Réessayez dans un instant."
+      "rate_limited": "Trop d’ouvertures rapides. Réessayez dans un instant.",
+      "slot_not_found": "Cet emplacement n’existe pas.",
+      "slot_exhausted": "Cet emplacement est déjà ouvert.",
+      "window_closed": "Cette offre est terminée. Une nouvelle offre est disponible.",
+      "booster_unavailable": "Ce booster n’est plus disponible."
     }
   },
   "DevGrants": {

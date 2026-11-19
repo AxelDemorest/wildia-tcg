@@ -43,6 +43,26 @@ export type OpenShopSlotOutcome<T> =
   | { ok: true; result: T; locale: string }
   | { ok: false; error: "invalid" | "unauthenticated" | "rate_limited" | OpenShopSlotErrorCode };
 
+type RefusalCode = Extract<OpenShopSlotOutcome<unknown>, { ok: false }>["error"];
+
+// A record, so a new code fails typecheck until it is decided whether its refusal reloads the offer.
+const REFUSAL_RELOADS_OFFER: Record<RefusalCode, boolean> = {
+  slot_exhausted: true,
+  window_closed: true,
+  slot_not_found: false,
+  booster_unavailable: false,
+  insufficient_balance: false,
+  rate_limited: false,
+  invalid: false,
+  unauthenticated: false,
+  failed: false,
+};
+
+/** Whether the offer shown is stale after this refusal: the grid must be reloaded from the server. */
+export function refusalReloadsOffer(code: RefusalCode): boolean {
+  return REFUSAL_RELOADS_OFFER[code];
+}
+
 /** Orchestrates the opening of an emplacement; dependencies are injected so it runs without Next nor Supabase. */
 export async function runOpenShopSlot<T>(
   input: unknown,

@@ -188,21 +188,25 @@
     "slots": "{count} cards",
     "loginRequired": "Log in to open a booster.",
     "loginCta": "Log in",
-    "open": "Open {name}",
+    "open": "Open {name}, slot {position}",
+    "openCta": "Open",
+    "exhausted": "Exhausted",
+    "countdownLabel": "New offer in",
     "opening": "Opening…",
     "emptyBoosters": "No boosters available right now.",
     "revealTitle": "Your pulls",
     "revealNext": "Next card ({current}/{total})",
     "revealDone": "Pack opened!",
     "goCollection": "View my binder",
+    "packKicker": "Booster",
     "pack": {
       "standard": {
         "name": "Standard booster",
-        "description": "5 cards — balanced odds to grow your collection."
+        "short": "Standard"
       },
       "premium": {
         "name": "Premium booster",
-        "description": "5 cards — better odds for high rarities."
+        "short": "Premium"
       }
     },
     "error": {
@@ -210,7 +214,11 @@
       "invalid": "Invalid request.",
       "insufficient_balance": "Insufficient balance. Farm more coins first.",
       "failed": "Could not open the booster.",
-      "rate_limited": "Too many opens in a short time. Try again shortly."
+      "rate_limited": "Too many opens in a short time. Try again shortly.",
+      "slot_not_found": "This slot does not exist.",
+      "slot_exhausted": "This slot has already been opened.",
+      "window_closed": "This offer has ended. A new offer is available.",
+      "booster_unavailable": "This booster is no longer available."
     }
   },
   "DevGrants": {

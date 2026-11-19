@@ -237,7 +237,13 @@ h6 {
   place-items: center;
   width: 70%;
   height: 2.6cqw;
-  background: linear-gradient(90deg, transparent, var(--card-line) 30%, var(--card-line) 70%, transparent)
+  background: linear-gradient(
+      90deg,
+      transparent,
+      var(--card-line) 30%,
+      var(--card-line) 70%,
+      transparent
+    )
     center / 100% max(1px, 0.3cqw) no-repeat;
 }
 
@@ -438,6 +444,565 @@ h6 {
   }
 }
 
+/*
+ * Booster pack (V3 design). Drawn in CSS only, on a 9:16 body sized in container-query
+ * units (cqw) like the trading card. `data-look` picks the palette (premium adds the
+ * holo and the rays), `data-state` the idle, opening (glow + shake) or exhausted
+ * (torn open, empty, crumpled, grey) rendering.
+ */
+.booster-pack {
+  --gold: #e4c46e;
+  width: 100%;
+  /* Keeps the pack near its mockup size when a shop has only a few slots. */
+  max-width: 11rem;
+}
+.booster-pack-body {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 9/16;
+  container-type: inline-size;
+  filter: drop-shadow(0 14px 14px rgb(0 0 0 / 0.55)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.5));
+  transition:
+    translate 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    rotate 0.35s,
+    filter 0.35s;
+}
+@media (hover: hover) {
+  .booster-pack:hover .booster-pack-body {
+    translate: 0 -7px;
+    rotate: -1.5deg;
+    filter: drop-shadow(0 22px 22px rgb(0 0 0 / 0.6)) drop-shadow(0 0 16px rgb(95 199 154 / 0.3));
+  }
+}
+.booster-pack-foil {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  --z: 6cqw;
+  background: radial-gradient(110% 70% at 45% 42%, #1a6243 0%, #0c3424 52%, #051a11 100%);
+  clip-path: polygon(
+    0% 0%,
+    100% 0%,
+    100% 8%,
+    98.6% 10.5%,
+    99.3% 15.4%,
+    99.3% 84.6%,
+    98.6% 89.5%,
+    100% 92%,
+    100% 100%,
+    0% 100%,
+    0% 92%,
+    1.4% 89.5%,
+    0.7% 84.6%,
+    0.7% 15.4%,
+    1.4% 10.5%,
+    0% 8%
+  );
+  -webkit-mask:
+    conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) top/var(--z) 51%
+      repeat-x,
+    conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom/var(--z) 51%
+      repeat-x;
+  mask:
+    conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) top/var(--z) 51%
+      repeat-x,
+    conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom/var(--z) 51%
+      repeat-x;
+}
+.booster-pack-arc {
+  position: absolute;
+  border-radius: 50%;
+  border: 1.6cqw solid rgb(63 185 133 / 0.14);
+}
+.booster-pack-arc-a {
+  width: 170%;
+  aspect-ratio: 1;
+  left: -105%;
+  top: -6%;
+}
+.booster-pack-arc-b {
+  width: 160%;
+  aspect-ratio: 1;
+  right: -110%;
+  bottom: -24%;
+}
+.booster-pack-rays {
+  display: none;
+  position: absolute;
+  left: 50%;
+  top: 39%;
+  width: 120%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  background: repeating-conic-gradient(
+    from 0deg,
+    rgb(228 196 110 / 0.14) 0 4deg,
+    transparent 4deg 15deg
+  );
+  -webkit-mask: radial-gradient(closest-side, #000 25%, transparent 100%);
+  mask: radial-gradient(closest-side, #000 25%, transparent 100%);
+}
+.booster-pack-frame {
+  position: absolute;
+  inset: 18.2% 13%;
+  border-radius: 2.6cqw;
+  border: 1px solid color-mix(in srgb, var(--gold) 60%, transparent);
+}
+.booster-pack-frame::after {
+  content: "";
+  position: absolute;
+  inset: 1.6cqw;
+  border-radius: 1.8cqw;
+  border: 1px solid color-mix(in srgb, var(--gold) 28%, transparent);
+}
+.booster-pack-emblem {
+  position: absolute;
+  left: 50%;
+  top: 21.5%;
+  width: 58%;
+  translate: -50% 0;
+  filter: drop-shadow(0 2px 5px rgb(0 0 0 / 0.55));
+}
+.booster-pack-label {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 58.5%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1cqw;
+  text-align: center;
+}
+.booster-pack-kicker {
+  font-size: max(7px, 4.6cqw);
+  font-weight: 600;
+  letter-spacing: 0.38em;
+  padding-left: 0.38em;
+  color: color-mix(in srgb, var(--gold) 80%, #ffffff);
+  text-transform: uppercase;
+}
+.booster-pack-name {
+  font-size: max(12px, 11.5cqw);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  text-transform: uppercase;
+  background: linear-gradient(180deg, #fff3c9 0%, var(--gold) 55%, #a8822f 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.booster-pack-count {
+  position: absolute;
+  left: 50%;
+  bottom: 21.5%;
+  translate: -50% 0;
+  font-size: max(8px, 4.2cqw);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #d8f3e4;
+  padding: 1cqw 3cqw;
+  border-radius: 99px;
+  border: 1px solid rgb(143 224 196 / 0.35);
+  background: rgb(5 26 17 / 0.6);
+}
+.booster-pack-cards {
+  position: absolute;
+  left: 9%;
+  right: 9%;
+  top: 15.4%;
+  bottom: 15.4%;
+  border-radius: 4cqw;
+  pointer-events: none;
+  background: linear-gradient(
+    158deg,
+    rgb(255 255 255 / 0.07),
+    transparent 32%,
+    transparent 72%,
+    rgb(0 0 0 / 0.14)
+  );
+  box-shadow:
+    inset 0.7cqw 0.9cqw 0.9cqw rgb(255 255 255 / 0.15),
+    inset -0.8cqw -1cqw 1.2cqw rgb(0 0 0 / 0.42),
+    0 0 0 0.35cqw rgb(0 0 0 / 0.3),
+    -0.4cqw -0.6cqw 1cqw rgb(255 255 255 / 0.08),
+    0.7cqw 1.3cqw 1.8cqw rgb(0 0 0 / 0.5),
+    0 0 0 80cqw rgb(0 0 0 / 0.17);
+}
+.booster-pack-cards::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  translate: 0 0.9cqw;
+  box-shadow:
+    0 0.3cqw 0 rgb(0 0 0 / 0.28),
+    0 0.6cqw 0 rgb(255 255 255 / 0.05);
+}
+.booster-pack-taper {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 7.4%;
+  pointer-events: none;
+}
+.booster-pack-taper-top {
+  top: 8%;
+  background:
+    linear-gradient(
+      180deg,
+      rgb(0 0 0 / 0.4),
+      rgb(0 0 0 / 0.06) 45%,
+      rgb(255 255 255 / 0.07) 78%,
+      rgb(0 0 0 / 0.22)
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgb(255 255 255 / 0.11) 0 0.5cqw,
+      rgb(0 0 0 / 0.3) 0.5cqw 1.3cqw,
+      transparent 1.3cqw 3.7cqw
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 2cqw,
+      rgb(0 0 0 / 0.22) 2cqw 2.7cqw,
+      transparent 2.7cqw 6.1cqw
+    );
+  -webkit-mask: linear-gradient(180deg, #000, rgb(0 0 0 / 0.55) 55%, rgb(0 0 0 / 0.15));
+  mask: linear-gradient(180deg, #000, rgb(0 0 0 / 0.55) 55%, rgb(0 0 0 / 0.15));
+}
+.booster-pack-taper-bottom {
+  bottom: 8%;
+  background:
+    linear-gradient(
+      0deg,
+      rgb(0 0 0 / 0.45),
+      rgb(0 0 0 / 0.08) 45%,
+      rgb(255 255 255 / 0.05) 78%,
+      rgb(0 0 0 / 0.25)
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgb(255 255 255 / 0.1) 0 0.5cqw,
+      rgb(0 0 0 / 0.3) 0.5cqw 1.3cqw,
+      transparent 1.3cqw 4.1cqw
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 2.4cqw,
+      rgb(0 0 0 / 0.22) 2.4cqw 3.1cqw,
+      transparent 3.1cqw 6.7cqw
+    );
+  -webkit-mask: linear-gradient(0deg, #000, rgb(0 0 0 / 0.55) 55%, rgb(0 0 0 / 0.15));
+  mask: linear-gradient(0deg, #000, rgb(0 0 0 / 0.55) 55%, rgb(0 0 0 / 0.15));
+}
+.booster-pack-crease {
+  position: absolute;
+  width: 0.9cqw;
+  height: 9%;
+  pointer-events: none;
+  border-radius: 1cqw;
+  background: linear-gradient(90deg, rgb(255 255 255 / 0.16), rgb(0 0 0 / 0.42));
+}
+.booster-pack-crease-tl {
+  left: 9.5%;
+  top: 7.2%;
+  transform-origin: 50% 100%;
+  rotate: -38deg;
+}
+.booster-pack-crease-tr {
+  right: 9.5%;
+  top: 7.2%;
+  transform-origin: 50% 100%;
+  rotate: 38deg;
+}
+.booster-pack-crease-bl {
+  left: 9.5%;
+  bottom: 7.2%;
+  transform-origin: 50% 0%;
+  rotate: 38deg;
+}
+.booster-pack-crease-br {
+  right: 9.5%;
+  bottom: 7.2%;
+  transform-origin: 50% 0%;
+  rotate: -38deg;
+}
+.booster-pack-shade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgb(0 0 0 / 0.55) 0%,
+    rgb(0 0 0 / 0.2) 4%,
+    rgb(255 255 255 / 0.05) 8%,
+    transparent 9.5% 90.5%,
+    rgb(0 0 0 / 0.26) 92%,
+    rgb(0 0 0 / 0.62) 100%
+  );
+}
+.booster-pack-seal {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 8%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgb(255 255 255 / 0.16) 0 0.5cqw,
+      rgb(0 0 0 / 0.34) 0.5cqw 1.1cqw,
+      transparent 1.1cqw 1.8cqw
+    ),
+    linear-gradient(180deg, #123a29, #071a11 70%, #0c2c1e);
+}
+.booster-pack-seal-top {
+  top: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--gold) 55%, transparent);
+}
+.booster-pack-seal-bottom {
+  bottom: 0;
+  border-top: 1px solid color-mix(in srgb, var(--gold) 55%, transparent);
+}
+.booster-pack-brand {
+  margin-top: 2.6cqw;
+  font-size: max(7px, 4.8cqw);
+  font-weight: 700;
+  letter-spacing: 0.42em;
+  padding-left: 0.42em;
+  text-transform: uppercase;
+  color: var(--gold);
+  text-shadow: 0 -0.3cqw 0 rgb(0 0 0 / 0.6);
+}
+.booster-pack-holo {
+  display: none;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: color-dodge;
+  opacity: 0.6;
+  background: linear-gradient(
+    125deg,
+    transparent 18%,
+    rgb(255 80 160 / 0.25) 30%,
+    rgb(110 220 255 / 0.28) 42%,
+    rgb(255 236 140 / 0.3) 54%,
+    rgb(170 120 255 / 0.25) 66%,
+    transparent 80%
+  );
+}
+.booster-pack-gloss {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  background:
+    linear-gradient(
+      115deg,
+      transparent 28%,
+      rgb(255 255 255 / 0.13) 40%,
+      rgb(255 255 255 / 0.04) 48%,
+      transparent 56%
+    ),
+    radial-gradient(38% 2.2% at 36% 15.9%, rgb(255 255 255 / 0.28), transparent 80%),
+    radial-gradient(30% 2% at 30% 84.4%, rgb(255 255 255 / 0.1), transparent 80%),
+    radial-gradient(3% 30% at 9.6% 40%, rgb(255 255 255 / 0.14), transparent 80%);
+}
+.booster-pack-tear,
+.booster-pack-crumple {
+  display: none;
+}
+.booster-pack[data-look="premium"] .booster-pack-foil {
+  background: radial-gradient(110% 70% at 45% 42%, #302812 0%, #15110a 52%, #070605 100%);
+}
+.booster-pack[data-look="premium"] .booster-pack-seal {
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgb(255 255 255 / 0.38) 0 0.5cqw,
+      rgb(90 60 10 / 0.4) 0.5cqw 1.1cqw,
+      transparent 1.1cqw 1.8cqw
+    ),
+    linear-gradient(180deg, #f9e7ad, #c39a45 50%, #7d5f1f);
+}
+.booster-pack[data-look="premium"] .booster-pack-brand {
+  color: #2a1f08;
+  text-shadow: 0 0.3cqw 0 rgb(255 240 200 / 0.5);
+}
+.booster-pack[data-look="premium"] .booster-pack-arc {
+  border-color: rgb(228 196 110 / 0.12);
+}
+.booster-pack[data-look="premium"] .booster-pack-rays,
+.booster-pack[data-look="premium"] .booster-pack-holo {
+  display: block;
+}
+.booster-pack[data-look="premium"] .booster-pack-count {
+  color: #fbe9b7;
+  border-color: rgb(228 196 110 / 0.4);
+  background: rgb(20 16 8 / 0.7);
+}
+.booster-pack[data-state="opening"] .booster-pack-body {
+  translate: 0 -8px;
+  filter: drop-shadow(0 0 24px rgb(95 199 154 / 0.6)) drop-shadow(0 16px 20px rgb(0 0 0 / 0.6));
+}
+.booster-pack[data-state="opening"] .booster-pack-foil {
+  animation: booster-pack-shake 0.6s ease-in-out infinite;
+}
+@keyframes booster-pack-shake {
+  0%,
+  100% {
+    rotate: 0deg;
+  }
+  25% {
+    rotate: -1.6deg;
+  }
+  75% {
+    rotate: 1.6deg;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .booster-pack-body {
+    transition: none;
+  }
+  .booster-pack[data-state="opening"] .booster-pack-foil {
+    animation: none;
+  }
+}
+.booster-pack[data-state="exhausted"] .booster-pack-body {
+  filter: drop-shadow(0 8px 8px rgb(0 0 0 / 0.45));
+}
+.booster-pack[data-state="exhausted"]:hover .booster-pack-body {
+  translate: none;
+  rotate: none;
+}
+.booster-pack[data-state="exhausted"] .booster-pack-foil {
+  filter: grayscale(0.85) brightness(0.5);
+  clip-path: polygon(
+    0% 9.2%,
+    6% 7.6%,
+    11% 9.6%,
+    17% 8.1%,
+    24% 10%,
+    31% 8.3%,
+    38% 9.7%,
+    46% 7.9%,
+    53% 9.5%,
+    61% 8.2%,
+    68% 10.1%,
+    76% 8.4%,
+    83% 9.6%,
+    90% 8%,
+    100% 9.3%,
+    100% 100%,
+    0% 100%
+  );
+}
+.booster-pack[data-state="exhausted"] .booster-pack-seal-top,
+.booster-pack[data-state="exhausted"] .booster-pack-cards,
+.booster-pack[data-state="exhausted"] .booster-pack-crease-tl,
+.booster-pack[data-state="exhausted"] .booster-pack-crease-tr {
+  display: none;
+}
+.booster-pack[data-state="exhausted"] .booster-pack-tear,
+.booster-pack[data-state="exhausted"] .booster-pack-crumple {
+  display: block;
+}
+.booster-pack-tear {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 12%;
+  pointer-events: none;
+  background: linear-gradient(180deg, #e2e8e4, #8a948f);
+  clip-path: polygon(
+    0% 77%,
+    6% 63%,
+    11% 80%,
+    17% 68%,
+    24% 83%,
+    31% 69%,
+    38% 81%,
+    46% 66%,
+    53% 79%,
+    61% 68%,
+    68% 84%,
+    76% 70%,
+    83% 80%,
+    90% 67%,
+    100% 78%,
+    100% 86%,
+    90% 75%,
+    83% 88%,
+    76% 78%,
+    68% 92%,
+    61% 76%,
+    53% 87%,
+    46% 74%,
+    38% 89%,
+    31% 77%,
+    24% 91%,
+    17% 76%,
+    11% 88%,
+    6% 71%,
+    0% 85%
+  );
+}
+.booster-pack-crumple {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: soft-light;
+  background:
+    repeating-linear-gradient(
+      72deg,
+      transparent 0 9cqw,
+      rgb(255 255 255 / 0.5) 9cqw 9.5cqw,
+      rgb(0 0 0 / 0.5) 9.5cqw 10.3cqw,
+      transparent 10.3cqw 19cqw
+    ),
+    repeating-linear-gradient(
+      -64deg,
+      transparent 0 13cqw,
+      rgb(255 255 255 / 0.4) 13cqw 13.5cqw,
+      rgb(0 0 0 / 0.45) 13.5cqw 14.3cqw,
+      transparent 14.3cqw 26cqw
+    );
+}
+.booster-pack-stamp {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  translate: -50% -50%;
+  rotate: -14deg;
+  font-size: max(10px, 9cqw);
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #e5e7eb;
+  padding: 1.6cqw 4cqw;
+  border: 0.8cqw solid #e5e7eb;
+  border-radius: 2cqw;
+  background: rgb(20 20 20 / 0.55);
+}
+.booster-pack-ground {
+  width: 84%;
+  height: 18px;
+  margin: -10px auto 0;
+  background: radial-gradient(closest-side, rgb(0 0 0 / 0.7), transparent);
+  filter: blur(2px);
+}
+.booster-pack[data-state="opening"] .booster-pack-ground {
+  background: radial-gradient(closest-side, rgb(95 199 154 / 0.55), transparent);
+}
+
 @utility bg-ink {
   background-color: var(--ink);
 }
@@ -445,4 +1010,3 @@ h6 {
 @utility text-secondary {
   color: var(--secondary);
 }
-
