@@ -13,7 +13,7 @@ export type OpenBoosterResult = {
   cards: DrawnCard[];
 };
 
-/** Reads the JSON returned by the open_booster_pack RPC; throws on an unexpected shape. */
+/** Reads the JSON returned by the open_booster_shop_slot RPC; throws on an unexpected shape. */
 export function parseOpenBoosterResult(data: unknown): OpenBoosterResult {
   if (!data || typeof data !== "object") throw new Error("Invalid open response");
   const row = data as Record<string, unknown>;

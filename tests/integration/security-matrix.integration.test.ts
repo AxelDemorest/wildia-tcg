@@ -49,11 +49,6 @@ beforeAll(async () => {
   // The owner gets a row in every table that belongs to a player.
   await grantCard(owner.id, cardId);
   await giveCoins(owner.id, 1000);
-  const { error } = await owner.client.rpc("open_booster_pack", {
-    p_booster_id: activeBoosterId,
-    p_user_id: owner.id,
-  });
-  if (error) throw error;
 
   // ... and an offre boutique, stored by its first read (not split by a window change).
   await waitForShopWindowMargin(30);

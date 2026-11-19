@@ -43,7 +43,7 @@ Toute fonction du schéma `public` est appelable par l’API (`POST /rest/v1/rpc
 3. `set search_path = ''` et noms qualifiés (`public.table`).
 4. Ajouter un test dans `tests/integration/rpc-access.integration.test.ts` : refusé pour un visiteur, refusé ou limité pour un joueur, accepté pour le bon appelant.
 
-Droits actuels : `grant_card`, `user_currency_balance` et `pick_weighted_rarity` → service role seulement ; `sync_user_economy` et `open_booster_pack` → joueur connecté (sur son propre compte) et service role ; `get_booster_shop_offer` et `open_booster_shop_slot` → joueur connecté seulement (sur son propre compte, via `auth.uid()`, sans paramètre de compte) ; `private.booster_shop_window`, `private.pick_shop_booster` et `private.open_booster_for` → aucun rôle de l’API (schéma `private` non exposé).
+Droits actuels : `grant_card`, `user_currency_balance` et `pick_weighted_rarity` → service role seulement ; `open_booster_pack` → service role seulement (la vitrine est la seule entrée joueur) ; `sync_user_economy` → joueur connecté (sur son propre compte) et service role ; `get_booster_shop_offer` et `open_booster_shop_slot` → joueur connecté seulement (sur son propre compte, via `auth.uid()`, sans paramètre de compte) ; `private.booster_shop_window`, `private.pick_shop_booster` et `private.open_booster_for` → aucun rôle de l’API (schéma `private` non exposé).
 
 ## Modèles de policies
 

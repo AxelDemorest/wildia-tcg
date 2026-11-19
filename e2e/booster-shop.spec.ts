@@ -7,6 +7,7 @@ import {
   createCatalogCard,
   createPlayer,
   giveCoins,
+  moveShopOffer,
   setShopSlot,
   setShopSlotCount,
   shopWindowEndMs,
@@ -392,6 +393,31 @@ test("an emplacement opened elsewhere shows the refusal, then turns exhausted", 
   // The accessibility tree, not `textContent`: the pack's `aria-hidden` stamp also reads "Épuisé".
   await expect.poll(() => emplacements(page).nth(0).ariaSnapshot()).toContain("Épuisé");
   await expect(openButton(emplacements(page).nth(0))).toHaveCount(0);
+});
+
+test("a new window brings a new offer, with no emplacement exhausted", async ({ page }) => {
+  const player = await createPlayer();
+  await giveCoins(player.id, 1000);
+  const windowIndex = await forceSlotZeroToStandard(player);
+  await signIn(page, player);
+
+  // The current offre has an exhausted emplacement.
+  const opened = await player.client.rpc("open_booster_shop_slot", {
+    p_window_index: windowIndex,
+    p_slot_index: 0,
+  });
+  if (opened.error) throw opened.error;
+
+  // Simulated window change: the stored offre now belongs to the previous window.
+  await moveShopOffer(player.id, windowIndex - 1);
+  await page.goto("/fr/boosters");
+
+  // A new offre: every emplacement shows its "Ouvrir" button.
+  const items = emplacements(page);
+  await expect(items).toHaveCount(8);
+  for (let index = 0; index < 8; index++) {
+    await expect(openButton(items.nth(index))).toHaveCount(1);
+  }
 });
 
 test("a shop with no emplacement shows the empty message", async ({ page }) => {
