@@ -105,12 +105,14 @@ export default async function CardDetailPage({ params }: Props) {
                   >
                     {t("ctaBoosters")}
                   </Link>
-                  <Link
-                    href="/collection"
-                    className="rounded-xl border border-white/15 bg-white/[0.04] px-4 py-2 text-sm font-medium transition hover:bg-white/[0.08]"
-                  >
-                    {t("ctaCollection")}
-                  </Link>
+                  {user && (
+                    <Link
+                      href={`/players/${user.id}/collection`}
+                      className="rounded-xl border border-white/15 bg-white/[0.04] px-4 py-2 text-sm font-medium transition hover:bg-white/[0.08]"
+                    >
+                      {t("ctaCollection")}
+                    </Link>
+                  )}
                 </div>
               </div>
             )}

@@ -17,6 +17,7 @@ export function CollectionSort() {
 
   function setSort(value: CollectionSortOption) {
     const params = new URLSearchParams(searchParams.toString());
+    params.delete("page");
     if (value === "rarity") {
       params.delete("sort");
     } else {

@@ -32,6 +32,7 @@ export async function saveProfileSettings(
     await updateUserProfile(user.id, input);
     revalidatePath(`/${locale}/settings/profile`);
     revalidatePath(`/${locale}/players/${user.id}`);
+    revalidatePath(`/${locale}/players/${user.id}/collection`);
     return { ok: true };
   } catch (e) {
     if (e instanceof Error && e.message === "featured_not_owned") {
@@ -67,6 +68,7 @@ export async function saveProfileBanner(
     await uploadProfileBanner(user.id, file);
     revalidatePath(`/${parsed.data.locale}/settings/profile`);
     revalidatePath(`/${parsed.data.locale}/players/${user.id}`);
+    revalidatePath(`/${parsed.data.locale}/players/${user.id}/collection`);
     return { ok: true };
   } catch (e) {
     if (e instanceof Error) {

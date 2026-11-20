@@ -24,7 +24,9 @@ export async function SiteHeader({ locale }: Props) {
     { href: "/", label: t("navHome"), icon: <HomeIcon />, exact: true },
     { href: "/cards", label: t("catalog"), icon: <CatalogIcon /> },
     { href: "/boosters", label: t("boosters"), icon: <BoosterIcon /> },
-    { href: "/collection", label: t("collection"), icon: <BinderIcon /> },
+    ...(user
+      ? [{ href: `/players/${user.id}/collection`, label: t("collection"), icon: <BinderIcon /> }]
+      : []),
     { href: user ? `/players/${user.id}` : "/settings/profile", label: t("profile"), icon: <ProfileIcon /> },
   ];
 

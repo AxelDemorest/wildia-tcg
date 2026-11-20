@@ -28,6 +28,7 @@ export default async function BoostersPage({ params }: Props) {
         offer={offer}
         secondsLeft={secondsLeft}
         isLoggedIn={Boolean(user)}
+        userId={user?.id ?? null}
       />
     </div>
   );

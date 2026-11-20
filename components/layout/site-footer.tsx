@@ -3,6 +3,7 @@ import { BrandLogo } from "@/components/layout/brand-logo";
 import { BrandWordmark } from "@/components/layout/brand-wordmark";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { Link } from "@/i18n/navigation";
+import { getUser } from "@/server/auth/require-user";
 
 type FooterLink = { href: string; label: string };
 type FooterColumn = { title: string; links: FooterLink[] };
@@ -10,15 +11,20 @@ type FooterColumn = { title: string; links: FooterLink[] };
 export async function SiteFooter() {
   const t = await getTranslations("Layout");
   const home = await getTranslations("Home");
+  const user = await getUser();
+
+  const gameLinks: FooterLink[] = [
+    { href: "/cards", label: home("catalog") },
+    { href: "/boosters", label: home("boosters") },
+  ];
+  if (user) {
+    gameLinks.push({ href: `/players/${user.id}/collection`, label: home("collection") });
+  }
 
   const columns: FooterColumn[] = [
     {
       title: t("footerGameTitle"),
-      links: [
-        { href: "/cards", label: home("catalog") },
-        { href: "/boosters", label: home("boosters") },
-        { href: "/collection", label: home("collection") },
-      ],
+      links: gameLinks,
     },
     {
       title: t("footerDiscoverTitle"),

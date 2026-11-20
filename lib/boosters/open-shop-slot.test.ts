@@ -188,7 +188,7 @@ describe("runOpenShopSlot", () => {
 
     expect(result).toEqual({ ok: true, result: { drawId: "draw-1" }, locale: "fr" });
     expect(deps.openSlot).toHaveBeenCalledWith(42, 1);
-    expect(deps.revalidate).toHaveBeenCalledWith("fr");
+    expect(deps.revalidate).toHaveBeenCalledWith("fr", "user-1");
     expect(calls).toEqual(["getUserId", "checkRateLimit", "openSlot", "revalidate"]);
   });
 });

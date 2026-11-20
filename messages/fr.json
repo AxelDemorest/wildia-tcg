@@ -5,7 +5,7 @@
     "navHome": "Accueil",
     "catalog": "Catalogue",
     "boosters": "Boosters",
-    "collection": "Mon classeur",
+    "collection": "Ma collection",
     "login": "Connexion",
     "signup": "Créer un compte",
     "logout": "Déconnexion",
@@ -179,7 +179,15 @@
     "emptyBody": "Ouvrez des boosters ou explorez le catalogue pour commencer votre collection.",
     "ctaCatalog": "Voir le catalogue",
     "ctaBoosters": "Ouvrir des boosters",
-    "errorLoad": "Impossible de charger votre collection."
+    "errorLoad": "Impossible de charger votre collection.",
+    "titleVisitor": "Classeur de {name}",
+    "subtitleVisitor": "Espèces possédées par ce joueur (lecture seule).",
+    "emptyTitleVisitor": "Classeur vide",
+    "emptyBodyVisitor": "Ce joueur n’a pas encore de cartes dans son classeur.",
+    "paginationLabel": "Pagination du classeur",
+    "paginationPrev": "Page précédente",
+    "paginationNext": "Page suivante",
+    "paginationStatus": "Page {page} sur {pageCount}"
   },
   "Boosters": {
     "title": "Boosters",
@@ -263,6 +271,22 @@
     "editProfile": "Modifier mon profil",
     "localeHint": "Langue préférée du joueur : {locale}",
     "featuredTitle": "Carte vitrine",
+    "hub": {
+      "navLabel": "Navigation du profil",
+      "memberSince": "Membre depuis {date}",
+      "binderWorld": "Monde classeur",
+      "binderWorldSoon": "Bientôt",
+      "tabSoonTitle": "Bientôt disponible",
+      "tabSoonBody": "Cette section arrive dans une prochaine mise à jour.",
+      "privateNotice": "Votre profil est privé : seul vous voyez cette page.",
+      "tabs": {
+        "overview": "Aperçu",
+        "collection": "Collection",
+        "showcase": "Vitrine",
+        "stats": "Statistiques",
+        "settings": "Paramètres"
+      }
+    },
     "error": {
       "invalid": "Données invalides.",
       "featured_not_owned": "Vous devez posséder la carte vitrine choisie.",

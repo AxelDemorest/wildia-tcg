@@ -36,7 +36,7 @@ export type OpenShopSlotDeps<T> = {
   checkRateLimit: (userId: string) => Promise<boolean>;
   /** Throws an Error carrying the RPC message when the opening is refused. */
   openSlot: (windowIndex: number, slotIndex: number) => Promise<T>;
-  revalidate: (locale: string) => void | Promise<void>;
+  revalidate: (locale: string, userId: string) => void | Promise<void>;
 };
 
 export type OpenShopSlotOutcome<T> =
@@ -87,6 +87,6 @@ export async function runOpenShopSlot<T>(
     };
   }
 
-  await deps.revalidate(locale);
+  await deps.revalidate(locale, userId);
   return { ok: true, result, locale };
 }

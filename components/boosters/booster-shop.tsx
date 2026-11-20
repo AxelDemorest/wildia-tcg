@@ -31,9 +31,10 @@ type Props = {
   /** Seconds left in the offer's window, computed on the server at render. */
   secondsLeft: number;
   isLoggedIn: boolean;
+  userId: string | null;
 };
 
-export function BoosterShop({ locale, offer, secondsLeft, isLoggedIn }: Props) {
+export function BoosterShop({ locale, offer, secondsLeft, isLoggedIn, userId }: Props) {
   const t = useTranslations("Boosters");
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -218,12 +219,14 @@ export function BoosterShop({ locale, offer, secondsLeft, isLoggedIn }: Props) {
                   </li>
                 ))}
               </ul>
-              <Link
-                href="/collection"
-                className="inline-flex rounded-xl bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-strong"
-              >
-                {t("goCollection")}
-              </Link>
+              {userId && (
+                <Link
+                  href={`/players/${userId}/collection`}
+                  className="inline-flex rounded-xl bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-strong"
+                >
+                  {t("goCollection")}
+                </Link>
+              )}
             </div>
           )}
         </section>

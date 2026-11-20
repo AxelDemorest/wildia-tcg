@@ -116,8 +116,8 @@ test("coming back with the browser's Back button reloads the offer: the timer is
   await expect(page.getByRole("timer")).toBeVisible();
 
   // Client-side navigation away from the page, then wait: the window keeps running.
-  await page.getByRole("link", { name: "Mon classeur" }).first().click();
-  await expect(page).toHaveURL(/\/fr\/collection/);
+  await page.getByRole("link", { name: "Ma collection" }).first().click();
+  await expect(page).toHaveURL(new RegExp(`/fr/players/${player.id}/collection`));
   await page.waitForTimeout(20_000);
 
   await page.goBack();

@@ -12,6 +12,7 @@ type ProfileRow = {
   avatar_url: string | null;
   locale: string;
   is_public: boolean;
+  created_at: string;
 };
 
 async function mapProfile(row: ProfileRow): Promise<PublicProfile> {
@@ -23,6 +24,7 @@ async function mapProfile(row: ProfileRow): Promise<PublicProfile> {
     avatar_url: row.avatar_url,
     locale: row.locale,
     is_public: row.is_public,
+    created_at: row.created_at,
     featured_card_id: await getFeaturedShowcaseCardId(row.id),
   };
 }
@@ -31,7 +33,7 @@ export async function getOwnProfile(userId: string): Promise<PublicProfile | nul
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("profiles")
-    .select("id, display_name, bio, banner_url, avatar_url, locale, is_public")
+    .select("id, display_name, bio, banner_url, avatar_url, locale, is_public, created_at")
     .eq("id", userId)
     .maybeSingle();
 
@@ -52,7 +54,7 @@ export async function getPublicProfileForViewer(
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("profiles")
-    .select("id, display_name, bio, banner_url, avatar_url, locale, is_public")
+    .select("id, display_name, bio, banner_url, avatar_url, locale, is_public, created_at")
     .eq("id", profileId)
     .maybeSingle();
 

@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 import type { CardRarity } from "@/lib/cards/types";
-import { sortCollection, type CollectionCard } from "@/lib/inventory/collection";
+import {
+  paginateCollection,
+  parseCollectionPage,
+  sortCollection,
+  type CollectionCard,
+} from "@/lib/inventory/collection";
 
 function card(name: string, rarity: CardRarity, quantity: number): CollectionCard {
   return {
@@ -54,5 +59,31 @@ describe("sortCollection", () => {
     const before = names(items);
     sortCollection(items, "name");
     expect(names(items)).toEqual(before);
+  });
+});
+
+describe("paginateCollection", () => {
+  const many = Array.from({ length: 50 }, (_, index) => card(`C${index}`, "common", 1));
+
+  it("returns the first page of 48 items by default", () => {
+    const { items, page, pageCount, total } = paginateCollection(many, 1);
+    expect(items).toHaveLength(48);
+    expect(page).toBe(1);
+    expect(pageCount).toBe(2);
+    expect(total).toBe(50);
+  });
+
+  it("returns the remainder on the last page", () => {
+    const { items, page } = paginateCollection(many, 2);
+    expect(items).toHaveLength(2);
+    expect(page).toBe(2);
+  });
+});
+
+describe("parseCollectionPage", () => {
+  it("clamps invalid or high page numbers", () => {
+    expect(parseCollectionPage(undefined, 3)).toBe(1);
+    expect(parseCollectionPage("0", 3)).toBe(1);
+    expect(parseCollectionPage("99", 3)).toBe(3);
   });
 });

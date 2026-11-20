@@ -42,7 +42,7 @@ async function drawnCardNames(player: Player): Promise<string[]> {
 test("a player opens one emplacement of their shop offer, reveals the cards and finds them in their binder", async ({
   page,
 }) => {
-  // A cold `next dev` compiles /fr/boosters and /fr/collection on first visit.
+  // A cold `next dev` compiles /fr/boosters and the profile collection route on first visit.
   test.setTimeout(180_000);
 
   // The offer is read twice (by the test, then by the page): stay clear of a window change.
@@ -150,8 +150,9 @@ test("a player opens one emplacement of their shop offer, reveals the cards and 
 
   await test.step("find every drawn card in the binder", async () => {
     await page.getByRole("link", { name: "Voir mon classeur" }).click();
-    // Longer than the default 5 s: the first visit compiles /fr/collection on a cold dev server.
-    await expect(page).toHaveURL(/\/fr\/collection/, { timeout: 20_000 });
+    await expect(page).toHaveURL(new RegExp(`/fr/players/${player.id}/collection`), {
+      timeout: 20_000,
+    });
 
     for (const name of await drawnCardNames(player)) {
       await expect(page.getByText(name).first()).toBeVisible();
