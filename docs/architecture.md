@@ -31,6 +31,8 @@ Objectif : le front Next reste une coquille UI ; le métier vit dans `server/` e
 - Lecture catalogue → `server/cards/queries.ts` (puis repository dédié si le fichier grossit).
 - Écriture inventaire → `server/inventory/grant-card.ts` + RPC `grant_card`.
 - Ouverture d’un emplacement de la boutique → `openShopSlot` (`server/actions/open-booster.ts`) → `runOpenShopSlot` (`lib/boosters/open-shop-slot.ts`, dépendances injectées) → `openBoosterShopSlot` (`server/boosters/open-pack.ts`) → RPC `open_booster_shop_slot`.
+- Chargement d’une ouverture passée par identifiant de tirage → `loadDrawForReveal` (`server/boosters/load-draw.ts`) → `runLoadDraw` (`lib/boosters/load-draw.ts`, dépendances injectées) → lecture de `draw_logs` par le client du joueur (RLS `draw_logs_select_own`, pas de service role).
+- Cartes tirées enrichies avec le catalogue pour la révélation → `enrichDrawnCards` (`lib/boosters/enrich-drawn-cards.ts`), partagé par `openShopSlot` et `runLoadDraw`.
 - Validation entrée → Zod dans `lib/` quand c’est réutilisable, sinon en tête de l’action.
 - Logique pure testable → `lib/` + test Vitest.
 
