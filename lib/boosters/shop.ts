@@ -1,5 +1,6 @@
 export type BoosterShopSlot = {
   slotIndex: number;
+  exhausted: boolean;
   booster: {
     id: string;
     slug: string;
@@ -26,6 +27,7 @@ export function parseBoosterShopOffer(data: unknown): BoosterShopOffer {
     const booster = item.booster as Record<string, unknown>;
     return {
       slotIndex: Number(item.slot_index),
+      exhausted: Boolean(item.exhausted),
       booster: {
         id: String(booster.id),
         slug: String(booster.slug),

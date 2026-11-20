@@ -11,9 +11,14 @@ import {
   createCard,
   createPlayer,
   giveCoins,
+  setShopSlot,
+  shopSlotExhaustionOf,
+  shopWindowNow,
   sql,
   visitor,
+  waitForShopWindowMargin,
 } from "./supabase";
+import { parseBoosterShopOffer } from "@/lib/boosters/shop";
 
 afterAll(cleanup);
 
@@ -33,10 +38,11 @@ describe("function privileges, for every function in public", () => {
     expect(callableBy("anon")).toEqual([]);
   });
 
-  it("players can only call get_booster_shop_offer, open_booster_pack and sync_user_economy", () => {
+  it("players can only call get_booster_shop_offer, open_booster_pack, open_booster_shop_slot and sync_user_economy", () => {
     expect(callableBy("authenticated")).toEqual([
       "get_booster_shop_offer",
       "open_booster_pack",
+      "open_booster_shop_slot",
       "sync_user_economy",
     ]);
   });
@@ -219,6 +225,59 @@ describe("get_booster_shop_offer", () => {
   });
 });
 
+describe("open_booster_shop_slot", () => {
+  // Would catch: a grant to anon, or a function that debits before checking the caller.
+  it("cannot be called by a visitor, and debits nothing", async () => {
+    const player = await createPlayer();
+    await giveCoins(player.id, 1000);
+    const windowIndex = shopWindowNow();
+
+    const { error } = await visitor.rpc("open_booster_shop_slot", {
+      p_window_index: windowIndex,
+      p_slot_index: 0,
+    });
+
+    expect(error?.code).toBe("42501");
+    expect(await balanceOf(player.id)).toBe(1000);
+  });
+
+  // Would catch: falling back to a user id from the arguments or a null uid reaching the opening.
+  it("refuses a call without a signed-in player, even with the service role", async () => {
+    const { error } = await admin.rpc("open_booster_shop_slot", {
+      p_window_index: shopWindowNow(),
+      p_slot_index: 0,
+    });
+
+    expect(error?.message).toBe("not authenticated");
+  });
+
+  // Would catch: reading the emplacement by window and index only, without the caller's user_id.
+  it("only reaches the caller's own offre: a player without one cannot open another player's emplacement", async () => {
+    await waitForShopWindowMargin(30);
+    await createCard("common");
+    const boosterId = await createBooster({ common: 1 }, 100, true, 5, 0);
+    const owner = await createPlayer();
+    const caller = await createPlayer();
+    await giveCoins(owner.id, 1000);
+    await giveCoins(caller.id, 1000);
+    const { data, error } = await owner.client.rpc("get_booster_shop_offer");
+    if (error) throw error;
+    const windowIndex = parseBoosterShopOffer(data).windowIndex;
+    await setShopSlot(owner.id, windowIndex, 0, boosterId);
+
+    const attempt = await caller.client.rpc("open_booster_shop_slot", {
+      p_window_index: windowIndex,
+      p_slot_index: 0,
+    });
+
+    expect(attempt.error?.message).toBe("slot_not_found");
+    expect(await balanceOf(caller.id)).toBe(1000);
+    expect(await balanceOf(owner.id)).toBe(1000);
+    const slots = await shopSlotExhaustionOf(owner.id, windowIndex);
+    expect(slots.every((slot) => slot.opened_at === null && slot.draw_id === null)).toBe(true);
+  }, 45_000);
+});
+
 describe("internal helpers", () => {
   it.each(["user_currency_balance", "pick_weighted_rarity"])(
     "%s is not callable from the API by visitors or players",
@@ -235,15 +294,16 @@ describe("internal helpers", () => {
     },
   );
 
-  it.each(["private.booster_shop_window()", "private.pick_shop_booster()"])(
-    "%s is executable by neither anon nor authenticated",
-    (fn) => {
-      const [row] = sql<{ anon: boolean; authenticated: boolean }>(
-        `select has_function_privilege('anon', '${fn}', 'EXECUTE') as anon,
+  it.each([
+    "private.booster_shop_window()",
+    "private.pick_shop_booster()",
+    "private.open_booster_for(uuid, uuid)",
+  ])("%s is executable by neither anon nor authenticated", (fn) => {
+    const [row] = sql<{ anon: boolean; authenticated: boolean }>(
+      `select has_function_privilege('anon', '${fn}', 'EXECUTE') as anon,
                 has_function_privilege('authenticated', '${fn}', 'EXECUTE') as authenticated`,
-      );
+    );
 
-      expect(row).toEqual({ anon: false, authenticated: false });
-    },
-  );
+    expect(row).toEqual({ anon: false, authenticated: false });
+  });
 });

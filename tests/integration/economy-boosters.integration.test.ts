@@ -10,8 +10,10 @@ import {
   createBooster,
   createCard,
   createPlayer,
+  drawsOf,
   giveCoins,
   grantCard,
+  inventoryOf,
   ledgerOf,
   setAwayFor,
   sql,
@@ -65,24 +67,6 @@ async function playerFarmingOneCoinPerSecond(): Promise<Player> {
   await grantCard(player.id, await createCard("common", 0.5), 1);
   await grantCard(player.id, await createCard("common", 0.25), 2);
   return player;
-}
-
-async function inventoryOf(userId: string): Promise<Map<string, number>> {
-  const { data, error } = await admin
-    .from("user_cards")
-    .select("card_id, quantity")
-    .eq("user_id", userId);
-  if (error) throw error;
-  return new Map(data.map((row) => [row.card_id, row.quantity]));
-}
-
-async function drawsOf(userId: string) {
-  const { data, error } = await admin
-    .from("draw_logs")
-    .select("id, booster_id, results, roll_seed")
-    .eq("user_id", userId);
-  if (error) throw error;
-  return data;
 }
 
 describe("farm (sync_user_economy)", () => {

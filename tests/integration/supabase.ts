@@ -159,9 +159,10 @@ export function shopWindowNow(): number {
 
 /**
  * Waits for the next fenêtre boutique when fewer than `seconds` remain in the current one, so
- * a test comparing two reads is not split by a window change.
+ * a test comparing two reads is not split by a window change. The default of 30 s leaves a slow,
+ * cold run (fresh CI, right after `npm ci`) room to finish a test before the window closes.
  */
-export async function waitForShopWindowMargin(seconds = 10): Promise<void> {
+export async function waitForShopWindowMargin(seconds = 30): Promise<void> {
   const [row] = sql<{ remaining: number }>(
     "select (180 - mod(extract(epoch from now())::numeric, 180))::float8 as remaining",
   );
@@ -182,6 +183,79 @@ export async function shopSlotsOf(userId: string): Promise<ShopSlotRow[]> {
     .order("slot_index");
   if (error) throw error;
   return data.map((row) => ({ ...row, window_index: Number(row.window_index) }));
+}
+
+/** The player's inventory: quantity per card. */
+export async function inventoryOf(userId: string): Promise<Map<string, number>> {
+  const { data, error } = await admin
+    .from("user_cards")
+    .select("card_id, quantity")
+    .eq("user_id", userId);
+  if (error) throw error;
+  return new Map(data.map((row) => [row.card_id, row.quantity]));
+}
+
+export async function drawsOf(userId: string) {
+  const { data, error } = await admin
+    .from("draw_logs")
+    .select("id, booster_id, results, roll_seed")
+    .eq("user_id", userId);
+  if (error) throw error;
+  return data;
+}
+
+/** Forces one stored emplacement of a player's offre onto a définition de booster. */
+export async function setShopSlot(
+  userId: string,
+  windowIndex: number,
+  slotIndex: number,
+  boosterId: string,
+): Promise<void> {
+  const { data, error } = await admin
+    .from("booster_shop_slots")
+    .update({ booster_id: boosterId })
+    .eq("user_id", userId)
+    .eq("window_index", windowIndex)
+    .eq("slot_index", slotIndex)
+    .select("slot_index");
+  if (error) throw error;
+  if (data?.length !== 1) {
+    throw new Error(`setShopSlot : emplacement ${windowIndex}/${slotIndex} introuvable`);
+  }
+}
+
+/** Moves a player's stored offre boutique to another window, optionally onto one définition. */
+export async function moveShopOffer(
+  userId: string,
+  windowIndex: number,
+  boosterId?: string,
+): Promise<void> {
+  const { error } = await admin
+    .from("booster_shop_slots")
+    .update({ window_index: windowIndex, ...(boosterId ? { booster_id: boosterId } : {}) })
+    .eq("user_id", userId);
+  if (error) throw error;
+}
+
+export type ShopSlotExhaustion = {
+  slot_index: number;
+  opened_at: string | null;
+  draw_id: string | null;
+};
+
+/** The exhausted state (opened_at, draw_id) of a player's stored emplacements in one window. */
+export async function shopSlotExhaustionOf(
+  userId: string,
+  windowIndex: number,
+): Promise<ShopSlotExhaustion[]> {
+  const { data, error } = await admin
+    .from("booster_shop_slots")
+    .select("slot_index, opened_at, draw_id")
+    .eq("user_id", userId)
+    .eq("window_index", windowIndex)
+    .order("slot_index");
+  if (error) throw error;
+  return data as ShopSlotExhaustion[];
 }
 
 /** Credits coins the way an admin adjustment would. */
