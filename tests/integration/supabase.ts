@@ -200,17 +200,22 @@ export async function setShopSlotCount(value: number): Promise<void> {
   if (error) throw error;
 }
 
-/** The id, cost and card count of a real booster définition, by slug. */
+/** The id, cost, card count and shop weight of a real booster définition, by slug. */
 export async function boosterBySlug(
   slug: string,
-): Promise<{ id: string; costCoins: number; slots: number }> {
+): Promise<{ id: string; costCoins: number; slots: number; shopWeight: number }> {
   const { data, error } = await admin
     .from("booster_definitions")
-    .select("id, cost_coins, slots")
+    .select("id, cost_coins, slots, shop_weight")
     .eq("slug", slug)
     .single();
   if (error) throw error;
-  return { id: data.id, costCoins: Number(data.cost_coins), slots: Number(data.slots) };
+  return {
+    id: data.id,
+    costCoins: Number(data.cost_coins),
+    slots: Number(data.slots),
+    shopWeight: Number(data.shop_weight),
+  };
 }
 
 export type ShopSlotRow = { window_index: number; slot_index: number; booster_id: string };

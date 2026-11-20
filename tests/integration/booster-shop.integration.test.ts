@@ -6,6 +6,7 @@ import { afterAll, beforeEach, describe, expect, it } from "vitest";
 import { parseBoosterShopOffer, type BoosterShopOffer } from "@/lib/boosters/shop";
 import {
   admin,
+  boosterBySlug,
   cleanup,
   createBooster,
   createPlayer,
@@ -91,6 +92,13 @@ describe("offre boutique, nombre d'emplacements par défaut", () => {
     const offer = await readOffer(player);
 
     expect(offer.slots.map((slot) => slot.slotIndex)).toEqual([0, 1, 2, 3, 4, 5, 6, 7]);
+  });
+});
+
+describe("offre boutique, poids par défaut", () => {
+  it("weights the standard définition de booster 70 and the premium one 30", async () => {
+    expect((await boosterBySlug("standard")).shopWeight).toBe(70);
+    expect((await boosterBySlug("premium")).shopWeight).toBe(30);
   });
 });
 
@@ -220,11 +228,12 @@ describe("tirage des types de booster", () => {
   });
 
   it("follows shop_weight and draws each emplacement independently", async () => {
+    // 1e9 each: the real définitions (70 and 30) together have about a 2e-6 chance to be picked in 40 draws.
     const first = await createBooster({ common: 1 }, 100, true, 5, 0);
     const second = await createBooster({ common: 1 }, 100, true, 5, 0);
     try {
-      await setShopWeight(first, 1_000_000);
-      await setShopWeight(second, 1_000_000);
+      await setShopWeight(first, 1_000_000_000);
+      await setShopWeight(second, 1_000_000_000);
       const offers = [];
       for (let i = 0; i < 5; i++) offers.push(await readOffer(await createPlayer()));
 

@@ -1,6 +1,7 @@
 /**
- * The coin economy and booster opening, as players use them (signed-in client, own account).
- * Rules in docs/economy.md. Runs against the local Supabase: npm run test:integration.
+ * The coin economy as players use it (signed-in client, own account), and the booster opening
+ * internals (open_booster_pack), called as the server does: players only open a booster through
+ * their offre boutique. Rules in docs/economy.md. Runs against the local Supabase: npm run test:integration.
  */
 import { afterAll, describe, expect, it } from "vitest";
 import {
@@ -37,7 +38,8 @@ async function sync(player: Player): Promise<SyncResult> {
 }
 
 function open(player: Player, boosterId: string) {
-  return player.client.rpc("open_booster_pack", {
+  // Server only: players open boosters through the boutique (open_booster_shop_slot).
+  return admin.rpc("open_booster_pack", {
     p_booster_id: boosterId,
     p_user_id: player.id,
   }) as unknown as Promise<{ data: OpenResult | null; error: { message: string } | null }>;
@@ -132,7 +134,7 @@ describe("farm (sync_user_economy)", () => {
   });
 });
 
-describe("booster opening (open_booster_pack)", () => {
+describe("booster opening (open_booster_pack, server only)", () => {
   it("charges the price once, draws one card per slot and records the draw", async () => {
     const player = await createPlayer();
     await giveCoins(player.id, 1000);

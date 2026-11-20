@@ -38,10 +38,9 @@ describe("function privileges, for every function in public", () => {
     expect(callableBy("anon")).toEqual([]);
   });
 
-  it("players can only call get_booster_shop_offer, open_booster_pack, open_booster_shop_slot and sync_user_economy", () => {
+  it("players can only call get_booster_shop_offer, open_booster_shop_slot and sync_user_economy", () => {
     expect(callableBy("authenticated")).toEqual([
       "get_booster_shop_offer",
-      "open_booster_pack",
       "open_booster_shop_slot",
       "sync_user_economy",
     ]);
@@ -175,38 +174,6 @@ describe("open_booster_pack", () => {
     expect(error?.code).toBe("42501");
     expect(await balanceOf(player.id)).toBe(1000);
     expect(await drawCount(player.id)).toBe(0);
-  });
-
-  it("refuses a player opening a booster on someone else's account", async () => {
-    const attacker = await createPlayer();
-    const victim = await createPlayer();
-    await giveCoins(victim.id, 1000);
-    await createCard("common");
-    const boosterId = await createBooster({ common: 1 }, 100);
-
-    const { error } = await attacker.client.rpc("open_booster_pack", {
-      p_booster_id: boosterId,
-      p_user_id: victim.id,
-    });
-
-    expect(error?.message).toBe("forbidden");
-    expect(await balanceOf(victim.id)).toBe(1000);
-  });
-
-  it("works for a player on their own account", async () => {
-    const player = await createPlayer();
-    await giveCoins(player.id, 1000);
-    await createCard("common");
-    const boosterId = await createBooster({ common: 1 }, 100);
-
-    const { data, error } = await player.client.rpc("open_booster_pack", {
-      p_booster_id: boosterId,
-      p_user_id: player.id,
-    });
-
-    expect(error).toBeNull();
-    expect(data.cards).toHaveLength(5);
-    expect(await balanceOf(player.id)).toBe(900);
   });
 });
 
