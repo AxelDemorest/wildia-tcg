@@ -1,7 +1,9 @@
 import "server-only";
 
 import { updateProfileInputSchema, type UpdateProfileInput } from "@/lib/profiles/profile-form";
+import { FEATURED_SHOWCASE_SLOT } from "@/lib/profiles/showcase";
 import { createClient } from "@/lib/supabase/server";
+import { setShowcaseSlot } from "@/server/profiles/showcase";
 
 async function userOwnsCard(userId: string, cardId: string): Promise<boolean> {
   const supabase = await createClient();
@@ -32,11 +34,12 @@ export async function updateUserProfile(userId: string, input: UpdateProfileInpu
     .update({
       bio: parsed.bio?.trim() || null,
       is_public: parsed.isPublic,
-      featured_card_id: parsed.featuredCardId,
       display_name: parsed.displayName?.trim() || null,
       updated_at: new Date().toISOString(),
     })
     .eq("id", userId);
 
   if (error) throw new Error(error.message);
+
+  await setShowcaseSlot(userId, FEATURED_SHOWCASE_SLOT, parsed.featuredCardId);
 }

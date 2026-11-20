@@ -13,12 +13,13 @@
 ## Quand utiliser quoi
 
 - **Lecture catalogue** (`cards`, `card_translations`) : client anon, policies `SELECT` publiques.
-- **Inventaire** (`user_cards`) : `SELECT` own user only ; écritures via RPC `grant_card` (service role) ou Server Actions.
+- **Inventaire** (`user_cards`) : `SELECT` own row ; `SELECT` aussi pour `anon` / `authenticated` lorsque le `profiles` du `user_id` a `is_public = true` (ADR 0002) ; écritures via RPC `grant_card` (service role) ou Server Actions.
 - **Boutique boosters** (`booster_shop_slots`) : `SELECT` own user only ; aucune policy d’écriture, les lignes sont écrites uniquement par la RPC `get_booster_shop_offer` et marquées épuisées (`opened_at`, `draw_id`) uniquement par la RPC `open_booster_shop_slot` (toutes deux `SECURITY DEFINER`).
 - **Ledger, tirages** (sprints suivants) : écritures via Server Actions + service role ou RPC `SECURITY DEFINER`, pas d’`INSERT` direct depuis le navigateur. `currency_ledger` est append-only (trigger `private.currency_ledger_append_only`), même pour le service role ; seule la suppression d’un compte efface ses lignes, en cascade depuis `auth.users`.
 - **Storage `card-art`** : lecture publique ; écriture réservée au service role.
 - **Storage `profile-banners`** : lecture publique ; upload/update/delete par l’utilisateur authentifié dans son dossier `{user_id}/`.
-- **`profiles`** : lecture own row ; lecture rows `is_public = true` pour anon/authenticated ; update own only, **et seulement sur les colonnes que l’app écrit** : `display_name`, `bio`, `is_public`, `featured_card_id`, `banner_url`, `updated_at`. `last_economy_sync_at` (horloge du farm) n’est modifiable que par `sync_user_economy` : sinon un joueur pourrait la reculer et se créditer des pièces. Une nouvelle colonne modifiable par le joueur demande un `grant update (colonne) on public.profiles to authenticated` explicite. Carte vitrine : possession vérifiée côté serveur et par le trigger `profiles_featured_card_owned`.
+- **`profiles`** : lecture own row ; lecture rows `is_public = true` pour anon/authenticated ; update own only, **et seulement sur les colonnes que l’app écrit** : `display_name`, `bio`, `is_public`, `banner_url`, `updated_at`. `last_economy_sync_at` (horloge du farm) n’est modifiable que par `sync_user_economy` : sinon un joueur pourrait la reculer et se créditer des pièces. Une nouvelle colonne modifiable par le joueur demande un `grant update (colonne) on public.profiles to authenticated` explicite.
+- **`profile_showcase_slots`** : six emplacements (`slot` 1–6) par profil, `card_id` nullable ; lecture own row et lecture des profils `is_public` pour anon/authenticated ; insert/update/delete own only. Une carte renseignée doit être possédée (`user_cards`, trigger `profile_showcase_slots_owned`). Suppression d’une ligne `user_cards` → emplacements concernés vidés via le trigger `SECURITY DEFINER` `profile_showcase_slots_clear_on_inventory_loss` (non exécutable par l’API).
 
 Voir aussi `docs/rate-limiting.md`.
 

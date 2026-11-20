@@ -54,9 +54,19 @@ describe("profiles created at signup (handle_new_user)", () => {
 async function readProfile(id: string) {
   const { data, error } = await admin
     .from("profiles")
-    .select("last_economy_sync_at, created_at, featured_card_id, display_name, bio, is_public")
+    .select("last_economy_sync_at, created_at, display_name, bio, is_public")
     .eq("id", id)
     .single();
+  if (error) throw error;
+  return data;
+}
+
+async function readShowcaseSlots(profileId: string) {
+  const { data, error } = await admin
+    .from("profile_showcase_slots")
+    .select("slot, card_id")
+    .eq("profile_id", profileId)
+    .order("slot");
   if (error) throw error;
   return data;
 }
@@ -108,37 +118,61 @@ describe("profiles: what a player may change on their own row", () => {
     expect((await readProfile(player.id)).created_at).toBe(before.created_at);
   });
 
-  it("cannot feature a card they do not own", async () => {
+  it("cannot put a card they do not own in a showcase slot", async () => {
     const player = await createPlayer();
     const cardId = await createCard("mythic");
 
-    const { error } = await player.client
-      .from("profiles")
-      .update({ featured_card_id: cardId })
-      .eq("id", player.id);
+    const { error } = await player.client.from("profile_showcase_slots").upsert({
+      profile_id: player.id,
+      slot: 1,
+      card_id: cardId,
+    });
 
     expect(error).not.toBeNull();
-    expect((await readProfile(player.id)).featured_card_id).toBeNull();
+    expect(await readShowcaseSlots(player.id)).toEqual([]);
   });
 
-  it("can feature a card they own, then clear it", async () => {
+  it("can fill up to six showcase slots with owned cards, then clear a slot", async () => {
     const player = await createPlayer();
-    const cardId = await createCard("common");
-    await grantCard(player.id, cardId);
+    const cardIds = await Promise.all(
+      Array.from({ length: 6 }, () => createCard("common")),
+    );
+    for (const cardId of cardIds) {
+      await grantCard(player.id, cardId);
+    }
 
-    const set = await player.client
-      .from("profiles")
-      .update({ featured_card_id: cardId })
-      .eq("id", player.id);
-    expect(set.error).toBeNull();
-    expect((await readProfile(player.id)).featured_card_id).toBe(cardId);
+    for (let slot = 1; slot <= 6; slot++) {
+      const { error } = await player.client.from("profile_showcase_slots").upsert({
+        profile_id: player.id,
+        slot,
+        card_id: cardIds[slot - 1],
+      });
+      expect(error).toBeNull();
+    }
 
-    const clear = await player.client
-      .from("profiles")
-      .update({ featured_card_id: null })
-      .eq("id", player.id);
+    expect(await readShowcaseSlots(player.id)).toEqual(
+      cardIds.map((card_id, index) => ({ slot: index + 1, card_id })),
+    );
+
+    const clear = await player.client.from("profile_showcase_slots").upsert({
+      profile_id: player.id,
+      slot: 3,
+      card_id: null,
+    });
     expect(clear.error).toBeNull();
-    expect((await readProfile(player.id)).featured_card_id).toBeNull();
+    expect((await readShowcaseSlots(player.id)).find((row) => row.slot === 3)?.card_id).toBeNull();
+  });
+
+  it("rejects a seventh showcase slot", async () => {
+    const player = await createPlayer();
+
+    const { error } = await player.client.from("profile_showcase_slots").upsert({
+      profile_id: player.id,
+      slot: 7,
+      card_id: null,
+    });
+
+    expect(error?.code).toBe("23514");
   });
 
   it("can still save everything the profile page and banner upload write", async () => {

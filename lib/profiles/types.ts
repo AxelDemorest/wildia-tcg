@@ -6,6 +6,7 @@ export type PublicProfile = {
   avatar_url: string | null;
   locale: string;
   is_public: boolean;
+  /** Card in showcase slot 1 (bridge until the six-slot settings UI lands). */
   featured_card_id: string | null;
 };
 
