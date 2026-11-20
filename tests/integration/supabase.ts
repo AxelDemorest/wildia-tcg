@@ -157,18 +157,60 @@ export function shopWindowNow(): number {
   return row.window_index;
 }
 
+/** Seconds left in the current fenêtre boutique, on the database's clock (180 s windows). */
+export function shopWindowRemainingSeconds(): number {
+  const [row] = sql<{ remaining: number }>(
+    "select (180 - mod(extract(epoch from now())::numeric, 180))::float8 as remaining",
+  );
+  return row.remaining;
+}
+
+/**
+ * The end of the current fenêtre boutique, as a timestamp on this process's clock. Reading the
+ * remaining seconds and adding them to the call's start would be biased: `sql` spawns the Supabase
+ * CLI, which takes 0.5 to 1 s between the call and the database's `now()`. The reading is dated at
+ * the middle of the call instead, and converted once, so the database and Node clocks may differ.
+ * Callers get the remaining seconds at any later moment with `(end - Date.now()) / 1000`.
+ */
+export function shopWindowEndMs(): number {
+  const startedAtMs = Date.now();
+  const remaining = shopWindowRemainingSeconds();
+  const midCallMs = (startedAtMs + Date.now()) / 2;
+  return midCallMs + remaining * 1000;
+}
+
 /**
  * Waits for the next fenêtre boutique when fewer than `seconds` remain in the current one, so
  * a test comparing two reads is not split by a window change. The default of 30 s leaves a slow,
  * cold run (fresh CI, right after `npm ci`) room to finish a test before the window closes.
  */
 export async function waitForShopWindowMargin(seconds = 30): Promise<void> {
-  const [row] = sql<{ remaining: number }>(
-    "select (180 - mod(extract(epoch from now())::numeric, 180))::float8 as remaining",
-  );
-  if (row.remaining < seconds) {
-    await new Promise((resolve) => setTimeout(resolve, (row.remaining + 1) * 1000));
+  const remaining = shopWindowRemainingSeconds();
+  if (remaining < seconds) {
+    await new Promise((resolve) => setTimeout(resolve, (remaining + 1) * 1000));
   }
+}
+
+/** Sets the number of emplacements of an offre boutique (global config: restore it afterwards). */
+export async function setShopSlotCount(value: number): Promise<void> {
+  const { error } = await admin
+    .from("economy_config")
+    .update({ value })
+    .eq("key", "booster_shop_slot_count");
+  if (error) throw error;
+}
+
+/** The id, cost and card count of a real booster définition, by slug. */
+export async function boosterBySlug(
+  slug: string,
+): Promise<{ id: string; costCoins: number; slots: number }> {
+  const { data, error } = await admin
+    .from("booster_definitions")
+    .select("id, cost_coins, slots")
+    .eq("slug", slug)
+    .single();
+  if (error) throw error;
+  return { id: data.id, costCoins: Number(data.cost_coins), slots: Number(data.slots) };
 }
 
 export type ShopSlotRow = { window_index: number; slot_index: number; booster_id: string };

@@ -2,28 +2,31 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { BoosterShop } from "@/components/boosters/booster-shop";
 import { PageHeader } from "@/components/ui/page-header";
 import { getUser } from "@/server/auth/require-user";
-import { listActiveBoosters } from "@/server/boosters/queries";
+import { getBoosterShopOffer } from "@/server/boosters/shop";
 
 type Props = { params: Promise<{ locale: string }> };
+
+/** Server clock against the window's horizon; the client counts down from this, not from its own clock. */
+function secondsUntil(isoDate: string): number {
+  return (Date.parse(isoDate) - Date.now()) / 1000;
+}
 
 export default async function BoostersPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("Boosters");
   const user = await getUser();
-  const boosters = await listActiveBoosters().catch(() => []);
+  const offer = user ? await getBoosterShopOffer().catch(() => null) : null;
+
+  const secondsLeft = offer ? secondsUntil(offer.endsAt) : 0;
 
   return (
     <div className="flex w-full flex-col gap-5">
       <PageHeader title={t("title")} subtitle={t("subtitle")} />
       <BoosterShop
         locale={locale}
-        boosters={boosters.map((b) => ({
-          id: b.id,
-          slug: b.slug,
-          costCoins: b.costCoins,
-          slots: b.slots,
-        }))}
+        offer={offer}
+        secondsLeft={secondsLeft}
         isLoggedIn={Boolean(user)}
       />
     </div>

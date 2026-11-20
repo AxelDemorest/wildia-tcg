@@ -10,6 +10,7 @@ import {
   createBooster,
   createPlayer,
   moveShopOffer,
+  setShopSlotCount,
   shopSlotsOf,
   shopWindowNow,
   sql,
@@ -26,14 +27,6 @@ async function readOffer(player: Player): Promise<BoosterShopOffer> {
   const { data, error } = await player.client.rpc("get_booster_shop_offer");
   if (error) throw error;
   return parseBoosterShopOffer(data);
-}
-
-async function setShopSlotCount(value: number): Promise<void> {
-  const { error } = await admin
-    .from("economy_config")
-    .update({ value })
-    .eq("key", "booster_shop_slot_count");
-  if (error) throw error;
 }
 
 async function setShopWeight(boosterId: string, shopWeight: number): Promise<void> {
@@ -68,7 +61,6 @@ describe("offre boutique", () => {
     expect(error).toBeNull();
     const offer = parseBoosterShopOffer(data);
     const expectedCount = await slotCount();
-    expect(expectedCount).toBe(6);
     expect(offer.slots.map((slot) => slot.slotIndex)).toEqual(
       Array.from({ length: expectedCount }, (_, i) => i),
     );
@@ -87,6 +79,18 @@ describe("offre boutique", () => {
       expect(slot.booster.costCoins).toBe(Number(definition!.cost_coins));
       expect(slot.booster.slots).toBe(definition!.slots);
     }
+  });
+});
+
+describe("offre boutique, nombre d'emplacements par défaut", () => {
+  it("is configured for 8 emplacements, and a fresh player's offre has 8", async () => {
+    // Two rows of 4 on desktop: the default shipped by the migrations.
+    expect(await slotCount()).toBe(8);
+
+    const player = await createPlayer();
+    const offer = await readOffer(player);
+
+    expect(offer.slots.map((slot) => slot.slotIndex)).toEqual([0, 1, 2, 3, 4, 5, 6, 7]);
   });
 });
 
