@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Surface } from "@/components/ui/surface";
 import type { CatalogCard } from "@/lib/cards/types";
+import { SHOWCASE_SLOT_COUNT } from "@/lib/profiles/showcase";
 import {
   saveProfileBanner,
   saveProfileSettings,
@@ -17,7 +18,7 @@ type Props = {
   displayName: string | null;
   bio: string | null;
   isPublic: boolean;
-  featuredCardId: string | null;
+  showcaseSlots: (string | null)[];
   ownedCards: CatalogCard[];
 };
 
@@ -29,7 +30,7 @@ export function ProfileSettingsForm({
   displayName,
   bio,
   isPublic,
-  featuredCardId,
+  showcaseSlots,
   ownedCards,
 }: Props) {
   const t = useTranslations("Profile");
@@ -72,24 +73,34 @@ export function ProfileSettingsForm({
               className="mt-1.5 w-full rounded-xl border border-border bg-[#16161b] px-3 py-2.5 text-sm text-white focus:border-brand/60 focus:outline-none focus:ring-2 focus:ring-brand/30"
             />
           </div>
-          <div>
-            <label htmlFor="featuredCardId" className="block text-sm font-medium text-white/85">
-              {t("featuredCard")}
-            </label>
-            <select
-              id="featuredCardId"
-              name="featuredCardId"
-              defaultValue={featuredCardId ?? ""}
-              className="mt-1.5 w-full rounded-xl border border-border bg-[#16161b] px-3 py-2.5 text-sm text-white focus:border-brand/60 focus:outline-none focus:ring-2 focus:ring-brand/30"
-            >
-              <option value="">{t("featuredNone")}</option>
-              {ownedCards.map((card) => (
-                <option key={card.id} value={card.id}>
-                  {card.name}
-                </option>
-              ))}
-            </select>
-          </div>
+          <fieldset className="space-y-3">
+            <legend className="text-sm font-medium text-white/85">{t("showcaseTitle")}</legend>
+            <p className="text-xs text-muted">{t("showcaseHint")}</p>
+            {Array.from({ length: SHOWCASE_SLOT_COUNT }, (_, index) => {
+              const slot = index + 1;
+              const fieldId = `showcaseSlot${slot}`;
+              return (
+                <div key={slot}>
+                  <label htmlFor={fieldId} className="block text-xs font-medium text-muted">
+                    {t("showcaseSlot", { slot })}
+                  </label>
+                  <select
+                    id={fieldId}
+                    name={fieldId}
+                    defaultValue={showcaseSlots[index] ?? ""}
+                    className="mt-1 w-full rounded-xl border border-border bg-[#16161b] px-3 py-2.5 text-sm text-white focus:border-brand/60 focus:outline-none focus:ring-2 focus:ring-brand/30"
+                  >
+                    <option value="">{t("featuredNone")}</option>
+                    {ownedCards.map((card) => (
+                      <option key={card.id} value={card.id}>
+                        {card.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              );
+            })}
+          </fieldset>
           <label className="flex items-center gap-2 text-sm">
             <input
               type="checkbox"

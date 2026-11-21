@@ -27,7 +27,7 @@ export async function SiteHeader({ locale }: Props) {
     ...(user
       ? [{ href: `/players/${user.id}/collection`, label: t("collection"), icon: <BinderIcon /> }]
       : []),
-    { href: user ? `/players/${user.id}` : "/settings/profile", label: t("profile"), icon: <ProfileIcon /> },
+    { href: user ? `/players/${user.id}` : "/login", label: t("profile"), icon: <ProfileIcon /> },
   ];
 
   return (

@@ -255,6 +255,9 @@
     "displayName": "Display name",
     "bio": "Bio",
     "featuredCard": "Showcase card",
+    "showcaseTitle": "Profile showcase",
+    "showcaseHint": "Up to six owned cards, one per slot.",
+    "showcaseSlot": "Slot {slot}",
     "featuredNone": "None",
     "isPublic": "Profile visible to everyone",
     "save": "Save",
@@ -290,6 +293,7 @@
     "error": {
       "invalid": "Invalid input.",
       "featured_not_owned": "You must own the selected showcase card.",
+      "showcase_not_owned": "You must own every card selected in the showcase.",
       "failed": "Could not save profile."
     },
     "bannerError": {

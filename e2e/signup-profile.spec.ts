@@ -21,8 +21,8 @@ test("a visitor signs up, fills their public profile and sees it on their player
   const userId = await adoptUserByEmail(email);
 
   await test.step("fill the public profile", async () => {
-    await page.goto("/fr/settings/profile");
-    await expect(page).toHaveURL(/\/fr\/settings\/profile$/);
+    await page.goto(`/fr/players/${userId}/settings`);
+    await expect(page).toHaveURL(new RegExp(`/fr/players/${userId}/settings`));
 
     await page.getByLabel("Pseudo affiché").fill("Testeur E2E");
     await page.getByLabel("Bio").fill("Fan de loutres et de pandas.");
@@ -38,5 +38,10 @@ test("a visitor signs up, fills their public profile and sees it on their player
 
     await expect(page.getByText("Testeur E2E").first()).toBeVisible();
     await expect(page.getByText("Fan de loutres et de pandas.")).toBeVisible();
+  });
+
+  await test.step("open their public collection while signed out", async () => {
+    await page.goto(`/fr/players/${userId}/collection`);
+    await expect(page.getByText("Classeur de Testeur E2E")).toBeVisible();
   });
 });

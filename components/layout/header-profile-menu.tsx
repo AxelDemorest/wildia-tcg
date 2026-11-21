@@ -75,7 +75,7 @@ export function HeaderProfileMenu({
             {profileLabel}
           </Link>
           <Link
-            href="/settings/profile"
+            href={`/players/${userId}/settings`}
             role="menuitem"
             className="block px-3.5 py-2 text-sm text-foreground hover:bg-white/[0.05]"
             onClick={() => setOpen(false)}

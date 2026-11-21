@@ -4,8 +4,21 @@ import {
   FEATURED_SHOWCASE_SLOT,
   SHOWCASE_SLOT_MAX,
   SHOWCASE_SLOT_MIN,
+  type ShowcaseSlot,
 } from "@/lib/profiles/showcase";
 import { createClient } from "@/lib/supabase/server";
+
+export async function listShowcaseSlots(profileId: string): Promise<ShowcaseSlot[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("profile_showcase_slots")
+    .select("slot, card_id")
+    .eq("profile_id", profileId)
+    .order("slot");
+
+  if (error) throw new Error(error.message);
+  return (data ?? []) as ShowcaseSlot[];
+}
 
 export async function getFeaturedShowcaseCardId(profileId: string): Promise<string | null> {
   const supabase = await createClient();

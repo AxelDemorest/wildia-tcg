@@ -1,7 +1,7 @@
 import "server-only";
 
 import { updateProfileInputSchema, type UpdateProfileInput } from "@/lib/profiles/profile-form";
-import { FEATURED_SHOWCASE_SLOT } from "@/lib/profiles/showcase";
+import { SHOWCASE_SLOT_COUNT } from "@/lib/profiles/showcase";
 import { createClient } from "@/lib/supabase/server";
 import { setShowcaseSlot } from "@/server/profiles/showcase";
 
@@ -21,10 +21,11 @@ async function userOwnsCard(userId: string, cardId: string): Promise<boolean> {
 export async function updateUserProfile(userId: string, input: UpdateProfileInput): Promise<void> {
   const parsed = updateProfileInputSchema.parse(input);
 
-  if (parsed.featuredCardId) {
-    const owns = await userOwnsCard(userId, parsed.featuredCardId);
+  for (const cardId of parsed.showcaseSlots) {
+    if (!cardId) continue;
+    const owns = await userOwnsCard(userId, cardId);
     if (!owns) {
-      throw new Error("featured_not_owned");
+      throw new Error("showcase_not_owned");
     }
   }
 
@@ -41,5 +42,7 @@ export async function updateUserProfile(userId: string, input: UpdateProfileInpu
 
   if (error) throw new Error(error.message);
 
-  await setShowcaseSlot(userId, FEATURED_SHOWCASE_SLOT, parsed.featuredCardId);
+  for (let slot = 1; slot <= SHOWCASE_SLOT_COUNT; slot++) {
+    await setShowcaseSlot(userId, slot, parsed.showcaseSlots[slot - 1] ?? null);
+  }
 }

@@ -255,6 +255,9 @@
     "displayName": "Pseudo affiché",
     "bio": "Bio",
     "featuredCard": "Carte vitrine",
+    "showcaseTitle": "Vitrine (profil)",
+    "showcaseHint": "Jusqu’à six cartes possédées, une par emplacement.",
+    "showcaseSlot": "Emplacement {slot}",
     "featuredNone": "Aucune",
     "isPublic": "Profil visible par tous",
     "save": "Enregistrer",
@@ -290,6 +293,7 @@
     "error": {
       "invalid": "Données invalides.",
       "featured_not_owned": "Vous devez posséder la carte vitrine choisie.",
+      "showcase_not_owned": "Vous devez posséder chaque carte choisie dans la vitrine.",
       "failed": "Impossible d’enregistrer le profil."
     },
     "bannerError": {

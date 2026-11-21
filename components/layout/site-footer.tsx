@@ -39,7 +39,9 @@ export async function SiteFooter() {
       links: [
         { href: "/login", label: home("login") },
         { href: "/signup", label: home("signup") },
-        { href: "/settings/profile", label: home("profile") },
+        ...(user
+          ? [{ href: `/players/${user.id}`, label: home("profile") }]
+          : []),
       ],
     },
   ];
