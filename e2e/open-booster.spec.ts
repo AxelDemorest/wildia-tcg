@@ -1,11 +1,12 @@
 import { randomUUID } from "node:crypto";
-import { expect, test, type Locator } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 import {
   admin,
   boosterBySlug,
   cleanup,
   createCatalogCard,
   createPlayer,
+  drawsOf,
   giveCoins,
   setShopSlot,
   waitForShopWindowMargin,
@@ -39,7 +40,7 @@ async function drawnCardNames(player: Player): Promise<string[]> {
   });
 }
 
-test("a player opens one emplacement of their shop offer, reveals the cards and finds them in their binder", async ({
+test("a player opens one emplacement of their shop offer and lands on the face-down stack of the draw", async ({
   page,
 }) => {
   // A cold `next dev` compiles /fr/boosters and /fr/collection on first visit.
@@ -102,7 +103,7 @@ test("a player opens one emplacement of their shop offer, reveals the cards and 
     await expect(pack(first)).toHaveAttribute("data-state", "idle");
   });
 
-  await test.step("open the second emplacement and reveal the five cards", async () => {
+  await test.step("open the second emplacement and land on the face-down stack of its draw", async () => {
     // Survives a client update, lost by a full page load.
     await page.evaluate(() => {
       (window as unknown as { __noReload: boolean }).__noReload = true;
@@ -110,34 +111,28 @@ test("a player opens one emplacement of their shop offer, reveals the cards and 
 
     await page.getByRole("button", { name: "Ouvrir Booster standard, emplacement 2" }).click();
 
-    const reveal = page.getByRole("heading", { name: "Vos tirages" });
-    await expect(reveal).toBeVisible();
-    // Focus moves to the reveal (its heading or its section), which scrolls it into view.
-    await expect
-      .poll(() =>
-        reveal.evaluate((heading) => {
-          const active = document.activeElement;
-          return active === heading || active === heading.closest("section");
-        }),
-      )
-      .toBe(true);
-    await expect(reveal).toBeInViewport();
-    for (let card = 1; card <= standard.slots - 1; card++) {
-      await page
-        .getByRole("button", { name: `Carte suivante (${card}/${standard.slots})` })
-        .click();
+    // The ceremony URL carries the draw of the player's only opening. Locally this runs on
+    // `next dev`: reaching it without a redirect to the shop also checks the StrictMode double mount.
+    // The opening is recorded by the Server Action: wait for its draw before reading the id.
+    await expect.poll(async () => (await drawsOf(player.id)).length, { timeout: 20_000 }).toBe(1);
+    const [draw] = await drawsOf(player.id);
+    await expect(page).toHaveURL(new RegExp(`/fr/boosters/opening/${draw.id}$`), {
+      timeout: 20_000,
+    });
+
+    const topCard = page.getByRole("button", {
+      name: `Retourner la carte 1 sur ${standard.slots}`,
+    });
+    await expect(topCard).toBeVisible();
+    await expect(topCard.locator("[data-side=back]")).toBeVisible();
+
+    // Face down: nothing in the page tells the species or the rarity of the cards.
+    const main = page.getByRole("main");
+    await expect(main.locator("[data-side=front]")).toHaveCount(0);
+    await expect(main.locator("[data-rarity]")).toHaveCount(0);
+    for (const name of await drawnCardNames(player)) {
+      await expect(main).not.toContainText(name);
     }
-    await expect(page.getByText("Booster ouvert !")).toBeVisible();
-  });
-
-  await test.step("see it exhausted, its sibling still available, without a reload", async () => {
-    const opened = emplacements().nth(1);
-    await expectAccessibleText(opened, "Épuisé");
-    await expect(pack(opened)).toHaveAttribute("data-state", "exhausted");
-    await expect(openButton(opened)).toHaveCount(0);
-
-    await expect(emplacements().nth(0)).not.toContainText("Épuisé");
-    await expect(openButton(emplacements().nth(0))).toHaveCount(1);
 
     expect(
       await page.evaluate(() => (window as unknown as { __noReload?: boolean }).__noReload),
@@ -148,20 +143,233 @@ test("a player opens one emplacement of their shop offer, reveals the cards and 
     await expect(page.getByTitle("850 pièces")).toBeVisible();
   });
 
+  const total = standard.slots;
+  const drawnNames = new Set(await drawnCardNames(player));
+  const setAsideRow = page.getByRole("list", { name: "Cartes écartées" });
+
+  // The counter and the hint repeat the button's accessible name and are `aria-hidden`: found by text.
+  const counter = (position: number) =>
+    page.getByText(`Carte ${position} sur ${total}`, { exact: true });
+  const turnHint = page.getByText("Cliquez pour retourner", { exact: true });
+  const setAsideHint = page.getByText("Cliquez pour écarter", { exact: true });
+
+  await test.step("see the counter and the hint to turn the top card on arrival", async () => {
+    await expect(counter(1)).toBeVisible();
+    await expect(turnHint).toBeVisible();
+    await expect(setAsideHint).toHaveCount(0);
+  });
+
+  await test.step("turn and set aside each card in turn", async () => {
+    for (let position = 1; position <= total; position++) {
+      await page
+        .getByRole("button", { name: `Retourner la carte ${position} sur ${total}` })
+        .click();
+      await expect(counter(position)).toBeVisible();
+      await expect(setAsideHint).toBeVisible();
+      await expect(turnHint).toHaveCount(0);
+
+      // The turned card shows its face; the button now offers to set it aside, by name.
+      const setAside = page.getByRole("button", {
+        name: new RegExp(`^Écarter .+ \\(${position} sur ${total}\\)$`),
+      });
+      await expect(setAside.locator("[data-side=front]")).toBeVisible();
+      const label = (await setAside.getAttribute("aria-label")) ?? "";
+      const name = /^Écarter (.+) \(\d+ sur \d+\)$/.exec(label)?.[1] ?? "";
+      expect(drawnNames.has(name), `"${name}" is one of the drawn cards`).toBe(true);
+
+      await setAside.click();
+
+      if (position < total) {
+        // The set-aside row holds the cards set aside so far, face up, the last one at its end.
+        const aside = setAsideRow.locator("[data-side=front]");
+        await expect(aside).toHaveCount(position);
+        await expect(aside.last()).toContainText(name);
+        await expect(
+          page.getByRole("button", { name: `Retourner la carte ${position + 1} sur ${total}` }),
+        ).toBeVisible();
+        await expect(counter(position + 1)).toBeVisible();
+        await expect(turnHint).toBeVisible();
+      }
+    }
+  });
+
+  await test.step("see the grouped recap replace the stack and the row", async () => {
+    const heading = page.getByRole("heading", { name: "Récapitulatif de l’ouverture" });
+    await expect(heading).toBeVisible();
+    await expect(heading).toBeFocused();
+    await expect(heading).toBeInViewport();
+    await expect(page.getByRole("button", { name: /Retourner la carte/ })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: /^Écarter / })).toHaveCount(0);
+    await expect(setAsideRow).toHaveCount(0);
+    await expect(page.getByText(/^Carte \d+ sur \d+$/)).toHaveCount(0);
+    await expect(turnHint).toHaveCount(0);
+    await expect(setAsideHint).toHaveCount(0);
+
+    // One face per species; "×n" marks a duplicate, no mark means one. They add up to the draw.
+    const faces = page.getByRole("main").locator("[data-side=front]");
+    await expect(faces).toHaveCount(drawnNames.size);
+    let drawn = 0;
+    for (const name of drawnNames) {
+      const face = faces.filter({ has: page.getByRole("heading", { name, exact: true }) });
+      await expect(face).toHaveCount(1);
+      // A species drawn once has no mark: count first, `getAttribute` would wait for one.
+      const marks = face.locator('[aria-label^="×"]');
+      const mark = (await marks.count()) > 0 ? await marks.getAttribute("aria-label") : null;
+      drawn += mark ? Number(mark.replace("×", "")) : 1;
+    }
+    expect(drawn).toBe(total);
+  });
+
+  await test.step("go back to the shop with Continuer, a Back and not a new entry", async () => {
+    const historyLength = () => page.evaluate(() => window.history.length);
+    const before = await historyLength();
+
+    await page.getByRole("button", { name: "Continuer" }).click();
+
+    await expect(page).toHaveURL(/\/fr\/boosters$/);
+    expect(await historyLength()).toBe(before);
+  });
+
+  await test.step("find only the notice when going Forward: the ceremony is not replayed", async () => {
+    await page.goForward();
+
+    await expect(page).toHaveURL(/\/fr\/boosters(\?.*)?$/);
+    await expect(
+      page.getByRole("status").filter({ hasText: /Ouverture déjà effectuée/ }),
+    ).toBeVisible();
+    await expect(page.getByRole("button", { name: /Retourner la carte/ })).toHaveCount(0);
+  });
+
   await test.step("find every drawn card in the binder", async () => {
-    await page.getByRole("link", { name: "Voir mon classeur" }).click();
+    await page.getByRole("link", { name: "Mon classeur" }).first().click();
     // Longer than the default 5 s: the first visit compiles /fr/collection on a cold dev server.
     await expect(page).toHaveURL(/\/fr\/collection/, { timeout: 20_000 });
 
-    for (const name of await drawnCardNames(player)) {
+    for (const name of drawnNames) {
       await expect(page.getByText(name).first()).toBeVisible();
     }
   });
 
-  await test.step("find the emplacement still exhausted when coming back in the same window", async () => {
+  await test.step("find the emplacement exhausted when coming back in the same window", async () => {
     await page.goto("/fr/boosters");
     await expect(emplacements()).toHaveCount(slotCount);
     await expectAccessibleText(emplacements().nth(1), "Épuisé");
     await expect(openButton(emplacements().nth(1))).toHaveCount(0);
+    await expect(pack(emplacements().nth(1))).toHaveAttribute("data-state", "exhausted");
+    // The sibling emplacement, not opened, still offers its button.
+    await expect(openButton(emplacements().nth(0))).toHaveCount(1);
   });
+});
+
+async function signIn(page: Page, player: Player) {
+  await page.goto("/fr/login");
+  await page.getByLabel("E-mail").fill(player.email);
+  await page.getByLabel("Mot de passe").fill(player.password);
+  await page.getByRole("button", { name: "Se connecter" }).click();
+  await expect(page).toHaveURL(/\/fr$/, { timeout: 20_000 });
+}
+
+const CEREMONY_URL = /\/fr\/boosters\/opening\/[0-9a-f-]{36}$/;
+
+test.describe("with reduced motion", () => {
+  test.use({ reducedMotion: "reduce" });
+
+  test("the keyboard turns and sets aside the cards with no animation, and a reload leaves the ceremony", async ({
+    page,
+  }) => {
+    test.setTimeout(180_000);
+    await waitForShopWindowMargin(60);
+
+    const player = await createPlayer();
+    await giveCoins(player.id, 1000);
+    const standard = await boosterBySlug("standard");
+    const { data: offer, error } = await player.client.rpc("get_booster_shop_offer");
+    if (error) throw error;
+    await setShopSlot(player.id, Number(offer.window_index), 0, standard.id);
+    await signIn(page, player);
+    await page.goto("/fr/boosters");
+
+    await page.getByRole("button", { name: "Ouvrir Booster standard, emplacement 1" }).click();
+    await expect(page).toHaveURL(CEREMONY_URL, { timeout: 20_000 });
+
+    const total = standard.slots;
+    const turn = (position: number) =>
+      page.getByRole("button", { name: `Retourner la carte ${position} sur ${total}` });
+    const setAside = (position: number) =>
+      page.getByRole("button", {
+        name: new RegExp(`^Écarter .+ \\(${position} sur ${total}\\)$`),
+      });
+
+    // No transition nor animation with a duration, on anything in the page's main area.
+    const expectNoMotion = async () => {
+      const motion = await page.getByRole("main").evaluate((main) => {
+        const seconds = (list: string) =>
+          list.split(",").map((value) => {
+            const duration = parseFloat(value);
+            return value.trim().endsWith("ms") ? duration / 1000 : duration;
+          });
+        return [main, ...main.querySelectorAll("*")].flatMap((element) => {
+          const style = getComputedStyle(element);
+          return [...seconds(style.transitionDuration), ...seconds(style.animationDuration)]
+            .filter((duration) => duration > 0)
+            .map((duration) => `${element.tagName}.${element.className}: ${duration}s`);
+        });
+      });
+      expect(motion).toEqual([]);
+    };
+
+    // Focus is on the top card on arrival: Enter alone turns it.
+    await expect(turn(1)).toBeFocused();
+    await page.keyboard.press("Enter");
+    await expect(setAside(1).locator("[data-side=front]")).toBeVisible();
+    await expect(setAside(1)).toBeFocused();
+    await expectNoMotion();
+
+    await page.keyboard.press("Enter");
+    await expect(turn(2)).toBeFocused();
+    await expectNoMotion();
+
+    await page.keyboard.press("Enter");
+    await expect(setAside(2)).toBeFocused();
+
+    // A reload keeps no marker: back to the shop with the notice, no stack.
+    await page.reload();
+    await expect(page).toHaveURL(/\/fr\/boosters(\?.*)?$/);
+    await expect(
+      page.getByRole("status").filter({ hasText: /Ouverture déjà effectuée/ }),
+    ).toBeVisible();
+    await expect(page.getByRole("button", { name: /Retourner la carte/ })).toHaveCount(0);
+
+    // Opening another emplacement from the shop that carries the notice, then Back: a clean shop.
+    expect(new URL(page.url()).searchParams.has("notice")).toBe(true);
+    await page
+      .getByRole("main")
+      .getByRole("button", { name: /^Ouvrir/, disabled: false })
+      .first()
+      .click();
+    await expect(page).toHaveURL(CEREMONY_URL, { timeout: 20_000 });
+
+    await page.goBack();
+    await expect(page).toHaveURL(/\/fr\/boosters(\?.*)?$/);
+    // Wait for the shop to render before asserting an absence.
+    await expect(page.getByRole("timer")).toBeVisible();
+    expect(new URL(page.url()).searchParams.has("notice")).toBe(false);
+    await expect(page.getByRole("status")).toHaveCount(0);
+  });
+});
+
+test("the ceremony route sends a guest to the login and shows a 404 for an unknown draw", async ({
+  page,
+}) => {
+  const unknownDraw = randomUUID();
+
+  await page.goto(`/fr/boosters/opening/${unknownDraw}`);
+  await expect(page).toHaveURL(/\/fr\/login/);
+
+  const player = await createPlayer();
+  await signIn(page, player);
+  const response = await page.goto(`/fr/boosters/opening/${unknownDraw}`);
+
+  expect(response?.status()).toBe(404);
+  await expect(page.getByRole("button", { name: /Retourner la carte/ })).toHaveCount(0);
 });

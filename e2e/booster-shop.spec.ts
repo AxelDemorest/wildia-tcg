@@ -312,22 +312,29 @@ test("while an opening is pending, only the clicked emplacement shows it", async
   await giveCoins(player.id, 1000);
   await forceSlotsZeroAndOneToStandard(player);
   await signIn(page, player);
-  await page.goto("/fr/boosters");
+  await page.goto("/fr/boosters?notice=already-opened");
 
-  // Holds the Server Action response until the assertions are done.
+  // Holds the Server Action response, then the ceremony page's request, until the assertions are done.
   let release!: () => void;
   const gate = new Promise<void>((resolve) => (release = resolve));
+  let releaseCeremony!: () => void;
+  const ceremonyGate = new Promise<void>((resolve) => (releaseCeremony = resolve));
+  let ceremonyHeld!: () => void;
+  const ceremonyRequested = new Promise<void>((resolve) => (ceremonyHeld = resolve));
   await page.route("**/boosters", async (route) => {
     if (route.request().method() === "POST" && route.request().headers()["next-action"]) {
       await gate;
     }
     await route.continue();
   });
+  await page.route("**/boosters/opening/**", async (route) => {
+    ceremonyHeld();
+    await ceremonyGate;
+    await route.continue();
+  });
 
-  try {
-    await page.getByRole("button", { name: "Ouvrir Booster standard, emplacement 2" }).click();
-
-    // The clicked one says so; the other keeps its name, and is disabled meanwhile.
+  // The clicked one says so; the other keeps its name, and is disabled meanwhile.
+  const expectOnlyTheClickedOneOpening = async () => {
     await expect(emplacements(page).nth(1).getByRole("button")).toHaveText("Ouverture…");
     const other = page.getByRole("button", { name: "Ouvrir Booster standard, emplacement 1" });
     await expect(other).toBeDisabled();
@@ -341,11 +348,28 @@ test("while an opening is pending, only the clicked emplacement shows it", async
     for (let index = 2; index < count; index++) {
       await expect(state(index)).toHaveAttribute("data-state", "idle");
     }
+  };
+
+  try {
+    await expect(page.getByRole("status")).toBeVisible();
+    await page.getByRole("button", { name: "Ouvrir Booster standard, emplacement 2" }).click();
+    await expectOnlyTheClickedOneOpening();
+    // The notice goes as soon as the opening is pending, not only when the ceremony replaces the shop.
+    await expect(page.getByRole("status")).toHaveCount(0);
   } finally {
     release();
   }
 
-  await expect(page.getByRole("heading", { name: "Vos tirages" })).toBeVisible();
+  try {
+    // The opening is done and the page is on its way to the ceremony: the clicked emplacement
+    // still waits.
+    await ceremonyRequested;
+    await expectOnlyTheClickedOneOpening();
+  } finally {
+    releaseCeremony();
+  }
+
+  await expect(page).toHaveURL(/\/fr\/boosters\/opening\/[0-9a-f-]{36}$/, { timeout: 20_000 });
 });
 
 test("a double click on an emplacement opens it once", async ({ page }) => {
@@ -363,11 +387,10 @@ test("a double click on an emplacement opens it once", async ({ page }) => {
 
   await openButton(emplacements(page).nth(0)).dblclick();
 
-  await expect(page.getByText("Vos tirages")).toBeVisible();
+  await expect(page).toHaveURL(/\/fr\/boosters\/opening\/[0-9a-f-]{36}$/, { timeout: 20_000 });
   // A second request would be sent right behind the first: let it settle.
   await page.waitForTimeout(2000);
   expect(serverActionPosts).toBe(1);
-  await expect(alertOf(page)).toHaveCount(0);
 });
 
 test("an emplacement opened elsewhere shows the refusal, then turns exhausted", async ({

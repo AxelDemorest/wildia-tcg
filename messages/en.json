@@ -194,10 +194,19 @@
     "countdownLabel": "New offer in",
     "opening": "Opening…",
     "emptyBoosters": "No boosters available right now.",
-    "revealTitle": "Your pulls",
-    "revealNext": "Next card ({current}/{total})",
-    "revealDone": "Pack opened!",
-    "goCollection": "View my binder",
+    "openingTitle": "Opening",
+    "turnCard": "Turn over card {position} of {total}",
+    "setAsideCard": "Set aside {name} ({position} of {total})",
+    "cardCounter": "Card {position} of {total}",
+    "turnHint": "Click to turn over",
+    "setAsideHint": "Click to set aside",
+    "setAsideList": "Set-aside cards",
+    "recapTitle": "Opening recap",
+    "continue": "Continue",
+    "notice": {
+      "already-opened": "Opening already done: your cards are in your binder.",
+      "load-failed": "Couldn’t show the opening, your cards are in your binder."
+    },
     "packKicker": "Booster",
     "pack": {
       "standard": {

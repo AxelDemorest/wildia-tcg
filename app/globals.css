@@ -393,6 +393,23 @@ h6 {
   }
 }
 
+/* Révélation: a short turn shows the face of the top card; reduced motion shows it at once. */
+.reveal-turn {
+  animation: reveal-turn 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes reveal-turn {
+  from {
+    transform: perspective(60rem) rotateY(-90deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-turn {
+    animation: none;
+  }
+}
+
 /* Coming-soon contest card: 3D tilt + glare driven by CSS variables (see TiltCard). */
 .contest-tilt {
   transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(1);
