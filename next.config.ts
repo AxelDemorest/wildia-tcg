@@ -12,6 +12,9 @@ const nextConfig: NextConfig = {
   experimental: {
     agentUpgrade: "security",
   },
+  // Local Supabase and some bookmarks use 127.0.0.1 while `next dev` binds as localhost.
+  // Without this, Server Actions (login, etc.) silently no-op from 127.0.0.1.
+  allowedDevOrigins: ["127.0.0.1"],
   images: {
     remotePatterns: [
       {

@@ -70,7 +70,7 @@ export async function SiteHeader({ locale }: Props) {
               <span
                 title={tLayout("notifications")}
                 aria-hidden
-                className="hidden size-9 place-items-center rounded-xl border border-border bg-surface text-muted sm:grid"
+                className="hidden size-9 place-items-center rounded-xl bg-surface text-muted sm:grid"
               >
                 <BellIcon />
               </span>

@@ -8,7 +8,7 @@ export async function HomeCta() {
 
   return (
     <section>
-      <div className="relative overflow-hidden rounded-3xl border border-white/[0.06] bg-[linear-gradient(115deg,#04211a_0%,#0b4a33_38%,#17684a_72%,#0a2a1f_100%)] px-6 py-14 text-center sm:px-12 sm:py-16">
+      <div className="relative overflow-hidden rounded-3xl bg-[linear-gradient(115deg,#04211a_0%,#0b4a33_38%,#17684a_72%,#0a2a1f_100%)] px-6 py-14 text-center sm:px-12 sm:py-16">
         <div
           aria-hidden
           className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-brand/30 blur-3xl"
@@ -36,7 +36,7 @@ export async function HomeCta() {
             </Link>
             <Link
               href="/cards"
-              className="inline-flex rounded-xl border border-white/20 bg-white/[0.06] px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/10"
+              className="inline-flex rounded-xl bg-white/[0.06] px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/10"
             >
               {t("heroReadMore")}
             </Link>

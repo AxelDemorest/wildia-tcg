@@ -13,7 +13,7 @@ const variantClass: Record<Variant, string> = {
   primary:
     "bg-brand font-semibold text-white hover:bg-brand-strong focus-visible:ring-brand disabled:bg-white/10 disabled:text-white/40",
   secondary:
-    "border border-white/15 bg-white/[0.04] text-foreground hover:bg-white/[0.08] focus-visible:ring-brand",
+    "bg-white/[0.04] text-foreground hover:bg-white/[0.08] focus-visible:ring-brand",
   ghost: "text-brand hover:bg-brand/10 focus-visible:ring-brand",
 };
 

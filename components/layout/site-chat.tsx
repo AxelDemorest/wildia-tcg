@@ -58,7 +58,7 @@ export async function SiteChat({ locale }: Props) {
   return (
     <aside
       aria-label={t("label")}
-      className="flex h-full w-full flex-col overflow-hidden rounded-2xl border border-border bg-panel"
+      className="flex h-full w-full flex-col overflow-hidden rounded-2xl bg-panel"
     >
       <div className="flex h-12 shrink-0 items-center justify-between border-b border-white/[0.05] px-4">
         <span className="flex items-center gap-2 text-sm font-semibold">
@@ -72,7 +72,7 @@ export async function SiteChat({ locale }: Props) {
         {messages.slice(0, PULL_POSITION)}
 
         {showcase && (
-          <li className="relative shrink-0 overflow-hidden rounded-xl border border-amber-300/40 bg-[linear-gradient(120deg,#3b2205_0%,#7a4308_55%,#c47a12_100%)] p-3">
+          <li className="relative shrink-0 overflow-hidden rounded-xl bg-[linear-gradient(120deg,#3b2205_0%,#7a4308_55%,#c47a12_100%)] p-3">
             <div aria-hidden className="absolute -right-6 -top-6 size-24 rounded-full bg-amber-300/30 blur-2xl" />
             <div className="relative flex items-center gap-3">
               <div className="min-w-0 flex-1">
@@ -99,7 +99,7 @@ export async function SiteChat({ locale }: Props) {
       </ul>
 
       <div className="shrink-0 border-t border-white/[0.05] p-3">
-        <div className="flex items-center gap-2 rounded-xl border border-border bg-[#16161b] px-3 py-1.5">
+        <div className="flex items-center gap-2 rounded-xl bg-[#16161b] px-3 py-1.5">
           <input
             type="text"
             disabled

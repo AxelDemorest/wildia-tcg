@@ -160,7 +160,7 @@ export function BoosterShop({ locale, offer, secondsLeft, isLoggedIn, userId }: 
 
       {revealed && revealed.length > 0 && (
         <section
-          className="relative isolate space-y-5 overflow-hidden rounded-2xl border border-border bg-surface/80 p-5 backdrop-blur-md sm:p-6"
+          className="relative isolate space-y-5 overflow-hidden rounded-2xl bg-surface/80 p-5 backdrop-blur-md sm:p-6"
           aria-live="polite"
         >
           <div

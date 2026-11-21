@@ -49,7 +49,7 @@ export async function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="mt-auto rounded-2xl border border-border bg-surface/80 backdrop-blur-md">
+    <footer className="mt-auto rounded-2xl bg-surface/80 backdrop-blur-md">
       <div className="mx-auto w-full max-w-7xl px-5 pb-6 pt-10 sm:px-8 sm:pt-12">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,2fr)] lg:gap-16">
           <div className="max-w-sm">

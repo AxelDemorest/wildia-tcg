@@ -12,7 +12,7 @@ function formatCompact(value: number): string {
 }
 
 const pillClass =
-  "inline-flex h-9 items-center gap-2 rounded-xl border border-border bg-surface py-1.5 pl-2 pr-3 text-sm font-bold tabular-nums";
+  "inline-flex h-9 items-center gap-2 rounded-xl bg-surface py-1.5 pl-2 pr-3 text-sm font-bold tabular-nums";
 
 export async function HeaderCurrencyOrb({ userId }: Props) {
   const t = await getTranslations("Economy");

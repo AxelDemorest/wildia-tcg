@@ -16,17 +16,17 @@ export function compareRarity(a: CardRarity, b: CardRarity): number {
 export function rarityAccentClass(rarity: CardRarity): string {
   switch (rarity) {
     case "common":
-      return "border-zinc-300 bg-zinc-50 text-zinc-700";
+      return "bg-zinc-50 text-zinc-700";
     case "uncommon":
-      return "border-emerald-300 bg-emerald-50 text-emerald-800";
+      return "bg-emerald-50 text-emerald-800";
     case "rare":
-      return "border-sky-300 bg-sky-50 text-sky-800";
+      return "bg-sky-50 text-sky-800";
     case "epic":
-      return "border-violet-300 bg-violet-50 text-violet-800";
+      return "bg-violet-50 text-violet-800";
     case "legendary":
-      return "border-amber-400 bg-amber-50 text-amber-900";
+      return "bg-amber-50 text-amber-900";
     case "mythic":
-      return "border-rose-500 bg-rose-50 text-rose-950";
+      return "bg-rose-50 text-rose-950";
   }
 }
 

@@ -22,7 +22,7 @@ export async function HeaderGuestActions() {
       </Link>
       <Link
         href="/login"
-        className="relative size-9 shrink-0 overflow-hidden rounded-xl bg-surface ring-1 ring-border"
+        className="relative size-9 shrink-0 overflow-hidden rounded-xl bg-surface"
         aria-label={t("login")}
       >
         <Image src={MOCK_AVATAR_PATH} alt="" fill sizes="36px" className="object-cover" priority />

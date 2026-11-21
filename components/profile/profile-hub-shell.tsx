@@ -63,7 +63,7 @@ export async function ProfileHubShell({ profile, isOwn, stats, children }: Props
             <button
               type="button"
               disabled
-              className="w-full cursor-not-allowed rounded-xl border border-dashed border-white/15 bg-white/[0.03] px-3 py-2.5 text-sm font-semibold text-muted"
+              className="w-full cursor-not-allowed rounded-xl bg-white/[0.03] px-3 py-2.5 text-sm font-semibold text-muted"
               title={tHub("binderWorldSoon")}
             >
               {tHub("binderWorld")}

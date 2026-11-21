@@ -27,7 +27,7 @@ const tabClass = (active: boolean) =>
   [
     "block rounded-xl px-3 py-2 text-sm font-semibold transition",
     active
-      ? "bg-brand/15 text-brand ring-1 ring-brand/35"
+      ? "bg-brand/15 text-brand"
       : "text-muted hover:bg-white/[0.04] hover:text-foreground",
   ].join(" ");
 

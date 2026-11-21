@@ -20,6 +20,28 @@ _Avoid_: Login (comme nom métier), sign-in
 Visiteur qui a une session active sur un compte joueur.
 _Avoid_: Utilisateur authentifié, logged-in user
 
+## Administration (équipe Wildia)
+
+**Équipe Wildia** :
+Personnes chargées d’exploiter et de modérer le jeu côté éditeur ; elles peuvent être dotées d’un accès dédié, distinct du parcours joueur ordinaire.
+_Avoid_: Staff (libellé UI), admins (générique)
+
+**Espace administration** :
+Interface réservée aux membres équipe : tableau de bord et outils d’exploitation, visuellement et structurellement séparés du site joueur.
+_Avoid_: Back-office (sans précision), panel, dashboard (comme nom métier)
+
+**Membre équipe** :
+Compte joueur auquel un **rôle d’équipe** a été attribué ; il utilise la même connexion que n’importe quel joueur, mais peut ouvrir l’espace administration.
+_Avoid_: Utilisateur admin, compte staff, employé Auth
+
+**Rôle d’équipe** :
+Niveau de droit d’un membre dans l’espace administration : **super administrateur** (gestion des rôles et accès complets), **modérateur** (consultation étendue, sans gestion des rôles), **lecteur** (consultation seule). L’accès n’est jamais automatique selon le domaine d’e-mail ; il est toujours accordé explicitement.
+_Avoid_: Role, permission (sans qualification), RBAC (jargon)
+
+**Registre des comptes inscrits** :
+Vue équipe qui recense tous les comptes joueur créés par **inscription**, en consultation seule dans le premier lot (identité affichée, dates, visibilité publique du profil).
+_Avoid_: Liste utilisateurs, user list, annuaire joueurs
+
 ## Cartes et collection
 
 **Catalogue (cartes)** :

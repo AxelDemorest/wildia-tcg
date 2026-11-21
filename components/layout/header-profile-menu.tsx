@@ -64,7 +64,7 @@ export function HeaderProfileMenu({
         <div
           id={menuId}
           role="menu"
-          className="absolute right-0 top-[calc(100%+0.5rem)] z-50 min-w-[12rem] overflow-hidden rounded-xl border border-border bg-panel/95 py-1.5 shadow-[var(--shadow-card)] backdrop-blur-md"
+          className="absolute right-0 top-[calc(100%+0.5rem)] z-50 min-w-[12rem] overflow-hidden rounded-xl bg-panel/95 py-1.5 backdrop-blur-md"
         >
           <Link
             href={`/players/${userId}`}

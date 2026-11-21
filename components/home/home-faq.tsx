@@ -8,7 +8,7 @@ export async function HomeFaq() {
   return (
     <section
       id="faq"
-      className="scroll-mt-4 rounded-2xl border border-border bg-surface/80 py-12 backdrop-blur-md sm:py-16"
+      className="scroll-mt-4 rounded-2xl bg-surface/80 py-12 backdrop-blur-md sm:py-16"
     >
       <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
         <header className="text-center lg:sticky lg:top-8 lg:self-start lg:text-left">
@@ -24,13 +24,13 @@ export async function HomeFaq() {
             <details
               key={key}
               name="home-faq"
-              className="group rounded-2xl bg-white/[0.03] ring-1 ring-white/[0.06] transition hover:bg-white/[0.05] open:bg-white/[0.05] open:ring-brand/40"
+              className="group rounded-2xl bg-white/[0.03] transition hover:bg-white/[0.05] open:bg-white/[0.05]"
             >
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 rounded-2xl px-5 py-4 text-left text-base font-semibold text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand sm:px-6 sm:py-5 [&::-webkit-details-marker]:hidden">
                 <span>{t(`faq_${key}_q`)}</span>
                 <span
                   aria-hidden
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand ring-1 ring-brand/20 transition duration-300 group-open:rotate-45 group-open:bg-brand group-open:text-white"
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand transition duration-300 group-open:rotate-45 group-open:bg-brand group-open:text-white"
                 >
                   <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                     <path d="M8 2v12M2 8h12" />

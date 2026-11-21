@@ -43,7 +43,7 @@ export async function ProfileShowcaseGrid({ slots, isOwn, profileId }: Props) {
               {entry.card ? (
                 <TradingCard card={entry.card} href={`/cards/${entry.card.slug}`} priorityImage={index < 2} />
               ) : (
-                <Surface className="flex aspect-[2/3] items-center justify-center border border-dashed border-white/15 bg-white/[0.02] p-4 text-center">
+                <Surface className="flex aspect-[2/3] items-center justify-center bg-white/[0.02] p-4 text-center">
                   <p className="text-sm text-muted">{t("emptySlot")}</p>
                 </Surface>
               )}
