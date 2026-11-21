@@ -4,3 +4,8 @@ export type BoosterPackLook = "premium" | "standard";
 export function boosterPackLook(slug: string): BoosterPackLook {
   return slug === "premium" ? "premium" : "standard";
 }
+
+/** The booster of an ouverture's pack: standard when its définition de booster is no longer readable. */
+export function drawPackSlug(booster: { slug: string } | null): string {
+  return booster?.slug ?? "standard";
+}

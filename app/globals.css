@@ -393,6 +393,334 @@ h6 {
   }
 }
 
+/* Révélation: a short turn shows the face of the top card; reduced motion shows it at once. */
+.reveal-turn {
+  animation: reveal-turn 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes reveal-turn {
+  from {
+    transform: perspective(60rem) rotateY(-90deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-turn {
+    animation: none;
+  }
+}
+
+/*
+ * Révélation, the pile (see CardPile): under the top card, each card lies a little lower, further
+ * right and turned a little more (`--pile-depth`), in a halo 1.76 times as wide as its cards. The
+ * halo goes under everything in the scene the pile lies in.
+ */
+.card-pile-halo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: -1;
+  width: 176%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    rgb(95 199 154 / 0.35),
+    rgb(245 192 74 / 0.12) 55%,
+    transparent
+  );
+  opacity: 0.6;
+  pointer-events: none;
+}
+.card-pile-card {
+  translate: calc(var(--pile-depth) * 2.8px) calc(var(--pile-depth) * 4.2px);
+  rotate: calc(var(--pile-depth) * -1.4deg);
+}
+
+/*
+ * Révélation, the pack before the pile (see OpeningPack). Held, it shakes harder and harder while
+ * light seams open and a gauge fills (--pack-charge); then a flash and sparks, the pack bursts and
+ * the backs come out one by one, spinning, into the pile and its halo (--pack-burst). Both
+ * durations are the reducer's timers, set on `.reveal-pack` by the component. Reduced motion never
+ * charges nor bursts: a press shows the pile at once, which only fades in.
+ */
+@property --pack-shake {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 0deg;
+}
+/*
+ * The scene of the pack, then of the pile it opens onto: the same place on the same glow, the
+ * pile at the pack's centre. It clips what the burst throws sideways, so the page never scrolls
+ * sideways; up and down, the burst only spills out for a moment.
+ */
+.reveal-scene {
+  /* Bigger than in the shop; the pile keeps its 15rem cards (CardPile's `max-w-60`). */
+  --reveal-pack-width: 17.5rem;
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  overflow-x: clip;
+}
+/* The glow behind the pack and the pile, as tall as the pack's scene in both phases. */
+.reveal-scene::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: -1;
+  aspect-ratio: 9 / 16;
+  max-height: calc(var(--reveal-pack-width) * 16 / 9);
+  background: radial-gradient(70% 55% at 50% 45%, #1c2a23 0%, transparent 72%);
+  pointer-events: none;
+}
+/* As tall as the pack's body, its ground shadow hanging out below (no minimum height from the
+   content), with room under it for the gauge. */
+.reveal-scene-pack {
+  aspect-ratio: 9 / 16;
+  max-height: calc(var(--reveal-pack-width) * 16 / 9);
+  min-height: 0;
+  margin-bottom: 2rem;
+}
+/* The pile alone, its centre as high as the pack's (a padding percentage is of the width, as the
+   pack's height is), with room under it for its fan and its halo. */
+.reveal-scene-pile {
+  display: flex;
+  justify-content: center;
+  padding-top: calc((min(100%, var(--reveal-pack-width)) * 16 / 9 - min(100%, 15rem) * 3 / 2) / 2);
+  padding-bottom: 0.75rem;
+}
+/* Held for over a second on a phone: no scrolling, text selection nor callout. */
+.reveal-pack-button {
+  display: block;
+  width: min(100%, var(--reveal-pack-width));
+  margin-inline: auto;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+/* As wide as its button, and held rather than picked: it does not lift on hover as in the shop. */
+.reveal-pack .booster-pack {
+  max-width: none;
+}
+.reveal-pack .booster-pack:hover .booster-pack-body {
+  translate: none;
+  rotate: none;
+}
+.reveal-pack-charge {
+  position: relative;
+}
+.reveal-pack-seam {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 3px;
+  height: 68%;
+  border-radius: 2px;
+  background: linear-gradient(transparent, #fff8d6 20%, #fff 50%, #fff8d6 80%, transparent);
+  box-shadow: 0 0 10px 2px rgb(255 236 170 / 0.75);
+  opacity: 0;
+  translate: -50% -50%;
+  rotate: 14deg;
+  scale: 1 0;
+}
+.reveal-pack-seam:nth-of-type(2) {
+  --seam-delay: calc(var(--pack-charge) * 0.23);
+  rotate: -32deg;
+}
+.reveal-pack-seam:nth-of-type(3) {
+  --seam-delay: calc(var(--pack-charge) * 0.46);
+  rotate: 68deg;
+}
+/* Under the pack. */
+.reveal-pack-gauge {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 1.5rem);
+  width: 10rem;
+  height: 6px;
+  translate: -50% 0;
+  overflow: hidden;
+  border-radius: 3px;
+  background: rgb(255 255 255 / 0.1);
+}
+.reveal-pack-gauge > span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #1f7a52, #5fc79a, #f5c04a);
+  transform-origin: left;
+  scale: 0 1;
+}
+/* Over the whole scene, centred on the pack. */
+.reveal-pack-flash {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 40rem;
+  height: 37.5rem;
+  translate: -50% -50%;
+  background: radial-gradient(
+    circle,
+    #fffbe8 0%,
+    rgb(255 243 201 / 0.75) 22%,
+    rgb(95 199 154 / 0.25) 48%,
+    transparent 70%
+  );
+  opacity: 0;
+  pointer-events: none;
+}
+/* Each spark flies out from the pack's centre along its own angle, set by the component
+   (`rotate`), as far as the pack is wide and a bit more, or a bit less for every other one. */
+.reveal-pack-spark {
+  --spark-reach: calc(var(--reveal-pack-width) * 1.15);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  margin: -4px;
+  border-radius: 50%;
+  background: #fff3c9;
+  box-shadow: 0 0 10px 3px rgb(245 192 74 / 0.8);
+  opacity: 0;
+  pointer-events: none;
+}
+.reveal-pack-spark:nth-of-type(even) {
+  --spark-reach: calc(var(--reveal-pack-width) * 0.85);
+  width: 6px;
+  height: 6px;
+  margin: -3px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Let go too soon, the glow dies down. */
+  .reveal-pack .booster-pack {
+    transition: filter 0.35s;
+  }
+  .reveal-pack[data-step="charging"] .booster-pack {
+    filter: drop-shadow(0 0 22px rgb(95 199 154 / 0.85)) drop-shadow(0 0 6px rgb(255 243 201 / 0.6));
+    transition: filter var(--pack-charge) ease-in;
+    animation: reveal-pack-shake 80ms linear infinite;
+  }
+  .reveal-pack[data-step="charging"] .reveal-pack-charge {
+    animation: reveal-pack-charge var(--pack-charge) ease-in both;
+  }
+  /* Same animation while charging and bursting: the seams stay open as the pack bursts. */
+  .reveal-pack:not([data-step="rest"]) .reveal-pack-seam {
+    animation: reveal-pack-seam calc(var(--pack-charge) - var(--seam-delay, 0ms)) ease-in
+      var(--seam-delay, 0ms) both;
+  }
+  .reveal-pack-gauge > span {
+    animation: reveal-pack-gauge var(--pack-charge) linear both;
+  }
+  .reveal-pack[data-step="bursting"] .reveal-pack-charge {
+    animation: reveal-pack-burst calc(var(--pack-burst) * 0.25) ease-out both;
+  }
+  .reveal-pack-flash {
+    animation: reveal-pack-flash calc(var(--pack-burst) * 0.5) ease-out both;
+  }
+  .reveal-pack-spark {
+    animation: reveal-pack-spark calc(var(--pack-burst) * 0.55) cubic-bezier(0.1, 0.7, 0.3, 1)
+      calc(var(--pack-burst) * 0.04) both;
+  }
+  /* Grows in, then stays dimmed behind the révélation's pile. */
+  .reveal-pack-pile .card-pile-halo {
+    animation: reveal-pack-halo calc(var(--pack-burst) * 0.8) ease-out calc(var(--pack-burst) * 0.1)
+      both;
+  }
+  /* The deepest card first, each one 700 ms long, 220 ms + 70 ms per card in (of a 1.5 s burst);
+     each ends exactly where the révélation's pile, which then takes over, shows it. */
+  .reveal-pack-pile .card-pile-card {
+    animation: reveal-pack-materialize calc(var(--pack-burst) * 0.467)
+      cubic-bezier(0.2, 0.9, 0.3, 1.15)
+      calc(var(--pack-burst) * (0.147 + var(--pile-order) * 0.047)) both;
+  }
+}
+
+@keyframes reveal-pack-charge {
+  to {
+    --pack-shake: 3.2deg;
+    scale: 1.07;
+  }
+}
+@keyframes reveal-pack-shake {
+  0%,
+  100% {
+    rotate: calc(var(--pack-shake) * -1);
+  }
+  50% {
+    rotate: var(--pack-shake);
+  }
+}
+@keyframes reveal-pack-seam {
+  to {
+    opacity: 1;
+    scale: 1 1;
+  }
+}
+@keyframes reveal-pack-gauge {
+  to {
+    scale: 1 1;
+  }
+}
+@keyframes reveal-pack-burst {
+  from {
+    scale: 1.07;
+  }
+  to {
+    scale: 1.4;
+    opacity: 0;
+    filter: blur(8px);
+  }
+}
+@keyframes reveal-pack-flash {
+  12% {
+    opacity: 1;
+  }
+}
+@keyframes reveal-pack-spark {
+  from {
+    opacity: 1;
+  }
+  to {
+    transform: translateY(calc(var(--spark-reach) * -1)) scale(0.3);
+  }
+}
+@keyframes reveal-pack-halo {
+  from {
+    opacity: 0;
+    scale: 0.4;
+  }
+  40% {
+    opacity: 1;
+    scale: 1.1;
+  }
+}
+/* From the pile's centre to its place, spun 24° more for each card up the pile, the third from the
+   bottom not at all. */
+@keyframes reveal-pack-materialize {
+  from {
+    opacity: 0;
+    translate: 0 0;
+    rotate: calc((var(--pile-order) - 2) * 24deg);
+    scale: 0.35;
+    filter: brightness(3);
+  }
+}
+
+/* Reduced motion: the pile the pack opens onto fades in, nothing moves. */
+@media (prefers-reduced-motion: reduce) {
+  .reveal-pile {
+    animation: reveal-pile-fade 0.2s ease-out;
+  }
+}
+@keyframes reveal-pile-fade {
+  from {
+    opacity: 0;
+  }
+}
+
 /* Coming-soon contest card: 3D tilt + glare driven by CSS variables (see TiltCard). */
 .contest-tilt {
   transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(1);
