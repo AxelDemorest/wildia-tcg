@@ -274,6 +274,24 @@
     "editProfile": "Modifier mon profil",
     "localeHint": "Langue préférée du joueur : {locale}",
     "featuredTitle": "Carte vitrine",
+    "showcase": {
+      "title": "Vitrine",
+      "subtitle": "Jusqu’à six espèces mises en avant sur ce profil.",
+      "slotLabel": "Emplacement {slot}",
+      "emptySlot": "Emplacement vide",
+      "edit": "Modifier la vitrine"
+    },
+    "stats": {
+      "title": "Statistiques",
+      "subtitle": "Progression de collection (hors économie pour les visiteurs).",
+      "sidebarLabel": "Résumé collection",
+      "species": "Espèces",
+      "copies": "Exemplaires",
+      "catalogPercent": "% catalogue",
+      "opens": "Ouvertures",
+      "rarestOwned": "Carte la plus rare",
+      "rarityBreakdown": "Par rareté"
+    },
     "hub": {
       "navLabel": "Navigation du profil",
       "memberSince": "Membre depuis {date}",

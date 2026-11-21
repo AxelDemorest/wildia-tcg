@@ -1,7 +1,9 @@
 import Image from "next/image";
 import { getFormatter, getTranslations } from "next-intl/server";
 import { ProfileHubNav } from "@/components/profile/profile-hub-nav";
+import { ProfileHubStatsPills } from "@/components/profile/profile-hub-stats-pills";
 import { Surface } from "@/components/ui/surface";
+import type { CollectionStats } from "@/lib/inventory/collection-stats";
 import { getProfileBannerPublicUrl } from "@/lib/profiles/banner-url";
 import { MOCK_AVATAR_PATH } from "@/lib/profiles/mock-avatar";
 import type { PublicProfile } from "@/lib/profiles/types";
@@ -10,10 +12,11 @@ type Props = {
   profile: PublicProfile;
   isOwn: boolean;
   locale: string;
+  stats: CollectionStats;
   children: React.ReactNode;
 };
 
-export async function ProfileHubShell({ profile, isOwn, children }: Props) {
+export async function ProfileHubShell({ profile, isOwn, stats, children }: Props) {
   const t = await getTranslations("Profile");
   const tHub = await getTranslations("Profile.hub");
   const format = await getFormatter();
@@ -56,6 +59,7 @@ export async function ProfileHubShell({ profile, isOwn, children }: Props) {
               </p>
             </div>
             <ProfileHubNav profileId={profile.id} isOwn={isOwn} />
+            <ProfileHubStatsPills stats={stats} isOwn={isOwn} />
             <button
               type="button"
               disabled

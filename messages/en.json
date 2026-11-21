@@ -274,6 +274,24 @@
     "editProfile": "Edit my profile",
     "localeHint": "Player's preferred locale: {locale}",
     "featuredTitle": "Showcase card",
+    "showcase": {
+      "title": "Showcase",
+      "subtitle": "Up to six species featured on this profile.",
+      "slotLabel": "Slot {slot}",
+      "emptySlot": "Empty slot",
+      "edit": "Edit showcase"
+    },
+    "stats": {
+      "title": "Statistics",
+      "subtitle": "Collection progress (economy hidden from visitors).",
+      "sidebarLabel": "Collection summary",
+      "species": "Species",
+      "copies": "Copies",
+      "catalogPercent": "Catalog %",
+      "opens": "Opens",
+      "rarestOwned": "Rarest card owned",
+      "rarityBreakdown": "By rarity"
+    },
     "hub": {
       "navLabel": "Profile navigation",
       "memberSince": "Member since {date}",
