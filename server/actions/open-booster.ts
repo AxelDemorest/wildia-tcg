@@ -1,7 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { runOpenShopSlot, type OpenShopSlotOutcome } from "@/lib/boosters/open-shop-slot";
+import {
+  pathsRevalidatedAfterOpening,
+  runOpenShopSlot,
+  type OpenShopSlotOutcome,
+} from "@/lib/boosters/open-shop-slot";
 import { getUser } from "@/server/auth/require-user";
 import { assertOpenBoosterRateLimit } from "@/server/rate-limit/enforce";
 import { openBoosterShopSlot, type OpenBoosterResult } from "@/server/boosters/open-pack";
@@ -23,8 +27,7 @@ export async function openShopSlot(formData: FormData): Promise<OpenShopSlotActi
       checkRateLimit: assertOpenBoosterRateLimit,
       openSlot: openBoosterShopSlot,
       revalidate: (locale) => {
-        revalidatePath(`/${locale}/collection`);
-        revalidatePath(`/${locale}/boosters`);
+        pathsRevalidatedAfterOpening(locale).forEach((path) => revalidatePath(path));
       },
     },
   );

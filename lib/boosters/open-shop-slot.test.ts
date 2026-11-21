@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import {
   openShopSlotErrorCode,
   openShopSlotInputSchema,
+  pathsRevalidatedAfterOpening,
   runOpenShopSlot,
 } from "@/lib/boosters/open-shop-slot";
 
@@ -190,5 +191,14 @@ describe("runOpenShopSlot", () => {
     expect(deps.openSlot).toHaveBeenCalledWith(42, 1);
     expect(deps.revalidate).toHaveBeenCalledWith("fr");
     expect(calls).toEqual(["getUserId", "checkRateLimit", "openSlot", "revalidate"]);
+  });
+});
+
+describe("pathsRevalidatedAfterOpening", () => {
+  it("revalidates exactly the collection and the shop of the locale, in any order", () => {
+    expect([...pathsRevalidatedAfterOpening("en")].sort()).toEqual([
+      "/en/boosters",
+      "/en/collection",
+    ]);
   });
 });

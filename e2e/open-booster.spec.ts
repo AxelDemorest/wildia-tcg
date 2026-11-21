@@ -305,11 +305,33 @@ test("a player opens one emplacement of their shop offer and lands on the face-d
   await test.step("go back to the shop with Continuer, a Back and not a new entry", async () => {
     const historyLength = () => page.evaluate(() => window.history.length);
     const before = await historyLength();
+    // The restored shop must already show the opened emplacement exhausted: watch for an « Ouvrir »
+    // button on it, even for a moment, while the page comes back.
+    await page.evaluate(() => {
+      const w = window as unknown as { __openSeenAgain?: boolean };
+      const name = "Ouvrir Booster standard, emplacement 2";
+      new MutationObserver(() => {
+        const seen = Array.from(document.querySelectorAll("button")).some(
+          (button) => button.getAttribute("aria-label") === name,
+        );
+        if (seen) w.__openSeenAgain = true;
+      }).observe(document, { subtree: true, childList: true, attributes: true });
+    });
 
     await page.getByRole("button", { name: "Continuer" }).click();
 
     await expect(page).toHaveURL(/\/fr\/boosters$/);
     expect(await historyLength()).toBe(before);
+    await expect(emplacements()).toHaveCount(slotCount);
+    await expectAccessibleText(emplacements().nth(1), "Épuisé");
+    expect(
+      await page.evaluate(
+        () => (window as unknown as { __openSeenAgain?: boolean }).__openSeenAgain,
+      ),
+    ).toBeUndefined();
+    expect(
+      await page.evaluate(() => (window as unknown as { __noReload?: boolean }).__noReload),
+    ).toBe(true);
   });
 
   await test.step("find only the notice when going Forward: the ceremony is not replayed", async () => {

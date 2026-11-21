@@ -63,6 +63,11 @@ export function refusalReloadsOffer(code: RefusalCode): boolean {
   return REFUSAL_RELOADS_OFFER[code];
 }
 
+/** The pages whose cached render shows the pack count or the shop offer, stale after an opening. */
+export function pathsRevalidatedAfterOpening(locale: string): string[] {
+  return [`/${locale}/collection`, `/${locale}/boosters`];
+}
+
 /** Orchestrates the opening of an emplacement; dependencies are injected so it runs without Next nor Supabase. */
 export async function runOpenShopSlot<T>(
   input: unknown,
