@@ -127,6 +127,7 @@ Autres docs utiles :
 
 - [`docs/economy.md`](docs/economy.md) — ledger, farm, sync
 - [`docs/rate-limiting.md`](docs/rate-limiting.md)
+- [`docs/admin.md`](docs/admin.md) — créer le premier super administrateur
 - [`docs/testing.md`](docs/testing.md)
 
 ---
