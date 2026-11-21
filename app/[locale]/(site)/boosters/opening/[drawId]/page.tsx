@@ -2,6 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { OpeningCeremony } from "@/components/boosters/opening-ceremony";
 import { PageHeader } from "@/components/ui/page-header";
+import { drawPackSlug } from "@/lib/boosters/booster-pack";
 import { openingPageAction } from "@/lib/boosters/opening-page-action";
 import { shopNoticeHref } from "@/lib/boosters/shop-notice";
 import { loadDrawForReveal } from "@/server/boosters/load-draw";
@@ -25,7 +26,11 @@ export default async function OpeningPage({ params }: Props) {
   return (
     <div className="flex w-full flex-col gap-5">
       <PageHeader title={t("openingTitle")} />
-      <OpeningCeremony drawId={outcome.draw.drawId} cards={outcome.draw.cards} />
+      <OpeningCeremony
+        drawId={outcome.draw.drawId}
+        boosterSlug={drawPackSlug(outcome.draw.booster)}
+        cards={outcome.draw.cards}
+      />
     </div>
   );
 }

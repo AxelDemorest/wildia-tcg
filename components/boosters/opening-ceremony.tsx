@@ -3,6 +3,8 @@
 import { redirect } from "next/navigation";
 import { useEffect, useReducer, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import { CardPile } from "@/components/boosters/card-pile";
+import { OpeningPack } from "@/components/boosters/opening-pack";
 import { TradingCard } from "@/components/cards/trading-card";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "@/i18n/navigation";
@@ -14,6 +16,8 @@ import type { CatalogCard } from "@/lib/cards/types";
 
 type Props = {
   drawId: string;
+  /** The booster whose pack opens onto the pile. */
+  boosterSlug: string;
   /** In drawn order: the ceremony stacks them in reveal order. */
   cards: RevealedCard[];
 };
@@ -23,8 +27,8 @@ function faceOf({ cardId, ...card }: RevealedCard): CatalogCard {
   return { ...card, id: cardId, farm_rate_base: 0 };
 }
 
-/** The révélation of an ouverture the shop has just made in this tab, from its face-down stack. */
-export function OpeningCeremony({ drawId, cards }: Props) {
+/** The révélation of an ouverture the shop has just made in this tab, from its pack to its recap. */
+export function OpeningCeremony({ drawId, boosterSlug, cards }: Props) {
   const t = useTranslations("Boosters");
   const tRarity = useTranslations("Catalog.rarity");
   const locale = useLocale();
@@ -41,9 +45,10 @@ export function OpeningCeremony({ drawId, cards }: Props) {
     consumePendingReveal(drawId);
   }, [drawId]);
 
+  // The top card is only there once the pile replaces the pack: takes the focus the pack had.
   useEffect(() => {
     topCardRef.current?.focus();
-  }, []);
+  }, [ceremony.phase]);
 
   // The heading is only there once the recap replaces the stack: brings it into view and into the
   // reading order.
@@ -54,6 +59,10 @@ export function OpeningCeremony({ drawId, cards }: Props) {
   // A refresh, a direct link, a new tab or a Forward: the cards are in the collection already. On
   // a full load this runs on the server, which redirects before sending the page.
   if (!shopJustOpenedIt) redirect(shopNoticeHref(locale, "already-opened"));
+
+  if (ceremony.phase === "pack") {
+    return <OpeningPack ceremony={ceremony} dispatch={dispatch} slug={boosterSlug} />;
+  }
 
   if (ceremony.phase === "recap") {
     return (
@@ -87,25 +96,35 @@ export function OpeningCeremony({ drawId, cards }: Props) {
       <p aria-live="polite" className="sr-only">
         {top.faceUp ? `${top.card.name}, ${tRarity(top.card.rarity)}` : ""}
       </p>
-      <button
-        ref={topCardRef}
-        type="button"
-        aria-label={
-          top.faceUp
-            ? t("setAsideCard", { name: top.card.name, position, total })
-            : t("turnCard", { position, total })
-        }
-        onClick={() => dispatch({ type: "click" })}
-        className="block w-full max-w-60 rounded-[6%/4%] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-      >
-        {top.faceUp ? (
-          <div className="reveal-turn">
-            <TradingCard card={faceOf(top.card)} priorityImage />
-          </div>
-        ) : (
-          <TradingCard side="back" priorityImage />
-        )}
-      </button>
+      {/* The cards not yet turned, where the pack burst: the pile thins each time one is set
+          aside. */}
+      <div className="reveal-scene reveal-scene-pile">
+        <CardPile under={stack.length - 1} className="reveal-pile">
+          <button
+            ref={topCardRef}
+            type="button"
+            aria-label={
+              top.faceUp
+                ? t("setAsideCard", { name: top.card.name, position, total })
+                : t("turnCard", { position, total })
+            }
+            onClick={() => dispatch({ type: "click" })}
+            // A held Enter repeats: only its first press turns or sets aside the card.
+            onKeyDown={(event) => {
+              if (event.key === "Enter" && event.repeat) event.preventDefault();
+            }}
+            className="block w-full rounded-[6%/4%] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          >
+            {top.faceUp ? (
+              <div className="reveal-turn">
+                <TradingCard card={faceOf(top.card)} priorityImage />
+              </div>
+            ) : (
+              <TradingCard side="back" priorityImage />
+            )}
+          </button>
+        </CardPile>
+      </div>
       {/* The top card's accessible name already says all this. */}
       <div aria-hidden className="space-y-1 text-center">
         <p className="text-sm font-semibold tabular-nums text-foreground">

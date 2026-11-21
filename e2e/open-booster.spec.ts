@@ -40,14 +40,39 @@ async function drawnCardNames(player: Player): Promise<string[]> {
   });
 }
 
+const CEREMONY_URL = /\/fr\/boosters\/opening\/[0-9a-f-]{36}$/;
+
+// The pack phase: the pack is a button named after its booster, with one hint per step.
+const packButton = (page: Page, booster: "standard" | "premium") =>
+  page.getByRole("button", { name: `Ouvrir le Booster ${booster}` });
+const restHint = (page: Page) => page.getByText("Maintenez le paquet appuyé", { exact: true });
+const chargingHint = (page: Page) => page.getByText("Encore un instant…", { exact: true });
+const topCardButton = (page: Page) =>
+  page.getByRole("button", { name: /^Retourner la carte 1 sur/ });
+
+// Freezes the page's clock where it stands: the charge and the burst then move only when the test
+// advances it with `page.clock.runFor`.
+async function pauseClock(page: Page) {
+  const now = await page.evaluate(() => Date.now());
+  await page.clock.pauseAt(now + 1000);
+}
+
+// The face-down cards of the pile, in the page's main area.
+const pileBacks = (page: Page) => page.getByRole("main").locator("[data-side=back]");
+
 test("a player opens one emplacement of their shop offer and lands on the face-down stack of the draw", async ({
   page,
 }) => {
   // A cold `next dev` compiles /fr/boosters and /fr/collection on first visit.
   test.setTimeout(180_000);
 
-  // The offer is read twice (by the test, then by the page): stay clear of a window change.
-  await waitForShopWindowMargin(60);
+  // The offer is read twice (by the test, then by the page): stay clear of a window change. The
+  // journey opens two emplacements of the same window, with a charge and a burst each.
+  await waitForShopWindowMargin(75);
+
+  // Runs in real time until a step pauses it on the pack: the charge and the burst are then driven
+  // by the test.
+  await page.clock.install();
 
   const player = await createPlayer();
   await giveCoins(player.id, 1000);
@@ -103,7 +128,7 @@ test("a player opens one emplacement of their shop offer and lands on the face-d
     await expect(pack(first)).toHaveAttribute("data-state", "idle");
   });
 
-  await test.step("open the second emplacement and land on the face-down stack of its draw", async () => {
+  await test.step("open the second emplacement and land on the pack of its draw", async () => {
     // Survives a client update, lost by a full page load.
     await page.evaluate(() => {
       (window as unknown as { __noReload: boolean }).__noReload = true;
@@ -120,11 +145,65 @@ test("a player opens one emplacement of their shop offer and lands on the face-d
       timeout: 20_000,
     });
 
+    // The pack of the draw's type comes first: no card yet, nothing about the species.
+    await expect(packButton(page, "standard")).toBeVisible();
+    await expect(page.getByRole("main").locator("[data-look]")).toHaveAttribute(
+      "data-look",
+      "standard",
+    );
+    await expect(restHint(page)).toBeVisible();
+    await expect(topCardButton(page)).toHaveCount(0);
+
+    expect(
+      await page.evaluate(() => (window as unknown as { __noReload?: boolean }).__noReload),
+    ).toBe(true);
+  });
+
+  await test.step("release a hold too early, or lose it to a cancelled pointer: the pack calms down", async () => {
+    await pauseClock(page);
+    const pack = packButton(page, "standard");
+    const box = (await pack.boundingBox())!;
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+
+    await page.mouse.down();
+    await expect(chargingHint(page)).toBeVisible();
+    await page.clock.runFor(500);
+    await page.mouse.up();
+    await expect(restHint(page)).toBeVisible();
+    await expect(chargingHint(page)).toHaveCount(0);
+    await page.clock.runFor(3000);
+    await expect(restHint(page)).toBeVisible();
+    await expect(topCardButton(page)).toHaveCount(0);
+
+    await pack.dispatchEvent("pointerdown", { button: 0, isPrimary: true, pointerId: 1 });
+    await expect(chargingHint(page)).toBeVisible();
+    await page.clock.runFor(500);
+    await pack.dispatchEvent("pointercancel", { button: 0, isPrimary: true, pointerId: 1 });
+    await expect(restHint(page)).toBeVisible();
+    await page.clock.runFor(3000);
+    await expect(restHint(page)).toBeVisible();
+    await expect(topCardButton(page)).toHaveCount(0);
+  });
+
+  await test.step("hold the pack: it charges, bursts, then the face-down stack takes over", async () => {
+    await page.mouse.down();
+    await expect(chargingHint(page)).toBeVisible();
+
+    await page.clock.runFor(1300);
+    // Bursting: no hint, no pile yet. Releasing now changes nothing.
+    await expect(chargingHint(page)).toHaveCount(0);
+    await expect(restHint(page)).toHaveCount(0);
+    await expect(topCardButton(page)).toHaveCount(0);
+    await page.mouse.up();
+    await expect(topCardButton(page)).toHaveCount(0);
+
+    await page.clock.runFor(1500);
     const topCard = page.getByRole("button", {
       name: `Retourner la carte 1 sur ${standard.slots}`,
     });
     await expect(topCard).toBeVisible();
     await expect(topCard.locator("[data-side=back]")).toBeVisible();
+    await page.clock.resume();
 
     // Face down: nothing in the page tells the species or the rarity of the cards.
     const main = page.getByRole("main");
@@ -161,6 +240,9 @@ test("a player opens one emplacement of their shop offer and lands on the face-d
 
   await test.step("turn and set aside each card in turn", async () => {
     for (let position = 1; position <= total; position++) {
+      // A real pile: the face-down cards in it are the cards not yet turned, one fewer each time.
+      await expect(pileBacks(page)).toHaveCount(total - position + 1);
+
       await page
         .getByRole("button", { name: `Retourner la carte ${position} sur ${total}` })
         .click();
@@ -259,6 +341,33 @@ test("a player opens one emplacement of their shop offer and lands on the face-d
     // The sibling emplacement, not opened, still offers its button.
     await expect(openButton(emplacements().nth(0))).toHaveCount(1);
   });
+
+  await test.step("open the first emplacement, start the charge with Enter and skip it with Échap", async () => {
+    await page.getByRole("button", { name: "Ouvrir Booster standard, emplacement 1" }).click();
+    await expect(page).toHaveURL(CEREMONY_URL, { timeout: 20_000 });
+    await expect(packButton(page, "standard")).toBeVisible();
+    await pauseClock(page);
+
+    // A press lost to a cancelled pointer leaves the pack at rest and must not swallow the next
+    // activation.
+    const pack = packButton(page, "standard");
+    await pack.dispatchEvent("pointerdown", { button: 0, isPrimary: true, pointerId: 1 });
+    await expect(chargingHint(page)).toBeVisible();
+    await page.clock.runFor(500);
+    await pack.dispatchEvent("pointercancel", { button: 0, isPrimary: true, pointerId: 1 });
+    await expect(restHint(page)).toBeVisible();
+    await expect(chargingHint(page)).toHaveCount(0);
+
+    // No hold: Enter alone starts the charge.
+    await pack.focus();
+    await page.keyboard.press("Enter");
+    await expect(chargingHint(page)).toBeVisible();
+    await expect(topCardButton(page)).toHaveCount(0);
+
+    await page.keyboard.press("Escape");
+    await expect(topCardButton(page)).toBeVisible();
+    await expect(topCardButton(page).locator("[data-side=back]")).toBeVisible();
+  });
 });
 
 async function signIn(page: Page, player: Player) {
@@ -268,8 +377,6 @@ async function signIn(page: Page, player: Player) {
   await page.getByRole("button", { name: "Se connecter" }).click();
   await expect(page).toHaveURL(/\/fr$/, { timeout: 20_000 });
 }
-
-const CEREMONY_URL = /\/fr\/boosters\/opening\/[0-9a-f-]{36}$/;
 
 test.describe("with reduced motion", () => {
   test.use({ reducedMotion: "reduce" });
@@ -282,17 +389,17 @@ test.describe("with reduced motion", () => {
 
     const player = await createPlayer();
     await giveCoins(player.id, 1000);
-    const standard = await boosterBySlug("standard");
+    const premium = await boosterBySlug("premium");
     const { data: offer, error } = await player.client.rpc("get_booster_shop_offer");
     if (error) throw error;
-    await setShopSlot(player.id, Number(offer.window_index), 0, standard.id);
+    await setShopSlot(player.id, Number(offer.window_index), 0, premium.id);
     await signIn(page, player);
     await page.goto("/fr/boosters");
 
-    await page.getByRole("button", { name: "Ouvrir Booster standard, emplacement 1" }).click();
+    await page.getByRole("button", { name: "Ouvrir Booster premium, emplacement 1" }).click();
     await expect(page).toHaveURL(CEREMONY_URL, { timeout: 20_000 });
 
-    const total = standard.slots;
+    const total = premium.slots;
     const turn = (position: number) =>
       page.getByRole("button", { name: `Retourner la carte ${position} sur ${total}` });
     const setAside = (position: number) =>
@@ -300,7 +407,8 @@ test.describe("with reduced motion", () => {
         name: new RegExp(`^Écarter .+ \\(${position} sur ${total}\\)$`),
       });
 
-    // No transition nor animation with a duration, on anything in the page's main area.
+    // No transition nor animation with a duration, on anything in the page's main area, but the
+    // pile's fade-in (its keyframes name says "fade").
     const expectNoMotion = async () => {
       const motion = await page.getByRole("main").evaluate((main) => {
         const seconds = (list: string) =>
@@ -310,16 +418,38 @@ test.describe("with reduced motion", () => {
           });
         return [main, ...main.querySelectorAll("*")].flatMap((element) => {
           const style = getComputedStyle(element);
-          return [...seconds(style.transitionDuration), ...seconds(style.animationDuration)]
-            .filter((duration) => duration > 0)
-            .map((duration) => `${element.tagName}.${element.className}: ${duration}s`);
+          const names = style.animationName.split(",").map((name) => name.trim());
+          const transitions = seconds(style.transitionDuration).filter((value) => value > 0);
+          const animations = seconds(style.animationDuration).filter(
+            (value, index) => value > 0 && !/fade/i.test(names[index] ?? ""),
+          );
+          return [...transitions, ...animations].map(
+            (duration) => `${element.tagName}.${element.className}: ${duration}s`,
+          );
         });
       });
       expect(motion).toEqual([]);
     };
 
-    // Focus is on the top card on arrival: Enter alone turns it.
+    // The premium pack, in its own look and under its own name, has focus and nothing moves.
+    const pack = packButton(page, "premium");
+    await expect(pack).toBeVisible();
+    await expect(page.getByRole("main").locator("[data-look]")).toHaveAttribute(
+      "data-look",
+      "premium",
+    );
+    await expect(pack).toBeFocused();
+    await expect(
+      page.getByText("Cliquez sur le paquet pour l’ouvrir", { exact: true }),
+    ).toBeVisible();
+    await expect(page.getByRole("button", { name: "Passer" })).toHaveCount(0);
+    await expectNoMotion();
+
+    // Enter opens it at once: the pile shows and the top card has focus. Enter again turns it.
+    await page.keyboard.press("Enter");
+    await expect(turn(1)).toBeVisible();
     await expect(turn(1)).toBeFocused();
+    await expectNoMotion();
     await page.keyboard.press("Enter");
     await expect(setAside(1).locator("[data-side=front]")).toBeVisible();
     await expect(setAside(1)).toBeFocused();
@@ -348,6 +478,12 @@ test.describe("with reduced motion", () => {
       .first()
       .click();
     await expect(page).toHaveURL(CEREMONY_URL, { timeout: 20_000 });
+
+    // A mouse click on the pack opens it at once: the top card shows, still face down.
+    await page.getByRole("button", { name: /^Ouvrir le Booster/ }).click();
+    const firstCard = page.getByRole("button", { name: /^Retourner la carte 1 sur/ });
+    await expect(firstCard).toBeVisible();
+    await expect(firstCard.locator("[data-side=back]")).toBeVisible();
 
     await page.goBack();
     await expect(page).toHaveURL(/\/fr\/boosters(\?.*)?$/);
