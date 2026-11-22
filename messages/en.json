@@ -309,5 +309,28 @@
     "contestErrorRateLimited": "Too many attempts. Please wait a minute.",
     "contestErrorFailed": "Couldn’t register your entry right now. Please try again later.",
     "notice": "Every card reveals a species to discover, collect them and dive into the secrets of wildlife."
+  },
+  "Admin": {
+    "area": "Admin area",
+    "documentTitle": "{page} · Admin area",
+    "fallbackMemberName": "Team member",
+    "roles": {
+      "super_admin": "Super administrator",
+      "moderator": "Moderator",
+      "viewer": "Viewer"
+    },
+    "nav": {
+      "home": "Home",
+      "accounts": "Account registry",
+      "backToSite": "Back to site",
+      "signOut": "Log out"
+    },
+    "home": {
+      "title": "Home",
+      "subtitle": "Overview of WILDIA TCG player accounts."
+    },
+    "accounts": {
+      "title": "Account registry"
+    }
   }
 }

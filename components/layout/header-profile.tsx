@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { HeaderProfileMenu } from "@/components/layout/header-profile-menu";
+import { displayLabel } from "@/lib/profiles/display-label";
 import { MOCK_AVATAR_PATH } from "@/lib/profiles/mock-avatar";
 import { getOwnProfile } from "@/server/profiles/queries";
 
@@ -8,16 +9,6 @@ type Props = {
   locale: string;
   email?: string | null;
 };
-
-function displayLabel(
-  displayName: string | null | undefined,
-  email: string | null | undefined,
-  fallback: string,
-): string {
-  if (displayName?.trim()) return displayName.trim();
-  if (email?.includes("@")) return email.split("@")[0] ?? fallback;
-  return fallback;
-}
 
 export async function HeaderProfile({ userId, locale, email }: Props) {
   const tProfile = await getTranslations("Profile");

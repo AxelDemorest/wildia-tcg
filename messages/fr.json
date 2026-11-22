@@ -309,5 +309,28 @@
     "contestErrorInvalid": "Saisis une adresse e-mail valide.",
     "contestErrorRateLimited": "Trop de tentatives. Patiente une minute.",
     "contestErrorFailed": "Inscription impossible pour le moment. Réessaie plus tard."
+  },
+  "Admin": {
+    "area": "Espace administration",
+    "documentTitle": "{page} · Espace administration",
+    "fallbackMemberName": "Membre équipe",
+    "roles": {
+      "super_admin": "Super administrateur",
+      "moderator": "Modérateur",
+      "viewer": "Lecteur"
+    },
+    "nav": {
+      "home": "Accueil",
+      "accounts": "Registre des comptes",
+      "backToSite": "Retour au site",
+      "signOut": "Se déconnecter"
+    },
+    "home": {
+      "title": "Accueil",
+      "subtitle": "Vue d’ensemble des comptes joueur de WILDIA TCG."
+    },
+    "accounts": {
+      "title": "Registre des comptes inscrits"
+    }
   }
 }
