@@ -30,6 +30,34 @@ export function AdminUsersIcon({ className = "size-[18px]" }: IconProps) {
   );
 }
 
+export function AdminUserPlusIcon({ className = "size-[18px]" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} {...base} aria-hidden>
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M19 8v6" />
+      <path d="M22 11h-6" />
+    </svg>
+  );
+}
+
+export function AdminShieldIcon({ className = "size-[18px]" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} {...base} aria-hidden>
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+    </svg>
+  );
+}
+
+export function AdminArrowRightIcon({ className = "size-[18px]" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} {...base} strokeWidth={2} aria-hidden>
+      <path d="M5 12h14" />
+      <path d="m12 5 7 7-7 7" />
+    </svg>
+  );
+}
+
 export function AdminArrowLeftIcon({ className = "size-[18px]" }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" className={className} {...base} aria-hidden>

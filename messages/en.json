@@ -327,7 +327,26 @@
     },
     "home": {
       "title": "Home",
-      "subtitle": "Overview of WILDIA TCG player accounts."
+      "subtitle": "Overview of WILDIA TCG player accounts.",
+      "unavailable": "Unavailable",
+      "kpi": {
+        "accounts": { "label": "Registered accounts", "caption": "All player accounts" },
+        "signups": {
+          "label": "Sign-ups over 7 days",
+          "caption": "Over the last 7 rolling days"
+        },
+        "teamMembers": { "label": "Team members", "caption": "All team roles combined" }
+      },
+      "registry": {
+        "text": "Every player account, newest first, 50 per page. Read only.",
+        "open": "Open the registry"
+      },
+      "role": { "title": "Your team role" },
+      "roleHelp": {
+        "super_admin": "You can see account e-mails. Team roles are managed outside the app for now.",
+        "moderator": "You can see account e-mails.",
+        "viewer": "Account e-mails are hidden for your role."
+      }
     },
     "accounts": {
       "title": "Account registry"
