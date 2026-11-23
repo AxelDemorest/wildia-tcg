@@ -4,6 +4,7 @@
  */
 import { afterAll, describe, expect, it } from "vitest";
 import {
+  addTeamMember,
   admin,
   balanceOf,
   cleanup,
@@ -272,5 +273,34 @@ describe("internal helpers", () => {
     );
 
     expect(row).toEqual({ anon: false, authenticated: false });
+  });
+});
+
+describe("admin_list_accounts", () => {
+  // Would catch: a grant to anon, which would hand every e-mail to the internet.
+  it("cannot be called by a visitor", async () => {
+    const { data, error } = await visitor.rpc("admin_list_accounts");
+
+    expect(error?.code).toBe("42501");
+    expect(data).toBeNull();
+  });
+
+  // Would catch: a grant to authenticated: even a super_admin only reaches the registry through the server.
+  it("cannot be called by a signed-in super_admin with their own client", async () => {
+    const member = await createPlayer();
+    await addTeamMember(member.id, "super_admin");
+
+    const { data, error } = await member.client.rpc("admin_list_accounts");
+
+    expect(error?.code).toBe("42501");
+    expect(data).toBeNull();
+  });
+
+  it("still works for the server (service role)", async () => {
+    const { data, error } = await admin.rpc("admin_list_accounts");
+
+    expect(error).toBeNull();
+    expect(typeof data.total).toBe("number");
+    expect(Array.isArray(data.accounts)).toBe(true);
   });
 });

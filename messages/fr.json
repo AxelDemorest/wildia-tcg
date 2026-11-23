@@ -349,7 +349,36 @@
       }
     },
     "accounts": {
-      "title": "Registre des comptes inscrits"
+      "title": "Registre des comptes inscrits",
+      "subtitle": "{count, plural, one {{total} compte} other {{total} comptes}} · consultation seule",
+      "loadFailed": "Le registre n’a pas pu être chargé. Réessayez dans un instant.",
+      "search": {
+        "nameOrEmail": "Rechercher par nom ou e-mail",
+        "name": "Rechercher par nom affiché",
+        "submit": "Rechercher",
+        "emailsMasked": "E-mails masqués pour votre rôle"
+      },
+      "table": {
+        "caption": "Comptes inscrits, du plus récent au plus ancien",
+        "name": "Nom affiché",
+        "email": "E-mail",
+        "signedUp": "Inscription",
+        "lastSignIn": "Dernière connexion",
+        "locale": "Locale",
+        "profile": "Profil",
+        "noDisplayName": "Sans nom affiché",
+        "never": "Jamais",
+        "public": "Public",
+        "private": "Privé",
+        "empty": "Aucun compte ne correspond à cette recherche."
+      },
+      "pagination": {
+        "range": "{count, plural, one {{from}–{to} sur {total} compte} other {{from}–{to} sur {total} comptes}}",
+        "page": "Page {page} sur {pageCount}",
+        "rangeAndPage": "{count, plural, one {{from}–{to} sur {total} compte} other {{from}–{to} sur {total} comptes}} · page {page} sur {pageCount}",
+        "previous": "Précédent",
+        "next": "Suivant"
+      }
     }
   }
 }

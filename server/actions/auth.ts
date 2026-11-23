@@ -27,7 +27,8 @@ export async function signUp(
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
   const supabase = await createClient();
-  const { error } = await supabase.auth.signUp({ email, password });
+  // handle_new_user stores it as the profile's locale.
+  const { error } = await supabase.auth.signUp({ email, password, options: { data: { locale } } });
   if (error) {
     return { error: error.message };
   }

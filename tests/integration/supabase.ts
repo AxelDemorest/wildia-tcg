@@ -83,6 +83,42 @@ export async function createPlayer(metadata?: Record<string, unknown>): Promise<
   return { id: data.user.id, email, password, client };
 }
 
+/**
+ * Creates a confirmed account that never signed in (`last_sign_in_at` null), like a sign-up
+ * whose owner never came back. `metadata` is the sign-up metadata, e.g. display_name or locale.
+ * Returns the id, e-mail and password, without a client.
+ */
+export async function createAccountWithoutSignIn(
+  metadata?: Record<string, unknown>,
+): Promise<{ id: string; email: string; password: string }> {
+  const email = `test-${randomUUID()}@example.test`;
+  const password = randomUUID();
+  const { data, error } = await admin.auth.admin.createUser({
+    email,
+    password,
+    email_confirm: true,
+    user_metadata: metadata,
+  });
+  if (error) throw error;
+  createdUsers.push(data.user.id);
+  return { id: data.user.id, email, password };
+}
+
+/**
+ * Creates `count` accounts that never signed in, one after the other so each is newer than the
+ * last. `metadataFor` gives the sign-up metadata of the account at that index, from 0.
+ */
+export async function createAccountsWithoutSignIn(
+  count: number,
+  metadataFor: (index: number) => Record<string, unknown>,
+): Promise<{ id: string; email: string; password: string }[]> {
+  const accounts = [];
+  for (let index = 0; index < count; index++) {
+    accounts.push(await createAccountWithoutSignIn(metadataFor(index)));
+  }
+  return accounts;
+}
+
 /** Tracks a user created another way (e.g. through the signup page) so cleanup deletes it. */
 export async function adoptUserByEmail(email: string): Promise<string> {
   const { data, error } = await admin.auth.admin.listUsers({ perPage: 1000 });
