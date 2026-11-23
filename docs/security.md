@@ -19,6 +19,7 @@
 - **Storage `card-art`** : lecture publique ; écriture réservée au service role.
 - **Storage `profile-banners`** : lecture publique ; upload/update/delete par l’utilisateur authentifié dans son dossier `{user_id}/`.
 - **`profiles`** : lecture own row ; lecture rows `is_public = true` pour anon/authenticated ; update own only, **et seulement sur les colonnes que l’app écrit** : `display_name`, `bio`, `is_public`, `featured_card_id`, `banner_url`, `updated_at`. `last_economy_sync_at` (horloge du farm) n’est modifiable que par `sync_user_economy` : sinon un joueur pourrait la reculer et se créditer des pièces. Une nouvelle colonne modifiable par le joueur demande un `grant update (colonne) on public.profiles to authenticated` explicite. Carte vitrine : possession vérifiée côté serveur et par le trigger `profiles_featured_card_owned`.
+- **`team_members`** (rôle d’équipe d’un compte joueur) : aucun accès client, pas même à sa propre ligne. RLS activée sans aucune policy, et `revoke all` pour `anon` et `authenticated` : l’API répond `42501` à tous. Seul le service role lit et écrit la table ; le rôle d’un compte est lu côté serveur. Les rôles se changent par du SQL d’exploitation dans le MVP, voir `docs/admin.md`.
 
 Voir aussi `docs/rate-limiting.md`.
 

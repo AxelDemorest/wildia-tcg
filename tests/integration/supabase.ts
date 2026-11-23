@@ -100,6 +100,15 @@ export async function deletePlayer(player: Player) {
   return result;
 }
 
+/** Gives an account a team role (service role, since no client may write team_members). */
+export async function addTeamMember(
+  userId: string,
+  role: "super_admin" | "moderator" | "viewer",
+): Promise<void> {
+  const { error } = await admin.from("team_members").insert({ user_id: userId, role });
+  if (error) throw error;
+}
+
 /** Adds a throwaway card, so tests do not depend on the local catalogue. */
 export async function createCard(rarity: string, farmRateBase = 0): Promise<string> {
   const { data, error } = await admin
