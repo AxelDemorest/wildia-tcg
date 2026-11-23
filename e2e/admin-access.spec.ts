@@ -134,7 +134,8 @@ test("a team member gets the light admin shell and its home", async ({ page }) =
 
   // Phone: the sidebar gives way to a top bar with tabs and icon controls.
   await page.setViewportSize({ width: 390, height: 844 });
-  await expect(page.getByText("Membre E2E")).toBeHidden();
+  // The registry lists accounts, "Membre E2E" among them: look at the nav's member block only.
+  await expect(adminNav(page).getByText("Lecteur")).toBeHidden();
   await expect(adminNav(page).getByRole("link", { name: "Registre des comptes" })).toHaveAttribute(
     "aria-current",
     "page",

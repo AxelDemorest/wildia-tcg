@@ -76,3 +76,57 @@ export function AdminLogOutIcon({ className = "size-[18px]" }: IconProps) {
     </svg>
   );
 }
+
+export function AdminSearchIcon({ className = "size-[18px]" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} {...base} strokeWidth={2} aria-hidden>
+      <circle cx="11" cy="11" r="8" />
+      <path d="m21 21-4.3-4.3" />
+    </svg>
+  );
+}
+
+export function AdminArrowDownIcon({ className = "size-[18px]" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} {...base} strokeWidth={2} aria-hidden>
+      <path d="M12 5v14" />
+      <path d="m19 12-7 7-7-7" />
+    </svg>
+  );
+}
+
+export function AdminLockIcon({ className = "size-[18px]" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} {...base} strokeWidth={2} aria-hidden>
+      <rect x="3" y="11" width="18" height="11" rx="2" />
+      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+    </svg>
+  );
+}
+
+export function AdminEyeOffIcon({ className = "size-[18px]" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} {...base} aria-hidden>
+      <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" />
+      <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" />
+      <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" />
+      <path d="m2 2 20 20" />
+    </svg>
+  );
+}
+
+export function AdminChevronLeftIcon({ className = "size-[18px]" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} {...base} strokeWidth={2} aria-hidden>
+      <path d="m15 18-6-6 6-6" />
+    </svg>
+  );
+}
+
+export function AdminChevronRightIcon({ className = "size-[18px]" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} {...base} strokeWidth={2} aria-hidden>
+      <path d="m9 18 6-6-6-6" />
+    </svg>
+  );
+}

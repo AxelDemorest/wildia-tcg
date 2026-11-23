@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { expect, test } from "@playwright/test";
-import { adoptUserByEmail, cleanup } from "../tests/integration/supabase";
+import { admin, adoptUserByEmail, cleanup } from "../tests/integration/supabase";
 
 test.afterAll(cleanup);
 
@@ -39,4 +39,19 @@ test("a visitor signs up, fills their public profile and sees it on their player
     await expect(page.getByText("Testeur E2E").first()).toBeVisible();
     await expect(page.getByText("Fan de loutres et de pandas.")).toBeVisible();
   });
+});
+
+test("signing up in English stores the English locale", async ({ page }) => {
+  const email = `test-${randomUUID().slice(0, 8)}@example.test`;
+
+  await page.goto("/en/signup");
+  await page.getByLabel("Email").fill(email);
+  await page.getByLabel("Password").fill(randomUUID());
+  await page.getByRole("button", { name: "Sign up" }).click();
+
+  await expect(page).toHaveURL(/\/en$/);
+  const userId = await adoptUserByEmail(email);
+  const { data, error } = await admin.from("profiles").select("locale").eq("id", userId).single();
+  expect(error).toBeNull();
+  expect(data?.locale).toBe("en");
 });

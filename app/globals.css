@@ -77,6 +77,10 @@ h6 {
   --color-admin-moderator: #1f4e8c;
   --color-admin-moderator-soft: #e8eef9;
   --color-admin-neutral-soft: #eef0ef;
+  --color-admin-line-strong: #d5dad7;
+  --color-admin-table-head: #f8f9f8;
+  --color-admin-row-hover: #fafbfa;
+  --color-admin-disabled: #a3aaa7;
 }
 
 :root:has([data-admin-shell]) {
@@ -85,8 +89,8 @@ h6 {
   --background-shine: none;
 }
 
-/* Keyboard focus on the espace administration's links and buttons (decided with the mockup). */
-[data-admin-shell] :is(a, button):focus-visible {
+/* Keyboard focus on the espace administration's links, buttons and fields (mockup decision). */
+[data-admin-shell] :is(a, button, input):focus-visible {
   outline: 2px solid var(--brand);
   outline-offset: 2px;
 }

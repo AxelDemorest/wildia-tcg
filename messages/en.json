@@ -349,7 +349,36 @@
       }
     },
     "accounts": {
-      "title": "Account registry"
+      "title": "Account registry",
+      "subtitle": "{count, plural, one {{total} account} other {{total} accounts}} · read-only",
+      "loadFailed": "The registry could not be loaded. Try again in a moment.",
+      "search": {
+        "nameOrEmail": "Search by name or email",
+        "name": "Search by display name",
+        "submit": "Search",
+        "emailsMasked": "Emails hidden for your role"
+      },
+      "table": {
+        "caption": "Registered accounts, newest first",
+        "name": "Display name",
+        "email": "Email",
+        "signedUp": "Signed up",
+        "lastSignIn": "Last sign-in",
+        "locale": "Locale",
+        "profile": "Profile",
+        "noDisplayName": "No display name",
+        "never": "Never",
+        "public": "Public",
+        "private": "Private",
+        "empty": "No account matches this search."
+      },
+      "pagination": {
+        "range": "{count, plural, one {{from}–{to} of {total} account} other {{from}–{to} of {total} accounts}}",
+        "page": "Page {page} of {pageCount}",
+        "rangeAndPage": "{count, plural, one {{from}–{to} of {total} account} other {{from}–{to} of {total} accounts}} · page {page} of {pageCount}",
+        "previous": "Previous",
+        "next": "Next"
+      }
     }
   }
 }
