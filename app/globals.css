@@ -63,6 +63,32 @@ h6 {
 }
 
 /*
+ * Espace administration: its own light palette (approved admin mockup). The whole canvas turns
+ * light, overscroll included, only while the admin shell is in the page, so the site gets its dark
+ * canvas back as soon as the shell leaves.
+ */
+@theme {
+  --color-admin-ink: #111714;
+  --color-admin-text: #3d4542;
+  --color-admin-muted: #646c69;
+  --color-admin-line: #e3e6e4;
+  --color-admin-subtle: #f1f3f2;
+  --color-admin-brand-soft: #e7f2ec;
+}
+
+:root:has([data-admin-shell]) {
+  color-scheme: light;
+  --background: #f5f6f5;
+  --background-shine: none;
+}
+
+/* Keyboard focus on the espace administration's links and buttons (decided with the mockup). */
+[data-admin-shell] :is(a, button):focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/*
  * Trading card (ADR 0003). The face takes the silhouette, double frame and corner
  * bands of the brand back; the rarity only changes the palette and the shine.
  * Everything is sized in container-query units (cqw) so the card scales with its

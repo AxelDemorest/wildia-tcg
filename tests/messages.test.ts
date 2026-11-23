@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import type { TeamRole } from "@/lib/auth/staff-session";
 import type { OpenShopSlotOutcome } from "@/lib/boosters/open-shop-slot";
 import en from "@/messages/en.json";
 import fr from "@/messages/fr.json";
@@ -44,5 +45,38 @@ describe("Boosters messages", () => {
     const keys = (messages: unknown) =>
       flatKeys(messages).filter((key) => !key.startsWith("error."));
     expect(keys(en.Boosters).sort()).toEqual(keys(fr.Boosters).sort());
+  });
+});
+
+describe("Admin messages", () => {
+  it("has the same keys in fr and en", () => {
+    expect((fr as Record<string, unknown>).Admin).toBeDefined();
+    expect((en as Record<string, unknown>).Admin).toBeDefined();
+    // The roles.* keys are checked role by role below.
+    const keys = (messages: unknown) =>
+      flatKeys((messages as Record<string, unknown>).Admin)
+        .filter((key) => !key.startsWith("roles."))
+        .sort();
+    expect(keys(en)).toEqual(keys(fr));
+    expect(keys(fr).length).toBeGreaterThan(0);
+  });
+});
+
+// Contract: Admin.roles.<role> holds the label of each team role, in both files.
+// A role added to TeamRole fails typecheck here until it is listed.
+const teamRoles: Record<TeamRole, true> = { super_admin: true, moderator: true, viewer: true };
+
+describe("Admin role labels", () => {
+  it.each(
+    Object.keys(teamRoles).flatMap((role) => [
+      ["fr", role],
+      ["en", role],
+    ]),
+  )("has a non-empty %s label for the team role %s", (locale, role) => {
+    const messages = (locale === "fr" ? fr : en) as unknown as {
+      Admin?: { roles?: Record<string, unknown> };
+    };
+    const label = messages.Admin?.roles?.[role];
+    expect(typeof label === "string" && label.trim().length > 0).toBe(true);
   });
 });

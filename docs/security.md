@@ -23,6 +23,13 @@
 
 Voir aussi `docs/rate-limiting.md`.
 
+## Authentification et espace administration
+
+- **`returnTo` de la connexion** : jamais une redirection ouverte. `safeReturnTo` (`lib/auth/return-to.ts`) ne garde qu’un chemin interne : il commence par `/`, pas par `//` ni `/\`, uniquement des caractères ASCII imprimables (U+0021–U+007E), contrôlés une fois décodé (`redirect()` écrit la valeur brute dans un en-tête, qui échoue sur tout autre caractère : `/日`, `/%E6%97%A5`, `/%09/evil.com`), sans schéma ; il est aussi refusé quand un décodage donne `//` ou `/\`, ou quand un échappement est mal formé, et quand le paramètre est répété. Le chemin est ensuite contrôlé après normalisation d’URL (segments `.` et `..`, `%2e`, antislashs) : `/.//evil.com`, `/x/..//evil.com` ou `/%2e//evil.com` donnent `//evil.com`, une URL relative au protocole, et sont refusés ; c’est la forme normalisée qui sert à la redirection, pas la chaîne brute. Sinon, retour à `/{locale}`. La page de connexion le contrôle à la lecture, `signIn` de nouveau à la réception du formulaire : le champ caché peut être forgé.
+- **Locale des actions d’auth** : `signIn`, `signUp` et `signOut` reçoivent leur locale du navigateur (argument lié). Elle passe par `knownLocaleOrDefault` (une locale de `routing.locales`, sinon `fr`) avant toute redirection ou `revalidatePath` : une locale forgée `/evil.com` ne donne jamais `//evil.com`.
+- **Garde staff** : chaque page admin appelle `requireStaff` (le layout ne protège pas ses pages). Visiteur → connexion ; joueur sans rôle d’équipe → accueil du site par une redirection HTTP, sans 403 ni balisage admin. Le rôle est lu avec le service role ; si cette lecture échoue (erreur de base, `SUPABASE_SERVICE_ROLE_KEY` absente), l’accès est refusé comme sans rôle et l’erreur est journalisée côté serveur.
+- **Rien de l’espace administration hors de l’équipe** : les libellés `Admin` ne sont jamais envoyés au navigateur (`app/[locale]/layout.tsx` les retire des messages client) ; ils sont rendus côté serveur, pour un membre équipe seulement. Le titre et le `noindex` d’une page admin ne sont produits que pour un membre équipe, car le corps d’une redirection porte aussi les métadonnées de la page : chaque page admin (CYR-114, CYR-115) doit reprendre le même `generateMetadata` gardé par `getStaffSession`.
+
 ## Checklist nouvelle table
 
 1. `enable row level security`

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { knownLocaleOrDefault, safeReturnTo } from "@/lib/auth/return-to";
 import { createClient } from "@/lib/supabase/server";
 import { assertAuthRateLimit } from "@/server/rate-limit/enforce";
 
@@ -15,10 +16,11 @@ async function enforceAuthRateLimit(): Promise<AuthActionState | null> {
 }
 
 export async function signUp(
-  locale: string,
+  sentLocale: string,
   _prev: AuthActionState,
   formData: FormData,
 ): Promise<AuthActionState> {
+  const locale = knownLocaleOrDefault(sentLocale);
   const limited = await enforceAuthRateLimit();
   if (limited) return limited;
 
@@ -34,25 +36,29 @@ export async function signUp(
 }
 
 export async function signIn(
-  locale: string,
+  sentLocale: string,
   _prev: AuthActionState,
   formData: FormData,
 ): Promise<AuthActionState> {
+  const locale = knownLocaleOrDefault(sentLocale);
   const limited = await enforceAuthRateLimit();
   if (limited) return limited;
 
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
+  // Sanitized again here: the form's hidden field can be forged.
+  const returnTo = safeReturnTo(String(formData.get("returnTo") ?? ""), locale);
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) {
     return { error: error.message };
   }
   revalidatePath(`/${locale}`, "layout");
-  redirect(`/${locale}`);
+  redirect(returnTo);
 }
 
-export async function signOut(locale: string) {
+export async function signOut(sentLocale: string) {
+  const locale = knownLocaleOrDefault(sentLocale);
   const supabase = await createClient();
   await supabase.auth.signOut();
   revalidatePath(`/${locale}`, "layout");

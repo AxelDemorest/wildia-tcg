@@ -29,6 +29,11 @@ export default async function LocaleLayout({ children, params }: Props) {
   }
   setRequestLocale(locale);
   const messages = await getMessages();
+  // The espace administration's labels are rendered on the server only: no page sends them to the
+  // browser, so nothing hints at the admin to anyone but a membre équipe.
+  const clientMessages = Object.fromEntries(
+    Object.entries(messages).filter(([namespace]) => namespace !== "Admin"),
+  );
 
   return (
     <html
@@ -36,7 +41,7 @@ export default async function LocaleLayout({ children, params }: Props) {
       className={`${lexend.variable} ${googleSansFlex.variable} ${geistMono.variable} h-full bg-background antialiased`}
     >
       <body className="relative flex min-h-full flex-col bg-background text-foreground">
-        <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
+        <NextIntlClientProvider messages={clientMessages}>{children}</NextIntlClientProvider>
       </body>
     </html>
   );

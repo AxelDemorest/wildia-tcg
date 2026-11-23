@@ -12,9 +12,11 @@ type Props = {
     prev: AuthActionState,
     formData: FormData,
   ) => Promise<AuthActionState>;
+  /** Where the action sends the user once signed in; the action sanitizes it again. */
+  returnTo?: string;
 };
 
-export function AuthForm({ locale, mode, action }: Props) {
+export function AuthForm({ locale, mode, action, returnTo }: Props) {
   const t = useTranslations("Auth");
   const boundAction = (prev: AuthActionState, formData: FormData) =>
     action(locale, prev, formData);
@@ -29,6 +31,7 @@ export function AuthForm({ locale, mode, action }: Props) {
       <h1 className="text-2xl font-extrabold uppercase tracking-tight">
         {mode === "login" ? t("loginTitle") : t("signupTitle")}
       </h1>
+      {returnTo && <input type="hidden" name="returnTo" value={returnTo} />}
       <label className="flex flex-col gap-1.5 text-sm font-medium text-white/85">
         {t("email")}
         <input
