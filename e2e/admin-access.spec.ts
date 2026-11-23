@@ -98,7 +98,19 @@ test("a team member gets the light admin shell and its home", async ({ page }) =
   await expect(adminNav(page).getByRole("button", { name: "Se déconnecter" })).toBeVisible();
   const memberName = page.getByText("Membre E2E", { exact: true });
   await expect(memberName).toBeVisible();
-  await expect(page.getByText("Lecteur")).toBeVisible();
+  // The nav's member block; the role card of the home shows the same label as a badge.
+  await expect(adminNav(page).getByText("Lecteur")).toBeVisible();
+  // The home's role card: the viewer's badge and the help text of their role.
+  const roleCard = page.locator("section").filter({
+    has: page.getByRole("heading", { level: 2, name: "Votre rôle d’équipe", exact: true }),
+  });
+  const badge = roleCard.getByText("Lecteur", { exact: true });
+  await expect(badge).toBeVisible();
+  await expect(badge).toHaveCSS("background-color", "rgb(238, 240, 239)");
+  await expect(badge).toHaveCSS("color", "rgb(61, 69, 66)");
+  await expect(
+    roleCard.getByText("Les e-mails des comptes sont masqués pour votre rôle.", { exact: true }),
+  ).toBeVisible();
   // A long name is cut on one line with an ellipsis; the full name stays in the tooltip.
   await expect(memberName).toHaveAttribute("title", "Membre E2E");
   await expect(memberName).toHaveCSS("text-overflow", "ellipsis");

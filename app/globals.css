@@ -74,6 +74,9 @@ h6 {
   --color-admin-line: #e3e6e4;
   --color-admin-subtle: #f1f3f2;
   --color-admin-brand-soft: #e7f2ec;
+  --color-admin-moderator: #1f4e8c;
+  --color-admin-moderator-soft: #e8eef9;
+  --color-admin-neutral-soft: #eef0ef;
 }
 
 :root:has([data-admin-shell]) {

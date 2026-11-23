@@ -327,7 +327,26 @@
     },
     "home": {
       "title": "Accueil",
-      "subtitle": "Vue d’ensemble des comptes joueur de WILDIA TCG."
+      "subtitle": "Vue d’ensemble des comptes joueur de WILDIA TCG.",
+      "unavailable": "Indisponible",
+      "kpi": {
+        "accounts": { "label": "Comptes inscrits", "caption": "Tous les comptes joueur" },
+        "signups": {
+          "label": "Inscriptions sur 7 jours",
+          "caption": "Sur les 7 derniers jours glissants"
+        },
+        "teamMembers": { "label": "Membres équipe", "caption": "Tous rôles d’équipe confondus" }
+      },
+      "registry": {
+        "text": "Tous les comptes joueur, du plus récent au plus ancien, par pages de 50. Consultation seule.",
+        "open": "Ouvrir le registre"
+      },
+      "role": { "title": "Votre rôle d’équipe" },
+      "roleHelp": {
+        "super_admin": "Vous voyez les e-mails des comptes. Les rôles d’équipe se gèrent hors de l’application pour l’instant.",
+        "moderator": "Vous voyez les e-mails des comptes.",
+        "viewer": "Les e-mails des comptes sont masqués pour votre rôle."
+      }
     },
     "accounts": {
       "title": "Registre des comptes inscrits"

@@ -80,3 +80,19 @@ describe("Admin role labels", () => {
     expect(typeof label === "string" && label.trim().length > 0).toBe(true);
   });
 });
+
+// Contract: Admin.home.roleHelp.<role> holds the help text of the role card, in both files.
+describe("Admin home role help", () => {
+  it.each(
+    Object.keys(teamRoles).flatMap((role) => [
+      ["fr", role],
+      ["en", role],
+    ]),
+  )("has a non-empty %s help text for the team role %s", (locale, role) => {
+    const messages = (locale === "fr" ? fr : en) as unknown as {
+      Admin?: { home?: { roleHelp?: Record<string, unknown> } };
+    };
+    const help = messages.Admin?.home?.roleHelp?.[role];
+    expect(typeof help === "string" && help.trim().length > 0).toBe(true);
+  });
+});
