@@ -2,10 +2,7 @@
 
 :root {
   color-scheme: dark;
-  --background: #141414;
-  --background-shine:
-    radial-gradient(circle at 15% 0%, rgb(31 122 82 / 0.08), transparent 40%),
-    radial-gradient(circle at 85% 10%, rgb(63 185 133 / 0.05), transparent 38%);
+  --background: #101010;
   --foreground: #ffffff;
   --surface: #1a1a1f;
   --panel: #1e1e24;
@@ -46,7 +43,6 @@ html {
 body {
   min-height: 100%;
   background-color: var(--background);
-  background-image: var(--background-shine);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
 }

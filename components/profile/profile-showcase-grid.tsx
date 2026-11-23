@@ -32,7 +32,7 @@ export async function ProfileShowcaseGrid({ slots, isOwn, profileId }: Props) {
         )}
       </header>
 
-      <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-3 lg:gap-6">
+      <ul className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-8 2xl:grid-cols-10">
         {Array.from({ length: SHOWCASE_SLOT_COUNT }, (_, index) => {
           const entry = slots.find((s) => s.slot === index + 1) ?? { slot: index + 1, card: null };
           return (

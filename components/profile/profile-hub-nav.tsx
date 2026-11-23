@@ -25,10 +25,8 @@ function activeTab(pathname: string, profileId: string): ProfileHubTab {
 
 const tabClass = (active: boolean) =>
   [
-    "block rounded-xl px-3 py-2 text-sm font-semibold transition",
-    active
-      ? "bg-brand/15 text-brand"
-      : "text-muted hover:bg-white/[0.04] hover:text-foreground",
+    "shrink-0 whitespace-nowrap border-b-2 pb-3 text-sm font-medium text-white transition",
+    active ? "border-white" : "border-transparent opacity-80 hover:opacity-100",
   ].join(" ");
 
 export function ProfileHubNav({ profileId, isOwn }: Props) {
@@ -39,7 +37,10 @@ export function ProfileHubNav({ profileId, isOwn }: Props) {
   const tabs = PROFILE_HUB_TABS.filter((tab) => tab !== "settings" || isOwn);
 
   return (
-    <nav aria-label={t("navLabel")} className="flex flex-col gap-1">
+    <nav
+      aria-label={t("navLabel")}
+      className="mt-8 flex gap-6 overflow-x-auto px-5 shadow-[inset_0_-1px_0_rgb(255_255_255/0.15)] [scrollbar-width:none] sm:mt-10 sm:gap-8 sm:px-8"
+    >
       {tabs.map((tab) => (
         <Link
           key={tab}

@@ -31,7 +31,7 @@ export async function SiteHeader({ locale }: Props) {
   ];
 
   return (
-    <header className="sticky top-0 z-40 shrink-0 bg-background/85 backdrop-blur-md">
+    <header className="sticky top-0 z-40 shrink-0 bg-[#141414]">
       <div className="flex min-h-[4.5rem] items-center gap-4 px-4 py-2 sm:px-6 xl:gap-5">
         <Link
           href="/"

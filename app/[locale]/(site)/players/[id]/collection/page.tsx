@@ -114,7 +114,7 @@ export default async function PlayerCollectionPage({ params, searchParams }: Pro
         </Surface>
       ) : (
         <>
-          <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-6 2xl:grid-cols-5">
+          <ul className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-8 2xl:grid-cols-10">
             {pageItems.map((card, index) => (
               <li key={card.id} className="min-w-0">
                 <TradingCard
