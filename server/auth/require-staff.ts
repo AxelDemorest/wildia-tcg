@@ -34,20 +34,29 @@ const deps: StaffAccessDeps = { getUser: cache(getUser), readTeamRole: cache(rea
 
 /**
  * Every admin page calls this first, with its own path (no query string): a visitor goes to the
- * login, a player without a rôle d’équipe to the site home, before anything is sent.
+ * login, a player without a rôle d’équipe to the site home, before anything is sent. A page
+ * reserved to one rôle d’équipe passes it as `role`: the other membres équipe go to the admin home.
  */
-export async function requireStaff(locale: string, path: string): Promise<StaffSession> {
-  const access = await runStaffAccess({ locale, path }, deps);
+export async function requireStaff(
+  locale: string,
+  path: string,
+  role?: TeamRole,
+): Promise<StaffSession> {
+  const access = await runStaffAccess({ locale, path, role }, deps);
   if (access.kind === "redirect") redirect(access.to);
   return access.session;
 }
 
 /**
- * The admin layout's and metadata's read: the staff session, or null instead of a redirect. A
- * layout does not stop its page from rendering, so redirecting is left to requireStaff in each page.
+ * The admin layout's, metadata's and actions' read: the staff session, or null instead of a
+ * redirect (null too for a rôle d’équipe other than `role`, when given). A layout does not stop
+ * its page from rendering, so redirecting is left to requireStaff in each page.
  */
-export async function getStaffSession(locale: string): Promise<StaffSession | null> {
+export async function getStaffSession(
+  locale: string,
+  role?: TeamRole,
+): Promise<StaffSession | null> {
   // The layout's own path: it only shapes the redirect, which is dropped here.
-  const access = await runStaffAccess({ locale, path: `/${locale}/admin` }, deps);
+  const access = await runStaffAccess({ locale, path: `/${locale}/admin`, role }, deps);
   return access.kind === "staff" ? access.session : null;
 }

@@ -322,6 +322,7 @@
     "nav": {
       "home": "Home",
       "accounts": "Account registry",
+      "settings": "Settings",
       "backToSite": "Back to site",
       "signOut": "Log out"
     },
@@ -378,6 +379,52 @@
         "rangeAndPage": "{count, plural, one {{from}–{to} of {total} account} other {{from}–{to} of {total} accounts}} · page {page} of {pageCount}",
         "previous": "Previous",
         "next": "Next"
+      }
+    },
+    "settings": {
+      "title": "Settings",
+      "subtitle": "Game settings. Every change applies right away to all players.",
+      "save": "Save",
+      "saved": "Saved",
+      "saveFailed": "Saving failed. Try again in a moment.",
+      "restoreFailed": "Restoring failed. Try again in a moment.",
+      "loadFailed": "The settings could not be loaded. Try again in a moment.",
+      "economy": "Economy",
+      "shop": "Shop",
+      "fields": {
+        "farm_global_multiplier": {
+          "label": "Farm multiplier",
+          "help": "Between 0 and 5. Multiplies the coins every card earns; takes effect the next time each player’s coins are calculated.",
+          "outOfRange": "The multiplier must be between 0 and 5.",
+          "tooPrecise": "Use at most two decimals for the multiplier.",
+          "restoreText": "The farm multiplier will go from <strong>{from}</strong> to <strong>{to}</strong>. The change applies right away to all players and will be added to the history."
+        },
+        "booster_shop_slot_count": {
+          "label": "Slots per offer",
+          "help": "Between 1 and 12. Applies to offers created after the change; an offer already shown keeps its slots until the next shop window.",
+          "outOfRange": "The number of slots must be a whole number between 1 and 12.",
+          "restoreText": "The number of slots per offer will go from <strong>{from}</strong> to <strong>{to}</strong>. The change applies right away to all players and will be added to the history."
+        }
+      },
+      "history": {
+        "title": "Settings history",
+        "note": "The last {count} changes",
+        "date": "Date",
+        "author": "Author",
+        "setting": "Setting",
+        "before": "Before",
+        "after": "After",
+        "action": "Action",
+        "restored": "Restored",
+        "restoreText": "Restore",
+        "restoreAccessibleName": "Restore {setting} to {value}",
+        "deletedAuthor": "Deleted account",
+        "empty": "No change recorded yet."
+      },
+      "restoreDialog": {
+        "title": "Restore this value?",
+        "cancel": "Cancel",
+        "confirm": "Restore"
       }
     }
   }

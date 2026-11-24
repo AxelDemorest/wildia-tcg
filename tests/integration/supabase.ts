@@ -237,11 +237,24 @@ export async function waitForShopWindowMargin(seconds = 30): Promise<void> {
 }
 
 /** Sets the number of emplacements of an offre boutique (global config: restore it afterwards). */
-export async function setShopSlotCount(value: number): Promise<void> {
-  const { error } = await admin
+export function setShopSlotCount(value: number): Promise<void> {
+  return setEconomyConfigValue("booster_shop_slot_count", value);
+}
+
+/** The current value of an economy_config key (global config: tests that change it restore it). */
+export async function economyConfigValue(key: string): Promise<number> {
+  const { data, error } = await admin
     .from("economy_config")
-    .update({ value })
-    .eq("key", "booster_shop_slot_count");
+    .select("value")
+    .eq("key", key)
+    .single();
+  if (error) throw error;
+  return Number(data.value);
+}
+
+/** Sets an economy_config key directly (service role, no history row), to arrange or restore it. */
+export async function setEconomyConfigValue(key: string, value: number): Promise<void> {
+  const { error } = await admin.from("economy_config").update({ value }).eq("key", key);
   if (error) throw error;
 }
 
@@ -414,6 +427,14 @@ export async function setAwayFor(userId: string, seconds: number): Promise<void>
  */
 export async function cleanup(): Promise<void> {
   const failures: string[] = [];
+  const userIds = [...createdUsers];
+  // The settings history rows these accounts wrote go first, so no row outlives its author.
+  if (userIds.length > 0) {
+    const { error } = await admin.from("admin_setting_changes").delete().in("author_id", userIds);
+    if (error) {
+      failures.push(`historique des paramètres : ${error.message}`);
+    }
+  }
   for (const id of createdUsers.splice(0)) {
     const { error } = await admin.auth.admin.deleteUser(id);
     if (error) failures.push(`compte ${id} : ${error.message}`);

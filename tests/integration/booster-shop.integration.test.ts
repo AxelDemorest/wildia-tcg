@@ -10,6 +10,7 @@ import {
   cleanup,
   createBooster,
   createPlayer,
+  economyConfigValue,
   moveShopOffer,
   setShopSlotCount,
   shopSlotsOf,
@@ -43,15 +44,7 @@ function createWitness(): Promise<string> {
   return createBooster({ common: 1 }, 100, true, 5, 0);
 }
 
-async function slotCount(): Promise<number> {
-  const { data, error } = await admin
-    .from("economy_config")
-    .select("value")
-    .eq("key", "booster_shop_slot_count")
-    .single();
-  if (error) throw error;
-  return Number(data.value);
-}
+const slotCount = () => economyConfigValue("booster_shop_slot_count");
 
 describe("offre boutique", () => {
   it("gives a signed-in player one emplacement per configured count, each on an eligible définition de booster", async () => {
@@ -83,15 +76,20 @@ describe("offre boutique", () => {
   });
 });
 
-describe("offre boutique, nombre d'emplacements par défaut", () => {
-  it("is configured for 8 emplacements, and a fresh player's offre has 8", async () => {
-    // Two rows of 4 on desktop: the default shipped by the migrations.
-    expect(await slotCount()).toBe(8);
+describe("offre boutique, nombre d'emplacements", () => {
+  it("gives a fresh player one emplacement per configured slot, numbered from 0, with 8 configured", async () => {
+    // The super administrator can change the count: set 8 (two rows of 4 on desktop) and put it back.
+    const original = await slotCount();
+    try {
+      await setShopSlotCount(8);
+      const player = await createPlayer();
 
-    const player = await createPlayer();
-    const offer = await readOffer(player);
+      const offer = await readOffer(player);
 
-    expect(offer.slots.map((slot) => slot.slotIndex)).toEqual([0, 1, 2, 3, 4, 5, 6, 7]);
+      expect(offer.slots.map((slot) => slot.slotIndex)).toEqual([0, 1, 2, 3, 4, 5, 6, 7]);
+    } finally {
+      await setShopSlotCount(original);
+    }
   });
 });
 

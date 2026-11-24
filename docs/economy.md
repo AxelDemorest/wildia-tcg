@@ -14,11 +14,13 @@ Le solde affiché est **toujours** `SUM(currency_ledger.amount)` pour l’utilis
    `Σ (cards.farm_rate_base × user_cards.quantity)` pour les cartes possédées.
 4. Crédit farm :  
    **`accrued = floor(rate × Δt × farm_global_multiplier)`**  
-   (`farm_global_multiplier` dans `economy_config`, défaut `1`).
+   (`farm_global_multiplier` dans `economy_config`, défaut `1`, réglable par le super administrateur entre 0 et 5, deux décimales au plus, sur la page Paramètres de l’espace administration : voir `docs/admin.md`).
 5. Si `accrued > 0`, insert ledger `farm_accrual` + metadata (`delta_seconds`, `farm_rate_per_sec`).
 6. Met `last_economy_sync_at = now()`.
 
 Pas de cron par joueur : le farm offline est rattrapé au prochain sync.
+
+Le multiplicateur est lu à chaque sync et s’applique à tout `Δt`, le temps écoulé depuis la dernière synchronisation du joueur : un changement vaut donc aussi pour le temps d’avant le changement. Un joueur absent trois jours reçoit ces trois jours au multiplicateur en vigueur à son retour (choix accepté, CYR-117).
 
 ## Progression rareté
 
@@ -46,7 +48,7 @@ Le ledger est **append-only** (triggers bloquent UPDATE/DELETE). Seule exception
 
 ## Boutique boosters
 
-- `booster_shop_slot_count` (`economy_config`) : nombre d’emplacements de l’offre boutique, arrondi et borné entre 0 et 20, 8 par défaut.
+- `booster_shop_slot_count` (`economy_config`) : nombre d’emplacements de l’offre boutique, arrondi et borné entre 0 et 20 par le SQL, 8 par défaut. Le super administrateur le règle entre 1 et 12 (entier) sur la page Paramètres ; il vaut pour les offres créées ensuite, une offre déjà créée garde ses emplacements jusqu’à la fin de sa fenêtre boutique.
 - Poids de tirage des types (`booster_definitions.shop_weight`) : `standard` 70, `premium` 30. Les poids sont relatifs : un `premium` apparaît dans environ 3 emplacements sur 10.
 - Ouvrir un emplacement débite le prix **courant** du booster (pas celui du moment où l’offre a été tirée) et l’emplacement reste **épuisé** jusqu’à la fin de la fenêtre.
 - Refus, sans rien débiter : `window_closed`, `slot_not_found`, `slot_exhausted`, `booster_unavailable` (définition désactivée), `insufficient_balance`.
