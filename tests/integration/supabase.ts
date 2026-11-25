@@ -84,6 +84,49 @@ export async function createPlayer(metadata?: Record<string, unknown>): Promise<
 }
 
 /**
+ * Creates an account the way Supabase Auth does for a new OAuth sign-in: the `auth.users` row
+ * is inserted with its provider already in `raw_app_meta_data` (the admin API of `createPlayer`
+ * inserts with provider `email` and merges the app metadata afterwards), with the matching
+ * `auth.identities` row. `claims` is what the provider returned (raw_user_meta_data).
+ * Returns the id and e-mail; the account is deleted by `cleanup`.
+ */
+export function createProviderAccount(
+  provider: "google" | "discord",
+  claims: Record<string, unknown>,
+): { id: string; email: string } {
+  const id = randomUUID();
+  const email = `test-${randomUUID()}@example.test`;
+  const literal = (value: unknown) => `'${JSON.stringify(value).replaceAll("'", "''")}'::jsonb`;
+  const userMetadata = { email, email_verified: true, provider_id: id, sub: id, ...claims };
+  // The id is tracked first: a failure halfway must not leave an account behind.
+  createdUsers.push(id);
+  sql(
+    `with new_user as (
+       insert into auth.users (
+         instance_id, id, aud, role, email, email_confirmed_at,
+         raw_app_meta_data, raw_user_meta_data, created_at, updated_at,
+         confirmation_token, recovery_token, email_change_token_new, email_change
+       ) values (
+         '00000000-0000-0000-0000-000000000000', '${id}', 'authenticated', 'authenticated',
+         '${email}', now(),
+         ${literal({ provider, providers: [provider] })}, ${literal(userMetadata)}, now(), now(),
+         '', '', '', ''
+       ) returning id
+     ), new_identity as (
+       insert into auth.identities (
+         id, provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at
+       ) values (
+         gen_random_uuid(), '${id}', '${id}', ${literal(userMetadata)}, '${provider}',
+         now(), now(), now()
+       ) returning id
+     )
+     select (select count(*) from new_user)::int as users,
+            (select count(*) from new_identity)::int as identities`,
+  );
+  return { id, email };
+}
+
+/**
  * Creates a confirmed account that never signed in (`last_sign_in_at` null), like a sign-up
  * whose owner never came back. `metadata` is the sign-up metadata, e.g. display_name or locale.
  * Returns the id, e-mail and password, without a client.
