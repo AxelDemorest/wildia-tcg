@@ -351,7 +351,8 @@
     },
     "accounts": {
       "title": "Account registry",
-      "subtitle": "{count, plural, one {{total} account} other {{total} accounts}} · read-only",
+      "subtitle": "{count, plural, one {{total} account} other {{total} accounts}}",
+      "subtitleReadOnly": "{count, plural, one {{total} account} other {{total} accounts}} · read-only",
       "loadFailed": "The registry could not be loaded. Try again in a moment.",
       "search": {
         "nameOrEmail": "Search by name or email",
@@ -367,6 +368,8 @@
         "lastSignIn": "Last sign-in",
         "locale": "Locale",
         "profile": "Profile",
+        "balance": "Balance",
+        "balanceHelp": "Balance at last calculation (player's last visit)",
         "noDisplayName": "No display name",
         "never": "Never",
         "public": "Public",
@@ -379,6 +382,23 @@
         "rangeAndPage": "{count, plural, one {{from}–{to} of {total} account} other {{from}–{to} of {total} accounts}} · page {page} of {pageCount}",
         "previous": "Previous",
         "next": "Next"
+      },
+      "coins": {
+        "column": "Action",
+        "open": "Add coins",
+        "openAccessibleName": "Add coins to {name}",
+        "title": "Add coins",
+        "text": "The coins will be added to <strong>{name}</strong>’s balance right away.",
+        "amount": "Amount",
+        "unit": "coins",
+        "reason": "Reason (optional)",
+        "amountOutOfRange": "The amount must be a whole number of at least 1.",
+        "reasonTooLong": "The reason must not be longer than 200 characters.",
+        "unknownAccount": "This account no longer exists.",
+        "failed": "Adding the coins failed. Try again in a moment.",
+        "cancel": "Cancel",
+        "confirm": "Add",
+        "granted": "{amount} coins added to {name}."
       }
     },
     "settings": {
@@ -406,6 +426,68 @@
           "restoreText": "The number of slots per offer will go from <strong>{from}</strong> to <strong>{to}</strong>. The change applies right away to all players and will be added to the history."
         }
       },
+      "boosters": {
+        "title": "Boosters",
+        "intro": "Odds are relative: a rarity at 55 out of a total of 100 comes up 55 times in 100.",
+        "slotShare": "{share} of the slots",
+        "chances": "Odds by rarity",
+        "chancesTotal": "Total odds: {total}",
+        "chanceOutOfRange": "Odds must be whole numbers between 0 and 1,000.",
+        "noPositiveChance": "At least one rarity must have odds above 0.",
+        "noAvailableBooster": "At least one booster must stay active, with a shop weight above 0.",
+        "fields": {
+          "cost_coins": {
+            "label": "Price",
+            "unit": "coins",
+            "outOfRange": "The price must be a whole number between 1 and 100,000.",
+            "historyLabel": "{booster} · price",
+            "restoreText": "The price of the {booster} booster will go from <strong>{from}</strong> to <strong>{to}</strong> coins. The change applies right away to all players and will be added to the history."
+          },
+          "slots": {
+            "label": "Cards per booster",
+            "outOfRange": "The number of cards must be a whole number between 1 and 10.",
+            "historyLabel": "{booster} · cards",
+            "restoreText": "The number of cards in the {booster} booster will go from <strong>{from}</strong> to <strong>{to}</strong>. The change applies right away to all players and will be added to the history."
+          },
+          "shop_weight": {
+            "label": "Shop weight",
+            "outOfRange": "The shop weight must be a whole number between 0 and 1,000.",
+            "historyLabel": "{booster} · shop weight",
+            "restoreText": "The shop weight of the {booster} booster will go from <strong>{from}</strong> to <strong>{to}</strong>. The change applies right away to all players and will be added to the history."
+          },
+          "is_active": {
+            "label": "Active",
+            "historyLabel": "{booster} · active",
+            "restoreText": "The “Active” setting of the {booster} booster will go from <strong>{from}</strong> to <strong>{to}</strong>. The change applies right away to all players and will be added to the history."
+          },
+          "rarity_weights": {
+            "common": {
+              "historyLabel": "{booster} · Common odds",
+              "restoreText": "The Common odds of the {booster} booster will go from <strong>{from}</strong> to <strong>{to}</strong>. The change applies right away to all players and will be added to the history."
+            },
+            "uncommon": {
+              "historyLabel": "{booster} · Uncommon odds",
+              "restoreText": "The Uncommon odds of the {booster} booster will go from <strong>{from}</strong> to <strong>{to}</strong>. The change applies right away to all players and will be added to the history."
+            },
+            "rare": {
+              "historyLabel": "{booster} · Rare odds",
+              "restoreText": "The Rare odds of the {booster} booster will go from <strong>{from}</strong> to <strong>{to}</strong>. The change applies right away to all players and will be added to the history."
+            },
+            "epic": {
+              "historyLabel": "{booster} · Epic odds",
+              "restoreText": "The Epic odds of the {booster} booster will go from <strong>{from}</strong> to <strong>{to}</strong>. The change applies right away to all players and will be added to the history."
+            },
+            "legendary": {
+              "historyLabel": "{booster} · Legendary odds",
+              "restoreText": "The Legendary odds of the {booster} booster will go from <strong>{from}</strong> to <strong>{to}</strong>. The change applies right away to all players and will be added to the history."
+            },
+            "mythic": {
+              "historyLabel": "{booster} · Mythic odds",
+              "restoreText": "The Mythic odds of the {booster} booster will go from <strong>{from}</strong> to <strong>{to}</strong>. The change applies right away to all players and will be added to the history."
+            }
+          }
+        }
+      },
       "history": {
         "title": "Settings history",
         "note": "The last {count} changes",
@@ -419,7 +501,9 @@
         "restoreText": "Restore",
         "restoreAccessibleName": "Restore {setting} to {value}",
         "deletedAuthor": "Deleted account",
-        "empty": "No change recorded yet."
+        "empty": "No change recorded yet.",
+        "yes": "Yes",
+        "no": "No"
       },
       "restoreDialog": {
         "title": "Restore this value?",

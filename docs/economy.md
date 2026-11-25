@@ -42,18 +42,19 @@ Le multiplicateur est lu à chaque sync et s’applique à tout `Δt`, le temps 
 | `farm_accrual` | + farm |
 | `booster_purchase` | − achat booster (Sprint 5) |
 | `stripe_purchase` | + achat réel (Sprint 8) |
-| `admin_adjust` | ajustement manuel (réservé) |
+| `admin_adjust` | + ajout de pièces par le super administrateur (`admin_grant_coins`, voir `docs/admin.md`) ; `reference_id` = la ligne d’`admin_coin_grants`, `metadata` vide |
 
 Le ledger est **append-only** (triggers bloquent UPDATE/DELETE). Seule exception : la suppression d’un compte efface ses lignes, en cascade.
 
 ## Boutique boosters
 
 - `booster_shop_slot_count` (`economy_config`) : nombre d’emplacements de l’offre boutique, arrondi et borné entre 0 et 20 par le SQL, 8 par défaut. Le super administrateur le règle entre 1 et 12 (entier) sur la page Paramètres ; il vaut pour les offres créées ensuite, une offre déjà créée garde ses emplacements jusqu’à la fin de sa fenêtre boutique.
-- Poids de tirage des types (`booster_definitions.shop_weight`) : `standard` 70, `premium` 30. Les poids sont relatifs : un `premium` apparaît dans environ 3 emplacements sur 10.
+- Poids de tirage des types (`booster_definitions.shop_weight`) : `standard` 70, `premium` 30 à l’installation. Les poids sont relatifs : un `premium` apparaît dans environ 3 emplacements sur 10. Seuls les boosters actifs de poids positif sont tirés.
+- Le super administrateur règle chaque définition de booster sur la page Paramètres (voir `docs/admin.md`) : actif ou non, prix (entier de 1 à 100 000 pièces), cartes par booster (1 à 10), poids boutique (0 à 1 000) et chances par rareté (0 à 1 000 chacune, au moins une positive). Il reste toujours au moins un booster actif de poids positif : l’offre n’est jamais vide à cause d’un réglage. Le poids et l’activation valent pour les offres créées ensuite ; le prix, le nombre de cartes et les chances, pour la prochaine ouverture.
 - Ouvrir un emplacement débite le prix **courant** du booster (pas celui du moment où l’offre a été tirée) et l’emplacement reste **épuisé** jusqu’à la fin de la fenêtre.
-- Refus, sans rien débiter : `window_closed`, `slot_not_found`, `slot_exhausted`, `booster_unavailable` (définition désactivée), `insufficient_balance`.
+- Refus, sans rien débiter : `window_closed`, `slot_not_found`, `slot_exhausted`, `booster_unavailable` (définition désactivée, y compris après le tirage de l’offre : l’emplacement reste affiché jusqu’à la fin de sa fenêtre), `insufficient_balance`.
 - `open_booster_pack` n’est plus appelable par un joueur : la vitrine est la seule entrée, et la fonction reste pour le serveur (service role).
-- Les poids de rareté *dans* chaque définition (`rarity_weights`) ne sont pas recalibrés : voir la note de l’ADR [`0001-booster-shop-rotation`](adr/0001-booster-shop-rotation.md).
+- Les poids de rareté *dans* chaque définition (`rarity_weights`) n’ont pas été recalibrés par la boutique : voir la note de l’ADR [`0001-booster-shop-rotation`](adr/0001-booster-shop-rotation.md). Ils sont relatifs (une rareté à 55 sur un total de 100 sort 55 fois sur 100) ; une rareté absente vaut 0 (les boosters semés n’ont pas de clé `mythic`).
 
 ### Parcours manuel : fenêtre, ouverture, reset, offre persistante
 
@@ -70,4 +71,4 @@ Chaque étape est couverte par des tests automatisés.
 
 - `sync_user_economy` : uniquement pour `auth.uid() = p_user_id` (ou service role).
 - `profiles.last_economy_sync_at` n’est pas modifiable par le joueur (droits par colonne) : la reculer créditerait le temps écoulé depuis cette date.
-- Écritures ledger hors farm : Server Actions + service role (Sprint 5+).
+- Écritures ledger hors farm : Server Actions + service role (Sprint 5+). Un ajout de pièces passe par `admin_grant_coins`, exécutable par le service role seul, après que `grantCoins` a relu la session et vérifié le rôle `super_admin` ; l’auteur et le motif restent dans `admin_coin_grants`, que le joueur ne lit pas (voir `docs/security.md`).

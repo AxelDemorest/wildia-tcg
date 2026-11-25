@@ -8,6 +8,7 @@ import type { AppLocale } from "@/i18n/routing";
 import { accountsPageQuery, accountsPagination } from "@/lib/admin/accounts-pagination";
 import { parsePage, parseSearchTerm } from "@/lib/admin/accounts-query";
 import { formatCount } from "@/lib/admin/format-count";
+import { GRANT_COINS_ROLE, GRANTED_AMOUNT_PLACEHOLDER } from "@/lib/admin/grant-coins";
 import type { AccountsPage } from "@/lib/admin/list-accounts";
 import { knownLocaleOrDefault } from "@/lib/auth/return-to";
 import { listAccounts } from "@/server/admin/list-accounts";
@@ -55,6 +56,8 @@ export default async function AdminAccountsPage({ params, searchParams }: Props)
 
   const t = await getTranslations("Admin.accounts");
   const appLocale = knownLocaleOrDefault(locale);
+  // The registry is read-only but for the super administrateur, who adds coins from it.
+  const canGrantCoins = session.role === GRANT_COINS_ROLE;
   // No footer under a search with no match.
   const footer =
     registry.kind === "page" && registry.accounts.length > 0
@@ -68,7 +71,7 @@ export default async function AdminAccountsPage({ params, searchParams }: Props)
         <h1 className="text-2xl/8 font-semibold text-admin-ink lg:text-[28px]/9">{t("title")}</h1>
         {registry.kind === "page" && (
           <p className="text-admin-muted">
-            {t("subtitle", {
+            {t(canGrantCoins ? "subtitle" : "subtitleReadOnly", {
               count: registry.total,
               total: formatCount(registry.total, appLocale),
             })}
@@ -100,12 +103,42 @@ export default async function AdminAccountsPage({ params, searchParams }: Props)
               lastSignIn: t("table.lastSignIn"),
               locale: t("table.locale"),
               profile: t("table.profile"),
+              balance: t("table.balance"),
+              balanceHelp: t("table.balanceHelp"),
               noDisplayName: t("table.noDisplayName"),
               never: t("table.never"),
               public: t("table.public"),
               private: t("table.private"),
               empty: t("table.empty"),
             }}
+            grantCoins={
+              canGrantCoins
+                ? {
+                    header: t("coins.column"),
+                    labelsFor: (name) => ({
+                      tooltip: t("coins.open"),
+                      openAccessibleName: t("coins.openAccessibleName", { name }),
+                      title: t("coins.title"),
+                      text: t.rich("coins.text", {
+                        name,
+                        strong: (chunks) => (
+                          <strong className="font-semibold text-admin-ink">{chunks}</strong>
+                        ),
+                      }),
+                      amount: t("coins.amount"),
+                      unit: t("coins.unit"),
+                      reason: t("coins.reason"),
+                      amountOutOfRange: t("coins.amountOutOfRange"),
+                      reasonTooLong: t("coins.reasonTooLong"),
+                      unknownAccount: t("coins.unknownAccount"),
+                      failed: t("coins.failed"),
+                      cancel: t("coins.cancel"),
+                      confirm: t("coins.confirm"),
+                      granted: t("coins.granted", { amount: GRANTED_AMOUNT_PLACEHOLDER, name }),
+                    }),
+                  }
+                : null
+            }
           />
         )}
         {footer && (
