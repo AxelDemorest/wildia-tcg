@@ -13,6 +13,12 @@ export function remainingSeconds(
   return Math.max(0, Math.ceil(secondsAtRender - (nowMs - renderedAtMs) / 1000));
 }
 
+/** Share of the window still to run, from 1 (just started) down to 0 (over). */
+export function remainingShare(secondsLeft: number, windowSeconds: number): number {
+  if (windowSeconds <= 0) return 0;
+  return Math.min(1, Math.max(0, secondsLeft / windowSeconds));
+}
+
 export function formatCountdown(seconds: number): string {
   const minutes = Math.floor(seconds / 60);
   return `${minutes}:${String(seconds % 60).padStart(2, "0")}`;

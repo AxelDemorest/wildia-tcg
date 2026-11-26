@@ -45,6 +45,14 @@ export function parseBoosterShopOffer(data: unknown): BoosterShopOffer {
 }
 
 /**
+ * Length of a fenêtre boutique in seconds. Windows are counted from the Unix epoch, so the end of
+ * window N is (N + 1) × length: the client derives it instead of hard-coding the SQL value.
+ */
+export function shopWindowSeconds(offer: Pick<BoosterShopOffer, "windowIndex" | "endsAt">): number {
+  return Math.round(Date.parse(offer.endsAt) / 1000 / (offer.windowIndex + 1));
+}
+
+/**
  * Picks a booster type from shop weights; mirrors SQL private.pick_shop_booster with injectable RNG.
  * Pass candidates in the SQL order (sort_order, then id) for identical results.
  */

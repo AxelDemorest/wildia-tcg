@@ -3,6 +3,7 @@ import {
   createOfferReloader,
   formatCountdown,
   remainingSeconds,
+  remainingShare,
   shouldReloadOffer,
 } from "./shop-countdown";
 
@@ -27,6 +28,18 @@ describe("remainingSeconds(secondsAtRender, renderedAtMs, nowMs)", () => {
     },
   ])("$name → $expected", ({ secondsAtRender, elapsedMs, expected }) => {
     expect(remainingSeconds(secondsAtRender, RENDERED_AT, RENDERED_AT + elapsedMs)).toBe(expected);
+  });
+});
+
+describe("remainingShare(secondsLeft, windowSeconds)", () => {
+  it.each([
+    { name: "a full window", secondsLeft: 180, windowSeconds: 180, expected: 1 },
+    { name: "half the window", secondsLeft: 90, windowSeconds: 180, expected: 0.5 },
+    { name: "the end", secondsLeft: 0, windowSeconds: 180, expected: 0 },
+    { name: "a value rounded up past the length", secondsLeft: 181, windowSeconds: 180, expected: 1 },
+    { name: "an unknown length", secondsLeft: 30, windowSeconds: 0, expected: 0 },
+  ])("$name → $expected", ({ secondsLeft, windowSeconds, expected }) => {
+    expect(remainingShare(secondsLeft, windowSeconds)).toBe(expected);
   });
 });
 

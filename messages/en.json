@@ -207,6 +207,20 @@
     "revealDone": "Pack opened!",
     "goCollection": "View my binder",
     "packKicker": "Booster",
+    "explainer": {
+      "rotation": {
+        "title": "A rotating shop",
+        "body": "When the timer runs out, a new selection of boosters arrives for everyone at the same time."
+      },
+      "price": {
+        "title": "Pay with coins",
+        "body": "Your cards earn coins over time. Spend them to open the boosters in the shop."
+      },
+      "reveal": {
+        "title": "One open per slot",
+        "body": "Each slot opens only once per shop rotation. The cards you pull go straight to your binder."
+      }
+    },
     "pack": {
       "standard": {
         "name": "Standard booster",
@@ -277,7 +291,6 @@
     "showcase": {
       "title": "Showcase",
       "subtitle": "Up to six species featured on this profile.",
-      "slotLabel": "Slot {slot}",
       "emptySlot": "Empty slot",
       "edit": "Edit showcase"
     },

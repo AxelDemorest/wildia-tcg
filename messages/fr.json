@@ -207,6 +207,20 @@
     "revealDone": "Booster ouvert !",
     "goCollection": "Voir mon classeur",
     "packKicker": "Booster",
+    "explainer": {
+      "rotation": {
+        "title": "Une vitrine qui tourne",
+        "body": "À la fin du chrono, une nouvelle sélection de boosters arrive pour tout le monde en même temps."
+      },
+      "price": {
+        "title": "Payez en pièces",
+        "body": "Vos cartes rapportent des pièces en continu. Dépensez-les pour ouvrir les boosters de la vitrine."
+      },
+      "reveal": {
+        "title": "Une ouverture par emplacement",
+        "body": "Chaque emplacement s’ouvre une seule fois par vitrine. Les cartes tirées rejoignent votre classeur."
+      }
+    },
     "pack": {
       "standard": {
         "name": "Booster standard",
@@ -277,7 +291,6 @@
     "showcase": {
       "title": "Vitrine",
       "subtitle": "Jusqu’à six espèces mises en avant sur ce profil.",
-      "slotLabel": "Emplacement {slot}",
       "emptySlot": "Emplacement vide",
       "edit": "Modifier la vitrine"
     },

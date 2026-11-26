@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
-import { BoosterPack } from "@/components/boosters/booster-pack";
+import { BoosterShopSlot } from "@/components/boosters/booster-shop-slot";
 import { ShopCountdown } from "@/components/boosters/shop-countdown";
 import { TradingCard } from "@/components/cards/trading-card";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,7 @@ import { Surface } from "@/components/ui/surface";
 import { Link, useRouter } from "@/i18n/navigation";
 import type { CardRarity, IucnStatus } from "@/lib/cards/types";
 import { refusalReloadsOffer } from "@/lib/boosters/open-shop-slot";
-import type { BoosterShopOffer } from "@/lib/boosters/shop";
+import { shopWindowSeconds, type BoosterShopOffer } from "@/lib/boosters/shop";
 import { openShopSlot } from "@/server/actions/open-booster";
 
 export type RevealedCard = {
@@ -101,7 +101,7 @@ export function BoosterShop({ locale, offer, secondsLeft, isLoggedIn, userId }: 
         <p className="text-muted">{t("loginRequired")}</p>
         <Link
           href="/login"
-          className="mt-4 inline-flex rounded-xl bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-strong"
+          className="mt-4 inline-flex rounded-md bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-strong"
         >
           {t("loginCta")}
         </Link>
@@ -115,52 +115,31 @@ export function BoosterShop({ locale, offer, secondsLeft, isLoggedIn, userId }: 
 
   return (
     <div className="space-y-5">
-      <ShopCountdown secondsAtRender={secondsLeft} windowIndex={offer.windowIndex} />
+      <ShopCountdown
+        secondsAtRender={secondsLeft}
+        windowIndex={offer.windowIndex}
+        windowSeconds={shopWindowSeconds(offer)}
+      />
       {error && (
         <p className="text-sm text-red-300" role="alert">
           {error}
         </p>
       )}
-      <ul className="mx-auto grid max-w-[48.5rem] grid-cols-2 gap-x-6 gap-y-8 md:grid-cols-4">
-        {offer.slots.map((slot) => {
-          const name = t(`pack.${slot.booster.slug}.name`);
-          const isOpening = openingSlot === slot.slotIndex;
-          const packState = slot.exhausted ? "exhausted" : isOpening ? "opening" : "idle";
-          return (
-            <li key={slot.slotIndex} className="flex min-w-0 flex-col items-center gap-2.5">
-              <span className="sr-only">{`${name}, ${t("slots", { count: slot.booster.slots })}`}</span>
-              <BoosterPack
-                slug={slot.booster.slug}
-                cardCount={slot.booster.slots}
-                state={packState}
-              />
-              <p className="text-sm font-semibold text-amber-300">
-                {t("cost", { amount: slot.booster.costCoins })}
-              </p>
-              {slot.exhausted ? (
-                <p className="text-sm font-semibold text-muted">{t("exhausted")}</p>
-              ) : (
-                <Button
-                  type="button"
-                  className="w-full"
-                  // The visible "Open" says nothing about the slot; while opening, the visible "Opening…" is the accessible name.
-                  aria-label={
-                    isOpening ? undefined : t("open", { name, position: slot.slotIndex + 1 })
-                  }
-                  onClick={() => handleOpen(slot.slotIndex)}
-                  disabled={pending}
-                >
-                  {isOpening ? t("opening") : t("openCta")}
-                </Button>
-              )}
-            </li>
-          );
-        })}
+      <ul className="grid w-full grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 xl:grid-cols-6">
+        {offer.slots.map((slot) => (
+          <BoosterShopSlot
+            key={slot.slotIndex}
+            slot={slot}
+            isOpening={openingSlot === slot.slotIndex}
+            disabled={pending}
+            onOpen={handleOpen}
+          />
+        ))}
       </ul>
 
       {revealed && revealed.length > 0 && (
         <section
-          className="relative isolate space-y-5 overflow-hidden rounded-2xl bg-surface/80 p-5 backdrop-blur-md sm:p-6"
+          className="relative isolate space-y-5 overflow-hidden rounded-lg border border-border bg-surface p-5 sm:p-6"
           aria-live="polite"
         >
           <div
@@ -222,7 +201,7 @@ export function BoosterShop({ locale, offer, secondsLeft, isLoggedIn, userId }: 
               {userId && (
                 <Link
                   href={`/players/${userId}/collection`}
-                  className="inline-flex rounded-xl bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-strong"
+                  className="inline-flex rounded-md bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-strong"
                 >
                   {t("goCollection")}
                 </Link>
