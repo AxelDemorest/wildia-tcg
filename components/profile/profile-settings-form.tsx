@@ -57,7 +57,7 @@ export function ProfileSettingsForm({
               name="displayName"
               defaultValue={displayName ?? ""}
               maxLength={40}
-              className="mt-1.5 w-full rounded-xl border border-border bg-[#16161b] px-3 py-2.5 text-sm text-white focus:border-brand/60 focus:outline-none focus:ring-2 focus:ring-brand/30"
+              className="mt-1.5 w-full rounded-md border border-border bg-background px-3 py-2.5 text-sm text-white focus:border-brand/60 focus:outline-none focus:ring-2 focus:ring-brand/30"
             />
           </div>
           <div>
@@ -70,7 +70,7 @@ export function ProfileSettingsForm({
               defaultValue={bio ?? ""}
               maxLength={500}
               rows={4}
-              className="mt-1.5 w-full rounded-xl border border-border bg-[#16161b] px-3 py-2.5 text-sm text-white focus:border-brand/60 focus:outline-none focus:ring-2 focus:ring-brand/30"
+              className="mt-1.5 w-full rounded-md border border-border bg-background px-3 py-2.5 text-sm text-white focus:border-brand/60 focus:outline-none focus:ring-2 focus:ring-brand/30"
             />
           </div>
           <fieldset className="space-y-3">
@@ -88,7 +88,7 @@ export function ProfileSettingsForm({
                     id={fieldId}
                     name={fieldId}
                     defaultValue={showcaseSlots[index] ?? ""}
-                    className="mt-1 w-full rounded-xl border border-border bg-[#16161b] px-3 py-2.5 text-sm text-white focus:border-brand/60 focus:outline-none focus:ring-2 focus:ring-brand/30"
+                    className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2.5 text-sm text-white focus:border-brand/60 focus:outline-none focus:ring-2 focus:ring-brand/30"
                   >
                     <option value="">{t("featuredNone")}</option>
                     {ownedCards.map((card) => (
@@ -116,7 +116,7 @@ export function ProfileSettingsForm({
               {t(`error.${profileState.message}`)}
             </p>
           )}
-          {profileState.ok && <p className="text-sm text-brand">{t("saved")}</p>}
+          {profileState.ok && <p className="text-sm text-secondary">{t("saved")}</p>}
           <Button type="submit" disabled={profilePending}>
             {profilePending ? t("saving") : t("save")}
           </Button>
@@ -132,14 +132,14 @@ export function ProfileSettingsForm({
             type="file"
             name="banner"
             accept="image/png,image/jpeg,image/webp"
-            className="block w-full text-sm text-muted file:mr-3 file:rounded-xl file:border-0 file:bg-white/[0.08] file:px-3 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-white/[0.12]"
+            className="block w-full text-sm text-muted file:mr-3 file:rounded-md file:border-0 file:bg-white/[0.08] file:px-3 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-white/[0.12]"
           />
           {bannerState.message && !bannerState.ok && (
             <p className="text-sm text-red-300" role="alert">
               {t(`bannerError.${bannerState.message}`)}
             </p>
           )}
-          {bannerState.ok && <p className="text-sm text-brand">{t("bannerSaved")}</p>}
+          {bannerState.ok && <p className="text-sm text-secondary">{t("bannerSaved")}</p>}
           <Button type="submit" disabled={bannerPending}>
             {bannerPending ? t("bannerUploading") : t("bannerUpload")}
           </Button>

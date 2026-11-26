@@ -1,6 +1,5 @@
 import { getTranslations } from "next-intl/server";
 import type { CollectionStats } from "@/lib/inventory/collection-stats";
-import { chipClass } from "@/components/ui/chip";
 
 type Props = {
   stats: CollectionStats;
@@ -21,15 +20,16 @@ export async function ProfileHubStatsPills({ stats, isOwn }: Props) {
   }
 
   return (
-    <ul className="flex flex-wrap gap-2" aria-label={t("sidebarLabel")}>
+    <dl
+      className="grid shrink-0 grid-cols-2 gap-x-8 gap-y-4 sm:flex sm:flex-wrap sm:gap-x-10"
+      aria-label={t("sidebarLabel")}
+    >
       {pills.map((pill) => (
-        <li key={pill.label}>
-          <span className={chipClass(false)}>
-            <span className="text-muted">{pill.label}</span>{" "}
-            <span className="font-semibold tabular-nums text-foreground">{pill.value}</span>
-          </span>
-        </li>
+        <div key={pill.label} className="flex flex-col gap-1">
+          <dt className="text-xs text-muted">{pill.label}</dt>
+          <dd className="text-lg font-semibold tabular-nums text-foreground">{pill.value}</dd>
+        </div>
       ))}
-    </ul>
+    </dl>
   );
 }

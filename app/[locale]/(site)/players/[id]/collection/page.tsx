@@ -99,13 +99,13 @@ export default async function PlayerCollectionPage({ params, searchParams }: Pro
             <div className="mt-6 flex flex-wrap justify-center gap-3">
               <Link
                 href="/cards"
-                className="rounded-xl bg-white/[0.04] px-4 py-2 text-sm font-medium transition hover:bg-white/[0.08]"
+                className="rounded-md border border-border bg-white/[0.03] px-4 py-2 text-sm font-medium transition hover:border-border-strong hover:bg-white/[0.06]"
               >
                 {t("ctaCatalog")}
               </Link>
               <Link
                 href="/boosters"
-                className="rounded-xl bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-strong"
+                className="rounded-md bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-strong"
               >
                 {t("ctaBoosters")}
               </Link>

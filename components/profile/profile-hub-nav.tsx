@@ -15,18 +15,19 @@ type Props = {
 
 function activeTab(pathname: string, profileId: string): ProfileHubTab {
   const base = `/players/${profileId}`;
-  if (pathname === base || pathname.endsWith(base)) return "overview";
   for (const tab of PROFILE_HUB_TABS) {
-    if (tab === "overview") continue;
     if (pathname.includes(`${base}/${tab}`)) return tab;
   }
-  return "overview";
+  return "collection";
 }
 
 const tabClass = (active: boolean) =>
   [
-    "shrink-0 whitespace-nowrap border-b-2 pb-3 text-sm font-medium text-white transition",
-    active ? "border-white" : "border-transparent opacity-80 hover:opacity-100",
+    "relative shrink-0 whitespace-nowrap py-4 text-sm transition-colors",
+    "after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:transition-colors",
+    active
+      ? "font-semibold text-foreground after:bg-secondary"
+      : "font-medium text-muted after:bg-transparent hover:text-foreground/85",
   ].join(" ");
 
 export function ProfileHubNav({ profileId, isOwn }: Props) {
@@ -39,7 +40,7 @@ export function ProfileHubNav({ profileId, isOwn }: Props) {
   return (
     <nav
       aria-label={t("navLabel")}
-      className="mt-8 flex gap-6 overflow-x-auto px-5 shadow-[inset_0_-1px_0_rgb(255_255_255/0.15)] [scrollbar-width:none] sm:mt-10 sm:gap-8 sm:px-8"
+      className="flex gap-7 overflow-x-auto border-b border-border px-1 [scrollbar-width:none] sm:gap-10"
     >
       {tabs.map((tab) => (
         <Link

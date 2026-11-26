@@ -23,32 +23,32 @@ export async function ProfileStatsPanel({ stats, isOwn }: Props) {
         <p className="text-sm text-muted">{t("subtitle")}</p>
       </header>
 
-      <dl className="grid gap-3 sm:grid-cols-2">
-        <Surface className="p-4">
+      <dl className="grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2">
+        <div className="bg-surface p-4 sm:odd:last:col-span-2">
           <dt className="text-xs font-semibold uppercase tracking-wider text-muted">{t("species")}</dt>
           <dd className="mt-1 text-3xl font-extrabold tabular-nums text-foreground">
             {stats.uniqueSpecies}
           </dd>
-        </Surface>
-        <Surface className="p-4">
+        </div>
+        <div className="bg-surface p-4 sm:odd:last:col-span-2">
           <dt className="text-xs font-semibold uppercase tracking-wider text-muted">{t("copies")}</dt>
           <dd className="mt-1 text-3xl font-extrabold tabular-nums text-foreground">
             {stats.totalCopies}
           </dd>
-        </Surface>
-        <Surface className="p-4">
+        </div>
+        <div className="bg-surface p-4 sm:odd:last:col-span-2">
           <dt className="text-xs font-semibold uppercase tracking-wider text-muted">{t("catalogPercent")}</dt>
           <dd className="mt-1 text-3xl font-extrabold tabular-nums text-foreground">
             {stats.catalogPercent}%
           </dd>
-        </Surface>
+        </div>
         {isOwn && stats.boosterOpenCount != null && (
-          <Surface className="p-4">
+          <div className="bg-surface p-4 sm:odd:last:col-span-2">
             <dt className="text-xs font-semibold uppercase tracking-wider text-muted">{t("opens")}</dt>
             <dd className="mt-1 text-3xl font-extrabold tabular-nums text-foreground">
               {stats.boosterOpenCount}
             </dd>
-          </Surface>
+          </div>
         )}
       </dl>
 

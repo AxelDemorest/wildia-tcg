@@ -44,7 +44,7 @@ export default async function PlayerSettingsPage({ params }: Props) {
 
       {bannerUrl && (
         <div
-          className="h-32 rounded-2xl bg-cover bg-center"
+          className="h-32 rounded-lg border border-border bg-cover bg-center"
           style={{ backgroundImage: `url(${bannerUrl})` }}
           role="img"
           aria-label={t("bannerPreview")}
