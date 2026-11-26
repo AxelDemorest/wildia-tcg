@@ -9,7 +9,7 @@ import { HeaderProfile } from "@/components/layout/header-profile";
 import { HeaderProfileSkeleton } from "@/components/layout/header-profile-skeleton";
 import { SiteNavPills, type SiteNavItem } from "@/components/layout/site-nav-pills";
 import { LocaleSelect } from "@/components/locale-switcher";
-import { BellIcon, BinderIcon, BoosterIcon, CatalogIcon, HomeIcon, ProfileIcon } from "@/components/ui/icons";
+import { BellIcon, BoosterIcon, CatalogIcon, HomeIcon, ProfileIcon } from "@/components/ui/icons";
 import { Link } from "@/i18n/navigation";
 import { getUser } from "@/server/auth/require-user";
 
@@ -24,14 +24,11 @@ export async function SiteHeader({ locale }: Props) {
     { href: "/", label: t("navHome"), icon: <HomeIcon />, exact: true },
     { href: "/cards", label: t("catalog"), icon: <CatalogIcon /> },
     { href: "/boosters", label: t("boosters"), icon: <BoosterIcon /> },
-    ...(user
-      ? [{ href: `/players/${user.id}/collection`, label: t("collection"), icon: <BinderIcon /> }]
-      : []),
-    { href: user ? `/players/${user.id}` : "/login", label: t("profile"), icon: <ProfileIcon /> },
+    ...(user ? [] : [{ href: "/login", label: t("profile"), icon: <ProfileIcon /> }]),
   ];
 
   return (
-    <header className="sticky top-0 z-40 shrink-0 bg-[#141414]">
+    <header className="sticky top-0 z-40 shrink-0 border-b border-border bg-background/85 backdrop-blur-md">
       <div className="flex min-h-[4.5rem] items-center gap-4 px-4 py-2 sm:px-6 xl:gap-5">
         <Link
           href="/"
@@ -70,7 +67,7 @@ export async function SiteHeader({ locale }: Props) {
               <span
                 title={tLayout("notifications")}
                 aria-hidden
-                className="hidden size-9 place-items-center rounded-xl bg-surface text-muted sm:grid"
+                className="hidden size-9 place-items-center rounded-md border border-border text-muted sm:grid"
               >
                 <BellIcon />
               </span>

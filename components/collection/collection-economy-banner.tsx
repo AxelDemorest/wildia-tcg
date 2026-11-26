@@ -26,7 +26,7 @@ export async function CollectionEconomyBanner({ userId }: Props) {
         </div>
       </div>
       {accrued > 0 && (
-        <p className="relative rounded-xl bg-amber-300/10 px-3 py-1.5 text-sm font-semibold text-amber-300">
+        <p className="relative rounded-md bg-amber-300/10 px-3 py-1.5 text-sm font-semibold text-amber-300">
           {t("justFarmed", { amount: Math.floor(accrued) })}
         </p>
       )}

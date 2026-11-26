@@ -32,7 +32,7 @@ export default async function SiteLayout({ children, params }: Props) {
         </div>
 
         <SiteChatColumn>
-          <Suspense fallback={<div className="h-full rounded-2xl bg-panel" aria-hidden />}>
+          <Suspense fallback={<div className="h-full rounded-lg border border-border bg-surface" aria-hidden />}>
             <SiteChat locale={locale} />
           </Suspense>
         </SiteChatColumn>

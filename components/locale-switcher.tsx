@@ -32,7 +32,7 @@ export function LocaleSwitcher() {
             aria-label={labels[loc]}
             aria-pressed={active}
             title={labels[loc]}
-            className={`flex h-9 w-9 items-center justify-center rounded-xl text-lg leading-none transition ${
+            className={`flex h-9 w-9 items-center justify-center rounded-md text-lg leading-none transition ${
               active
                 ? "bg-white/[0.06]"
                 : "opacity-60 hover:bg-white/[0.04] hover:opacity-100"
@@ -53,7 +53,7 @@ export function LocaleSelect({ label }: { label: string }) {
   const pathname = usePathname();
 
   return (
-    <label className="relative inline-flex items-center rounded-lg bg-surface text-[11px] font-semibold uppercase text-muted transition focus-within:ring-2 focus-within:ring-brand hover:text-white">
+    <label className="relative inline-flex items-center rounded-md border border-border text-[11px] font-semibold uppercase text-muted transition focus-within:ring-2 focus-within:ring-brand hover:text-white">
       <span className="sr-only">{label}</span>
       <select
         value={locale}

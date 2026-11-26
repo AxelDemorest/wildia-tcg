@@ -15,7 +15,7 @@ export async function HomeHero({ locale }: Props) {
   const fanCards = pickHeroFanCards(cards, 3);
 
   return (
-    <section className="relative isolate overflow-hidden rounded-3xl bg-[linear-gradient(115deg,#04211a_0%,#0b4a33_38%,#17684a_72%,#0a2a1f_100%)] lg:h-[23rem]">
+    <section className="relative isolate overflow-hidden rounded-lg border border-white/[0.06] bg-[linear-gradient(115deg,#04211a_0%,#0b4a33_38%,#17684a_72%,#0a2a1f_100%)] lg:h-[23rem]">
       <div aria-hidden className="absolute -left-20 -top-32 size-[28rem] rounded-full bg-brand/20 blur-3xl" />
       <div aria-hidden className="absolute -bottom-40 right-40 size-[30rem] rounded-full bg-[#2fa876]/30 blur-3xl" />
       <div
@@ -37,14 +37,14 @@ export async function HomeHero({ locale }: Props) {
         <div className="mt-6 flex flex-wrap items-center gap-3">
           <Link
             href={user ? "/boosters" : "/signup"}
-            className="inline-flex items-center gap-2 rounded-xl bg-brand px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand-strong"
+            className="inline-flex items-center gap-2 rounded-md bg-brand px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand-strong"
           >
             <BoosterIcon />
             {user ? t("heroCtaBooster") : t("heroCtaJoin")}
           </Link>
           <Link
             href="/cards"
-            className="inline-flex items-center gap-2 rounded-xl bg-white/[0.06] px-5 py-3 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/10"
+            className="inline-flex items-center gap-2 rounded-md border border-white/15 bg-black/20 px-5 py-3 text-sm font-semibold text-white transition hover:border-white/25 hover:bg-black/30"
           >
             {t("heroReadMore")}
             <ArrowRightIcon />

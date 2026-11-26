@@ -45,7 +45,7 @@ function StepCard({
   return (
     <div className="relative w-full max-w-[22rem] transition-[translate] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform hover:z-20 hover:-translate-y-5">
       <article
-        className={`relative flex w-full flex-col overflow-hidden rounded-3xl bg-[linear-gradient(160deg,#1b2a23_0%,#18201c_55%,#16161b_100%)] px-7 pb-8 pt-8 text-left transition-[translate,rotate] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] sm:px-8 sm:pb-9 sm:pt-9 ${tiltClass}`}
+        className={`relative flex w-full flex-col overflow-hidden rounded-lg border border-white/[0.07] bg-[linear-gradient(160deg,#18261f_0%,#131a16_55%,#101412_100%)] px-7 pb-8 pt-8 text-left transition-[translate,rotate] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] sm:px-8 sm:pb-9 sm:pt-9 ${tiltClass}`}
       >
         <div className="relative w-fit">
           <span className="font-display text-[2.75rem] font-bold leading-none tracking-tight text-secondary sm:text-[3.15rem]">
@@ -71,14 +71,14 @@ function StepCard({
 
 function SignupIllustration() {
   return (
-    <div className="w-full max-w-[11.5rem] rounded-2xl bg-white/5 p-3.5">
+    <div className="w-full max-w-[11.5rem] rounded-lg bg-white/5 p-3.5">
       <div className="space-y-2.5">
         <div className="h-2 w-16 rounded-full bg-white/20" />
-        <div className="h-9 rounded-xl bg-white/10 px-3 text-[0.7rem] leading-9 text-white/50">
+        <div className="h-9 rounded-md bg-white/10 px-3 text-[0.7rem] leading-9 text-white/50">
           email@…
         </div>
-        <div className="h-9 rounded-xl bg-white/15" />
-        <div className="rounded-xl bg-brand py-2 text-center text-xs font-bold text-white">
+        <div className="h-9 rounded-md bg-white/15" />
+        <div className="rounded-md bg-brand py-2 text-center text-xs font-bold text-white">
           OK
         </div>
       </div>
@@ -112,7 +112,7 @@ function BoosterIllustration() {
 
 function FarmCollectIllustration() {
   return (
-    <div className="w-full max-w-[12rem] overflow-hidden rounded-2xl bg-white/5">
+    <div className="w-full max-w-[12rem] overflow-hidden rounded-lg bg-white/5">
       <div className="h-9 bg-gradient-to-r from-secondary via-brand to-[#3fb985]" />
       <div className="-mt-5 flex flex-col items-center px-3 pb-3.5">
         <div className="h-11 w-11 rounded-full bg-gradient-to-br from-brand to-[#3fb985]" />
@@ -151,12 +151,12 @@ export async function HomeHowItWorks() {
   return (
     <section
       id="how-it-works"
-      className="relative scroll-mt-4 overflow-hidden rounded-2xl bg-surface/80 pb-16 pt-12 backdrop-blur-md sm:pb-20 sm:pt-16"
+      className="relative scroll-mt-4 overflow-hidden border-t border-border pb-16 pt-12 sm:pb-20 sm:pt-16"
     >
       <div aria-hidden className="pointer-events-none absolute -top-40 left-1/2 size-[30rem] -translate-x-1/2 rounded-full bg-brand/10 blur-3xl" />
       <div className="relative mx-auto w-full max-w-6xl px-4 sm:px-6">
         <header className="mx-auto max-w-3xl text-center">
-          <p className="text-xs font-semibold uppercase tracking-wider text-brand sm:text-sm">
+          <p className="text-xs font-semibold uppercase tracking-wider text-secondary sm:text-sm">
             {t("howItWorksKicker")}
           </p>
           <h2 className="mt-3 text-balance text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-4xl md:leading-[1.15]">

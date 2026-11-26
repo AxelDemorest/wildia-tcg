@@ -23,7 +23,7 @@ export default async function DevCardsPage({ params }: Props) {
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
-      <h1 className="text-2xl font-bold text-brand-strong">{t("title")}</h1>
+      <h1 className="text-2xl font-bold text-secondary">{t("title")}</h1>
       <p className="mt-2 text-sm text-muted">{t("subtitle")}</p>
       <ul className="mt-8 grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-3">
         {samples.map((card, index) => (

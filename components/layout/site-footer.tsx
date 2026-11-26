@@ -49,8 +49,8 @@ export async function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="mt-auto rounded-2xl bg-surface/80 backdrop-blur-md">
-      <div className="mx-auto w-full max-w-7xl px-5 pb-6 pt-10 sm:px-8 sm:pt-12">
+    <footer className="mt-auto border-t border-border">
+      <div className="mx-auto w-full max-w-7xl px-2 pb-6 pt-10 sm:px-4 sm:pt-12">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,2fr)] lg:gap-16">
           <div className="max-w-sm">
             <Link
@@ -73,7 +73,7 @@ export async function SiteFooter() {
                     <li key={link.href}>
                       <Link
                         href={link.href}
-                        className="text-sm text-muted transition hover:text-brand focus-visible:outline-none focus-visible:text-brand"
+                        className="text-sm text-muted transition hover:text-secondary focus-visible:outline-none focus-visible:text-secondary"
                       >
                         {link.label}
                       </Link>
@@ -85,7 +85,7 @@ export async function SiteFooter() {
           </nav>
         </div>
 
-        <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-white/[0.05] pt-5 text-sm text-muted sm:flex-row">
+        <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-border pt-5 text-sm text-muted sm:flex-row">
           <p className="text-center sm:text-left">{t("footerCopyright", { year })}</p>
           <LocaleSwitcher />
         </div>

@@ -16,13 +16,13 @@ export async function HeaderGuestActions() {
       </Link>
       <Link
         href="/signup"
-        className="hidden h-9 items-center rounded-xl bg-brand px-4 text-sm font-semibold text-white transition hover:bg-brand-strong sm:inline-flex"
+        className="hidden h-9 items-center rounded-md bg-brand px-4 text-sm font-semibold text-white transition hover:bg-brand-strong sm:inline-flex"
       >
         {t("signup")}
       </Link>
       <Link
         href="/login"
-        className="relative size-9 shrink-0 overflow-hidden rounded-xl bg-surface"
+        className="relative size-9 shrink-0 overflow-hidden rounded-md bg-surface"
         aria-label={t("login")}
       >
         <Image src={MOCK_AVATAR_PATH} alt="" fill sizes="36px" className="object-cover" priority />

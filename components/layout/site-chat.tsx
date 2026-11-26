@@ -31,7 +31,7 @@ function Avatar({ name, index }: { name: string; index: number }) {
   return (
     <span
       aria-hidden
-      className={`grid size-8 shrink-0 place-items-center rounded-full bg-gradient-to-br text-xs font-bold text-white ring-2 ring-panel ${AVATAR_GRADIENTS[index % AVATAR_GRADIENTS.length]}`}
+      className={`grid size-8 shrink-0 place-items-center rounded-full bg-gradient-to-br text-xs font-bold text-white ring-2 ring-surface ${AVATAR_GRADIENTS[index % AVATAR_GRADIENTS.length]}`}
     >
       {name[0]?.toUpperCase()}
     </span>
@@ -58,9 +58,9 @@ export async function SiteChat({ locale }: Props) {
   return (
     <aside
       aria-label={t("label")}
-      className="flex h-full w-full flex-col overflow-hidden rounded-2xl bg-panel"
+      className="flex h-full w-full flex-col overflow-hidden rounded-lg border border-border bg-surface"
     >
-      <div className="flex h-12 shrink-0 items-center justify-between border-b border-white/[0.05] px-4">
+      <div className="flex h-12 shrink-0 items-center justify-between border-b border-border px-4">
         <span className="flex items-center gap-2 text-sm font-semibold">
           <span className="size-1.5 rounded-full bg-emerald-400" />
           {t("title")}
@@ -72,7 +72,7 @@ export async function SiteChat({ locale }: Props) {
         {messages.slice(0, PULL_POSITION)}
 
         {showcase && (
-          <li className="relative shrink-0 overflow-hidden rounded-xl bg-[linear-gradient(120deg,#3b2205_0%,#7a4308_55%,#c47a12_100%)] p-3">
+          <li className="relative shrink-0 overflow-hidden rounded-md border border-amber-200/15 bg-[linear-gradient(120deg,#3b2205_0%,#7a4308_55%,#c47a12_100%)] p-3">
             <div aria-hidden className="absolute -right-6 -top-6 size-24 rounded-full bg-amber-300/30 blur-2xl" />
             <div className="relative flex items-center gap-3">
               <div className="min-w-0 flex-1">
@@ -98,8 +98,8 @@ export async function SiteChat({ locale }: Props) {
         {messages.slice(PULL_POSITION)}
       </ul>
 
-      <div className="shrink-0 border-t border-white/[0.05] p-3">
-        <div className="flex items-center gap-2 rounded-xl bg-[#16161b] px-3 py-1.5">
+      <div className="shrink-0 border-t border-border p-3">
+        <div className="flex items-center gap-2 rounded-md border border-border bg-background px-3 py-1.5">
           <input
             type="text"
             disabled
@@ -107,7 +107,7 @@ export async function SiteChat({ locale }: Props) {
             aria-label={t("placeholder")}
             className="min-w-0 flex-1 bg-transparent py-1 text-xs text-white placeholder:text-muted disabled:cursor-not-allowed"
           />
-          <button type="button" disabled aria-label={t("send")} className="text-brand disabled:opacity-70">
+          <button type="button" disabled aria-label={t("send")} className="text-secondary disabled:opacity-70">
             <SendIcon />
           </button>
         </div>

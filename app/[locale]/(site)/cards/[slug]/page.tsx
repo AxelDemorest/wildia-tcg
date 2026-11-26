@@ -48,7 +48,7 @@ export default async function CardDetailPage({ params }: Props) {
         <span aria-hidden>←</span> {t("backToCatalog")}
       </Link>
 
-      <section className="relative isolate overflow-hidden rounded-2xl bg-surface/80 p-5 backdrop-blur-md sm:p-8">
+      <section className="relative isolate overflow-hidden rounded-lg border border-border bg-surface p-5 sm:p-8">
         <div aria-hidden className="absolute -left-20 -top-20 size-80 rounded-full bg-brand/15 blur-3xl" />
         <div aria-hidden className="absolute -bottom-32 right-0 size-80 rounded-full bg-[#2fa876]/15 blur-3xl" />
 
@@ -78,7 +78,7 @@ export default async function CardDetailPage({ params }: Props) {
               </div>
             )}
             <p className="leading-relaxed text-white/85">{card.description}</p>
-            <div className="rounded-xl bg-white/[0.03] p-4">
+            <div className="rounded-md border border-border bg-background/60 p-4">
               <h2 className="text-xs font-semibold uppercase tracking-wider text-muted">{t("stats")}</h2>
               <dl className="mt-3 grid grid-cols-3 gap-4 text-center">
                 <div>
@@ -96,19 +96,19 @@ export default async function CardDetailPage({ params }: Props) {
               </dl>
             </div>
             {!owns && (
-              <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl bg-brand/[0.06] p-4">
+              <div className="flex flex-wrap items-center justify-between gap-4 rounded-md border border-brand/25 bg-brand/[0.06] p-4">
                 <p className="text-sm text-white/75">{t("notOwnedHint")}</p>
                 <div className="flex flex-wrap gap-2">
                   <Link
                     href="/boosters"
-                    className="rounded-xl bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-strong"
+                    className="rounded-md bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-strong"
                   >
                     {t("ctaBoosters")}
                   </Link>
                   {user && (
                     <Link
                       href={`/players/${user.id}/collection`}
-                      className="rounded-xl bg-white/[0.04] px-4 py-2 text-sm font-medium transition hover:bg-white/[0.08]"
+                      className="rounded-md border border-border bg-white/[0.03] px-4 py-2 text-sm font-medium transition hover:border-border-strong hover:bg-white/[0.06]"
                     >
                       {t("ctaCollection")}
                     </Link>

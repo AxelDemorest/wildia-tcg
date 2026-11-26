@@ -16,10 +16,10 @@ export function HomeRecentDraws({ cards, kicker, title, cta, empty }: Props) {
     <div className="flex min-w-0 flex-col gap-5">
       <div className="flex w-full items-end justify-between gap-4 px-5">
         <div className="min-w-0">
-          <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-brand">
+          <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-secondary">
             <span className="relative flex size-2" aria-hidden>
-              <span className="absolute inset-0 animate-ping rounded-full bg-brand/60 motion-reduce:animate-none" />
-              <span className="relative size-2 rounded-full bg-brand" />
+              <span className="absolute inset-0 animate-ping rounded-full bg-secondary/60 motion-reduce:animate-none" />
+              <span className="relative size-2 rounded-full bg-secondary" />
             </span>
             {kicker}
           </p>
@@ -27,7 +27,7 @@ export function HomeRecentDraws({ cards, kicker, title, cta, empty }: Props) {
         </div>
         <Link
           href="/boosters"
-          className="inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-brand transition hover:text-secondary"
+          className="inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-secondary transition hover:text-white"
         >
           {cta}
           <ArrowRightIcon className="size-3.5" />
