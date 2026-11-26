@@ -2,6 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { OpeningCeremony } from "@/components/boosters/opening-ceremony";
 import { PageHeader } from "@/components/ui/page-header";
+import { loginHref } from "@/lib/auth/return-to";
 import { drawPackSlug } from "@/lib/boosters/booster-pack";
 import { openingPageAction } from "@/lib/boosters/opening-page-action";
 import { shopNoticeHref } from "@/lib/boosters/shop-notice";
@@ -19,7 +20,8 @@ export default async function OpeningPage({ params }: Props) {
   if (!outcome.ok) {
     const leave = openingPageAction(outcome);
     if (leave.kind === "not-found") notFound();
-    if (leave.kind === "login") redirect(`/${locale}/login`);
+    if (leave.kind === "login")
+      redirect(loginHref(locale, `/${locale}/boosters/opening/${drawId}`));
     redirect(shopNoticeHref(locale, leave.notice));
   }
 

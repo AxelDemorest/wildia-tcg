@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import type { OAuthErrorCode } from "@/lib/auth/oauth-error";
 import type { BoosterField } from "@/lib/admin/booster-values";
 import type { TeamRole } from "@/lib/auth/staff-session";
 import type { OpenShopSlotOutcome } from "@/lib/boosters/open-shop-slot";
@@ -95,6 +96,28 @@ describe("Admin home role help", () => {
     };
     const help = messages.Admin?.home?.roleHelp?.[role];
     expect(typeof help === "string" && help.trim().length > 0).toBe(true);
+  });
+});
+
+// A code added to OAUTH_ERRORS fails typecheck here until it is listed.
+const oauthErrorCodes: Record<OAuthErrorCode, true> = {
+  access_denied: true,
+  email_unusable: true,
+  failed: true,
+};
+
+describe("Auth oauth error messages", () => {
+  it.each(
+    Object.keys(oauthErrorCodes).flatMap((code) => [
+      ["fr", code],
+      ["en", code],
+    ]),
+  )("has a non-empty %s message for the OAuth error code %s", (locale, code) => {
+    const messages = (locale === "fr" ? fr : en) as unknown as {
+      Auth: { oauthError?: Record<string, unknown> };
+    };
+    const message = messages.Auth.oauthError?.[code];
+    expect(typeof message === "string" && message.trim().length > 0).toBe(true);
   });
 });
 

@@ -1,6 +1,7 @@
 import "server-only";
 
 import { redirect } from "next/navigation";
+import { loginHref } from "@/lib/auth/return-to";
 import type { SessionUser } from "@/lib/auth/session-user";
 import { createClient } from "@/lib/supabase/server";
 
@@ -17,10 +18,11 @@ export async function getUser(): Promise<SessionUser | null> {
   return toSessionUser(user);
 }
 
-export async function requireUser(locale: string): Promise<SessionUser> {
+/** The signed-in user, or a redirect to the login that comes back to `path`. */
+export async function requireUser(locale: string, path: string): Promise<SessionUser> {
   const user = await getUser();
   if (!user) {
-    redirect(`/${locale}/login`);
+    redirect(loginHref(locale, path));
   }
   return user;
 }

@@ -15,7 +15,7 @@ export default async function ProfileSettingsPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("Profile");
-  const user = await requireUser(locale);
+  const user = await requireUser(locale, `/${locale}/settings/profile`);
 
   const profile = await getOwnProfile(user.id);
   const ownedCards = await listUserCollection(user.id, locale, "name");

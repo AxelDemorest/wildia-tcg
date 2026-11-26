@@ -33,7 +33,7 @@ export async function devGrantCard(
   }
 
   const { locale, cardId, quantity = 1 } = parsed.data;
-  const user = await requireUser(locale);
+  const user = await requireUser(locale, `/${locale}/dev/grants`);
 
   try {
     await grantCardToUser({

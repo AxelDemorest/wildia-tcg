@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { knownLocaleOrDefault, safeReturnTo } from "@/lib/auth/return-to";
+import { knownLocaleOrDefault, loginHref, safeReturnTo } from "@/lib/auth/return-to";
 
 // The contract under test:
 //   // lib/auth/return-to.ts
@@ -80,4 +80,19 @@ describe("knownLocaleOrDefault", () => {
   ])("maps %j to %s", (raw, expected) => {
     expect(knownLocaleOrDefault(raw)).toBe(expected);
   });
+});
+
+describe("loginHref", () => {
+  it("gives the login of the locale with the encoded page to come back to", () => {
+    expect(loginHref("en", "/en/settings/profile")).toBe(
+      "/en/login?returnTo=%2Fen%2Fsettings%2Fprofile",
+    );
+  });
+
+  it.each(["/evil.com"])(
+    "never builds a URL outside the site from the forged locale %j",
+    (locale) => {
+      expect(loginHref(locale, "/fr/collection")).toBe("/fr/login?returnTo=%2Ffr%2Fcollection");
+    },
+  );
 });

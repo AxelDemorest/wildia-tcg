@@ -522,7 +522,15 @@ test("the ceremony route sends a guest to the login and shows a 404 for an unkno
   const unknownDraw = randomUUID();
 
   await page.goto(`/fr/boosters/opening/${unknownDraw}`);
-  await expect(page).toHaveURL(/\/fr\/login/);
+  await expect
+    .poll(
+      () => {
+        const url = new URL(page.url());
+        return url.pathname + url.search;
+      },
+      { timeout: 20_000 },
+    )
+    .toBe(`/fr/login?returnTo=${encodeURIComponent(`/fr/boosters/opening/${unknownDraw}`)}`);
 
   const player = await createPlayer();
   await signIn(page, player);

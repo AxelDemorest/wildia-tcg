@@ -127,6 +127,41 @@ export function createProviderAccount(
 }
 
 /**
+ * Mints the auth code Supabase Auth hands back after a provider sign-in: an `auth.flow_state`
+ * row for `userId`, bound to the PKCE `codeChallenge` (S256) the app sent to /authorize.
+ * `/token?grant_type=pkce` accepts the returned code with the matching verifier, once, within
+ * 5 minutes. The provider tokens must not be null: Supabase Auth panics (HTTP 500) on a null
+ * `provider_access_token` or `provider_refresh_token`. Supabase Auth deletes the row at the
+ * exchange; `auth.flow_state` has no foreign key on `user_id`, so a test that fails before the
+ * exchange leaves it behind.
+ */
+export function createOAuthCode(
+  userId: string,
+  codeChallenge: string,
+  provider: "google" | "discord" = "google",
+): string {
+  if (!/^[0-9a-f-]{36}$/.test(userId) || !/^[A-Za-z0-9_-]+$/.test(codeChallenge)) {
+    throw new Error("createOAuthCode : identifiant ou code_challenge invalide");
+  }
+  const code = randomUUID();
+  const rows = sql<{ id: string }>(
+    `with flow as (
+       insert into auth.flow_state (
+         id, user_id, auth_code, code_challenge_method, code_challenge, provider_type,
+         authentication_method, provider_access_token, provider_refresh_token,
+         created_at, updated_at, auth_code_issued_at
+       ) values (
+         gen_random_uuid(), '${userId}', '${code}', 's256', '${codeChallenge}', '${provider}',
+         'oauth', 'test-provider-token', 'test-provider-refresh', now(), now(), now()
+       ) returning id
+     )
+     select id from flow`,
+  );
+  if (rows.length !== 1) throw new Error("createOAuthCode : flow_state non créé");
+  return code;
+}
+
+/**
  * Creates a confirmed account that never signed in (`last_sign_in_at` null), like a sign-up
  * whose owner never came back. `metadata` is the sign-up metadata, e.g. display_name or locale.
  * Returns the id, e-mail and password, without a client.
