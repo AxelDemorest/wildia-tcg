@@ -58,14 +58,19 @@ curl -si "http://127.0.0.1:55321/auth/v1/authorize?provider=discord" | grep -i '
 
 Créer **deux applications par fournisseur**, une pour le local et une pour la production : un secret local qui fuit n’oblige pas à tourner celui de la prod.
 
-### Google (Google Cloud Console)
+### Google (Google Cloud Console, section Google Auth Platform)
 
-1. Créer (ou choisir) un projet, puis **APIs & Services → OAuth consent screen**.
-2. Type d’utilisateur **External**. Scopes : `openid`, `email`, `profile` (ceux par défaut, rien de plus).
-3. Production : passer l’écran de consentement en **In production**. Sinon seuls les « test users » peuvent se connecter. Avant de publier, ajouter `<project-ref>.supabase.co` aux **Authorized domains** de l’écran de consentement.
-4. **Credentials → Create credentials → OAuth client ID**, type **Web application**.
-5. **Authorized redirect URIs** : la redirect URI de Supabase Auth du tableau ci-dessus (locale pour l’application locale, `https://<project-ref>.supabase.co/auth/v1/callback` pour celle de prod ; en prod, recopier le « Callback URL (for OAuth) » du panneau Google du dashboard, qui reste juste avec un domaine personnalisé). Aucune « Authorized JavaScript origin » n’est nécessaire.
-6. Copier le Client ID et le Client secret.
+1. **Projet** : sur [console.cloud.google.com](https://console.cloud.google.com), créer (ou choisir) un projet — un pour le local, un pour la production.
+2. **Google Auth Platform → Get started** (assistant de création) : nom de l’application (« Wildia TCG »), e-mail de support utilisateur, audience **External** (« Internal » demande une organisation Google Workspace), e-mail de contact développeur ; accepter la politique de données, puis **Create**.
+3. **Branding** : nom, e-mail de support, logo (facultatif). En production, renseigner aussi la page d’accueil, la politique de confidentialité et les conditions d’utilisation du site, et ajouter aux **Authorized domains** le domaine du site **et** `<project-ref>.supabase.co`. Le nom et le logo ne s’affichent sur l’écran de consentement qu’après la **vérification de la marque** par Google (quelques jours ouvrés) ; sans elle, le joueur voit `<project-ref>.supabase.co`.
+4. **Audience** :
+   - local : laisser le statut **Testing** et ajouter son compte Google (et ceux des testeurs) dans **Test users** ; personne d’autre ne peut se connecter ;
+   - production : **Publish app** pour passer en **In production**. Supabase indique qu’aucune vérification de l’application n’est demandée tant que seuls des scopes non sensibles sont utilisés ; si Google la réclame à la publication, la soumettre.
+5. **Data Access** : `.../auth/userinfo.email` et `.../auth/userinfo.profile` sont présents par défaut ; ajouter **`openid` à la main**. Rien d’autre (scopes non sensibles).
+6. **Clients → Create client**, type **Web application** :
+   - **Authorized redirect URIs** : la redirect URI de Supabase Auth du tableau ci-dessus (locale `http://127.0.0.1:55321/auth/v1/callback` pour l’application locale ; en prod, recopier le « Callback URL (for OAuth) » du panneau Google du dashboard, `https://<project-ref>.supabase.co/auth/v1/callback`, qui reste juste avec un domaine personnalisé). Elle doit correspondre exactement (schéma, port, chemin, sans barre finale) ;
+   - **Authorized JavaScript origins** : facultatif pour ce flux par redirection (Supabase conseille l’URL du site : `http://localhost:3000` en local, `https://<hôte-prod>` en prod).
+7. **Copier le Client ID et le Client secret tout de suite** : Google n’affiche le secret qu’à la création. Perdu, il faut en générer un nouveau.
 
 ### Discord (portail développeur)
 
