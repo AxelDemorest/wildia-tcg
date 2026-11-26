@@ -1,3 +1,5 @@
+import { useId } from "react";
+
 type IconProps = { className?: string };
 
 const base = {
@@ -127,15 +129,17 @@ export function SendIcon({ className = "size-4" }: IconProps) {
 
 /** Gold coin used for the in-game currency. */
 export function CoinIcon({ className = "size-4" }: IconProps) {
+  // One gradient id per coin: the page holds many, and an id repeated is invalid HTML.
+  const gradientId = useId();
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
       <defs>
-        <linearGradient id="coin-fill" x1="0" y1="0" x2="1" y2="1">
+        <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
           <stop offset="0" stopColor="#ffe08a" />
           <stop offset="1" stopColor="#d99a12" />
         </linearGradient>
       </defs>
-      <circle cx="12" cy="12" r="10" fill="url(#coin-fill)" />
+      <circle cx="12" cy="12" r="10" fill={`url(#${gradientId})`} />
       <circle cx="12" cy="12" r="7" fill="none" stroke="#a86f00" strokeWidth="1.4" opacity="0.6" />
       <path d="M8.5 9.5 10 15l2-4 2 4 1.5-5.5" fill="none" stroke="#7a4f00" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
     </svg>

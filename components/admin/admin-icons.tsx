@@ -1,3 +1,5 @@
+import { CoinIcon } from "@/components/ui/icons";
+
 /** Icons of the espace administration, with the admin mockup's paths and stroke. */
 type IconProps = { className?: string };
 
@@ -164,5 +166,18 @@ export function AdminRotateCcwIcon({ className = "size-[18px]" }: IconProps) {
       <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
       <path d="M3 3v5h5" />
     </svg>
+  );
+}
+
+/** The game's coin with a small green "+" badge in its top-right corner: coins are added. */
+export function AdminCoinPlusIcon() {
+  return (
+    <span className="relative inline-flex size-5" aria-hidden>
+      <CoinIcon className="size-5" />
+      <svg viewBox="0 0 10 10" className="absolute -top-1 -right-1 size-2.5">
+        <circle cx="5" cy="5" r="5" className="fill-brand" />
+        <path d="M5 2.5v5M2.5 5h5" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+      </svg>
+    </span>
   );
 }

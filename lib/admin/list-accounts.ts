@@ -12,6 +12,8 @@ type AccountRecord = {
   last_sign_in_at: string | null;
   locale: string;
   is_public: boolean;
+  /** The sum of the account's coin ledger; PostgREST gives a numeric as a string or a number. */
+  balance: number | string;
 };
 
 /** What admin_list_accounts returns: the accounts of the page asked for, and the search's count. */
@@ -41,6 +43,8 @@ export type RegistryAccount = {
   lastSignInAt: string | null;
   locale: string;
   isPublic: boolean;
+  /** The sum of the account's coin ledger at its last calculation; 0 with no movement. */
+  balance: number;
 };
 
 export type AccountsPage = {
@@ -81,6 +85,7 @@ const toRegistryAccount = (record: AccountRecord, emailsMasked: boolean): Regist
   lastSignInAt: record.last_sign_in_at,
   locale: record.locale,
   isPublic: record.is_public,
+  balance: Number(record.balance),
 });
 
 /**

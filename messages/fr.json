@@ -351,7 +351,8 @@
     },
     "accounts": {
       "title": "Registre des comptes inscrits",
-      "subtitle": "{count, plural, one {{total} compte} other {{total} comptes}} · consultation seule",
+      "subtitle": "{count, plural, one {{total} compte} other {{total} comptes}}",
+      "subtitleReadOnly": "{count, plural, one {{total} compte} other {{total} comptes}} · consultation seule",
       "loadFailed": "Le registre n’a pas pu être chargé. Réessayez dans un instant.",
       "search": {
         "nameOrEmail": "Rechercher par nom ou e-mail",
@@ -367,6 +368,8 @@
         "lastSignIn": "Dernière connexion",
         "locale": "Locale",
         "profile": "Profil",
+        "balance": "Solde",
+        "balanceHelp": "Solde au dernier calcul (dernière visite du joueur)",
         "noDisplayName": "Sans nom affiché",
         "never": "Jamais",
         "public": "Public",
@@ -379,6 +382,23 @@
         "rangeAndPage": "{count, plural, one {{from}–{to} sur {total} compte} other {{from}–{to} sur {total} comptes}} · page {page} sur {pageCount}",
         "previous": "Précédent",
         "next": "Suivant"
+      },
+      "coins": {
+        "column": "Action",
+        "open": "Ajouter des pièces",
+        "openAccessibleName": "Ajouter des pièces à {name}",
+        "title": "Ajouter des pièces",
+        "text": "Les pièces seront ajoutées tout de suite au solde de <strong>{name}</strong>.",
+        "amount": "Montant",
+        "unit": "pièces",
+        "reason": "Motif (facultatif)",
+        "amountOutOfRange": "Le montant doit être un nombre entier supérieur ou égal à 1.",
+        "reasonTooLong": "Le motif ne doit pas dépasser 200 caractères.",
+        "unknownAccount": "Ce compte n’existe plus.",
+        "failed": "L’ajout a échoué. Réessayez dans un instant.",
+        "cancel": "Annuler",
+        "confirm": "Ajouter",
+        "granted": "{amount} pièces ajoutées à {name}."
       }
     },
     "settings": {
@@ -406,6 +426,68 @@
           "restoreText": "Le nombre d’emplacements par offre passera de <strong>{from}</strong> à <strong>{to}</strong>. Le changement s’applique tout de suite à tous les joueurs et sera ajouté à l’historique."
         }
       },
+      "boosters": {
+        "title": "Boosters",
+        "intro": "Les chances sont relatives : une rareté à 55 sur un total de 100 sort 55 fois sur 100.",
+        "slotShare": "{share} des emplacements",
+        "chances": "Chances par rareté",
+        "chancesTotal": "Total des chances : {total}",
+        "chanceOutOfRange": "Chaque chance doit être un entier compris entre 0 et 1 000.",
+        "noPositiveChance": "Au moins une chance doit être supérieure à 0.",
+        "noAvailableBooster": "Au moins un booster doit rester actif, avec un poids boutique supérieur à 0.",
+        "fields": {
+          "cost_coins": {
+            "label": "Prix",
+            "unit": "pièces",
+            "outOfRange": "Le prix doit être un entier compris entre 1 et 100 000.",
+            "historyLabel": "{booster} · prix",
+            "restoreText": "Le prix du booster {booster} passera de <strong>{from}</strong> à <strong>{to}</strong> pièces. Le changement s’applique tout de suite à tous les joueurs et sera ajouté à l’historique."
+          },
+          "slots": {
+            "label": "Cartes par booster",
+            "outOfRange": "Le nombre de cartes doit être un entier compris entre 1 et 10.",
+            "historyLabel": "{booster} · cartes",
+            "restoreText": "Le nombre de cartes du booster {booster} passera de <strong>{from}</strong> à <strong>{to}</strong>. Le changement s’applique tout de suite à tous les joueurs et sera ajouté à l’historique."
+          },
+          "shop_weight": {
+            "label": "Poids boutique",
+            "outOfRange": "Le poids boutique doit être un entier compris entre 0 et 1 000.",
+            "historyLabel": "{booster} · poids boutique",
+            "restoreText": "Le poids boutique du booster {booster} passera de <strong>{from}</strong> à <strong>{to}</strong>. Le changement s’applique tout de suite à tous les joueurs et sera ajouté à l’historique."
+          },
+          "is_active": {
+            "label": "Actif",
+            "historyLabel": "{booster} · actif",
+            "restoreText": "Le réglage « Actif » du booster {booster} passera de <strong>{from}</strong> à <strong>{to}</strong>. Le changement s’applique tout de suite à tous les joueurs et sera ajouté à l’historique."
+          },
+          "rarity_weights": {
+            "common": {
+              "historyLabel": "{booster} · chances Commune",
+              "restoreText": "Les chances Commune du booster {booster} passeront de <strong>{from}</strong> à <strong>{to}</strong>. Le changement s’applique tout de suite à tous les joueurs et sera ajouté à l’historique."
+            },
+            "uncommon": {
+              "historyLabel": "{booster} · chances Peu commune",
+              "restoreText": "Les chances Peu commune du booster {booster} passeront de <strong>{from}</strong> à <strong>{to}</strong>. Le changement s’applique tout de suite à tous les joueurs et sera ajouté à l’historique."
+            },
+            "rare": {
+              "historyLabel": "{booster} · chances Rare",
+              "restoreText": "Les chances Rare du booster {booster} passeront de <strong>{from}</strong> à <strong>{to}</strong>. Le changement s’applique tout de suite à tous les joueurs et sera ajouté à l’historique."
+            },
+            "epic": {
+              "historyLabel": "{booster} · chances Épique",
+              "restoreText": "Les chances Épique du booster {booster} passeront de <strong>{from}</strong> à <strong>{to}</strong>. Le changement s’applique tout de suite à tous les joueurs et sera ajouté à l’historique."
+            },
+            "legendary": {
+              "historyLabel": "{booster} · chances Légendaire",
+              "restoreText": "Les chances Légendaire du booster {booster} passeront de <strong>{from}</strong> à <strong>{to}</strong>. Le changement s’applique tout de suite à tous les joueurs et sera ajouté à l’historique."
+            },
+            "mythic": {
+              "historyLabel": "{booster} · chances Mythique",
+              "restoreText": "Les chances Mythique du booster {booster} passeront de <strong>{from}</strong> à <strong>{to}</strong>. Le changement s’applique tout de suite à tous les joueurs et sera ajouté à l’historique."
+            }
+          }
+        }
+      },
       "history": {
         "title": "Historique des paramètres",
         "note": "Les {count} derniers changements",
@@ -419,7 +501,9 @@
         "restoreText": "Restaurer",
         "restoreAccessibleName": "Restaurer {setting} à {value}",
         "deletedAuthor": "Compte supprimé",
-        "empty": "Aucun changement enregistré pour l’instant."
+        "empty": "Aucun changement enregistré pour l’instant.",
+        "yes": "Oui",
+        "no": "Non"
       },
       "restoreDialog": {
         "title": "Restaurer cette valeur ?",
