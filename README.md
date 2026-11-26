@@ -15,7 +15,7 @@ Stack : **Next.js** (App Router) · **Supabase** · **next-intl** (FR / EN).
 - **Profil joueur** — bio, bannière, carte vitrine ; profil public ou privé
 - **Rareté UICN** — la rareté reflète le statut de conservation réel de l’espèce
 - **i18n** — interface en français et en anglais (`/fr`, `/en`)
-- **Auth** — inscription / connexion via Supabase Auth
+- **Auth** — inscription / connexion par e-mail, Google ou Discord (Supabase Auth)
 
 ---
 
@@ -48,6 +48,8 @@ Renseigne `.env.local` (clés dans le dashboard Supabase → **Settings → API*
 | `ENABLE_DEV_GRANTS=true` | *(optionnel)* active `/dev/grants` pour s’attribuer des cartes en local |
 | `PIXABAY_API_KEY` | *(scripts d’import)* |
 | `CARD_IMPORT_CONTACT` | *(scripts d’import)* contact User-Agent Wikimedia |
+| `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID`, `SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET` | *(Supabase CLI, local seulement)* dans `supabase/.env`, pas dans `.env.local` |
+| `SUPABASE_AUTH_EXTERNAL_DISCORD_CLIENT_ID`, `SUPABASE_AUTH_EXTERNAL_DISCORD_SECRET` | *(Supabase CLI, local seulement)* dans `supabase/.env`, pas dans `.env.local` |
 
 Voir `.env.example` pour la liste complète (Stripe prévu en option).
 
@@ -79,18 +81,27 @@ npm run db:pull-cards     # copie le catalogue de cartes de la prod (lecture seu
 - Les e-mails d’auth arrivent dans Mailpit : http://127.0.0.1:54324.
 - `npm run db:migrate` est la seule commande qui écrit en prod.
 
-#### Google en local
+### Fournisseurs OAuth (Google, Discord)
 
-1. Créer un client OAuth « Application Web » dans Google Cloud, avec l’URI de redirection `http://127.0.0.1:55321/auth/v1/callback`.
-2. Exporter `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID` et `SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET` (jamais commités), puis relancer `npx supabase stop && npx supabase start`.
-3. `[auth.external.google]` de `supabase/config.toml` est déjà activé, avec `skip_nonce_check = true` (requis en local).
-4. Tester « Continuer avec Google » sur `http://localhost:3000` ou `http://127.0.0.1:3000`.
+Étapes détaillées, checklist de recette et dépannage : [`docs/oauth-providers.md`](docs/oauth-providers.md).
 
-#### Discord en local
+**En local.** Créer une application Google (client « Application Web ») et une application Discord, avec l’URI de redirection `http://127.0.0.1:55321/auth/v1/callback`. Mettre les quatre variables `SUPABASE_AUTH_EXTERNAL_{GOOGLE,DISCORD}_{CLIENT_ID,SECRET}` dans `supabase/.env` (ignoré par git, lu par la CLI Supabase seule ; un export dans le shell marche aussi), puis `npx supabase stop && npx supabase start`. Les deux fournisseurs sont déjà activés dans `supabase/config.toml`, Google avec `skip_nonce_check = true` (requis en local). Tester « Continuer avec Google » ou « … Discord » sur `http://localhost:3000` ou `http://127.0.0.1:3000`.
 
-1. Créer une application dans le portail développeur Discord, avec l’URI de redirection `http://127.0.0.1:55321/auth/v1/callback`.
-2. Exporter `SUPABASE_AUTH_EXTERNAL_DISCORD_CLIENT_ID` et `SUPABASE_AUTH_EXTERNAL_DISCORD_SECRET` (jamais commités), puis relancer `npx supabase stop && npx supabase start`.
-3. `[auth.external.discord]` de `supabase/config.toml` est déjà activé ; tester « Continuer avec Discord » sur la connexion ou l’inscription.
+**En production.** Pas de fichier : les secrets sont saisis dans le dashboard Supabase (**Authentication → Sign In / Providers**), avec des applications Google et Discord distinctes de celles du local, et jamais dans Vercel. Avant d’activer : `npm run db:migrate` (garde d’identité). Dans **URL Configuration** : Site URL `https://<hôte-prod>`, Redirect URLs `https://<hôte-prod>/*/auth/callback**` (un callback est accepté si son hôte est celui de la Site URL ou s’il est dans cette liste ; jamais d’autre hôte). Les aperçus Vercel ne gèrent pas OAuth.
+
+URI de redirection à déclarer :
+
+| | Chez le fournisseur (Google, Discord) | Callback de l’app (`fr` et `en`) |
+|---|---|---|
+| Local | `http://127.0.0.1:55321/auth/v1/callback` | `http://localhost:3000/{fr,en}/auth/callback`, `http://127.0.0.1:3000/{fr,en}/auth/callback` |
+| Production | `https://<project-ref>.supabase.co/auth/v1/callback` | `https://<hôte-prod>/{fr,en}/auth/callback` |
+
+Si ça ne marche pas :
+
+- Google `redirect_uri_mismatch` ou `invalid_client` : URI de redirection absente ou différente, ou secret faux.
+- Retour sur l’accueil, déconnecté, avec `?code=` : l’hôte du callback n’est pas celui de la Site URL ni dans la liste (`additional_redirect_urls` en local, Redirect URLs en prod). En prod : visiteur passé par un alias `www.`, `*.vercel.app` ou un aperçu.
+- JSON brut « provider is not enabled » : fournisseur non activé.
+- App sur un autre port que 3000 : sur `127.0.0.1` tout port fonctionne ; sur `localhost:<port>`, ouvrir `http://127.0.0.1:<port>` ou ajouter `http://localhost:<port>/**` à `additional_redirect_urls` en local, sans le committer.
 
 ### Lancer l’app
 
@@ -141,6 +152,7 @@ Autres docs utiles :
 - [`docs/economy.md`](docs/economy.md) — ledger, farm, sync
 - [`docs/rate-limiting.md`](docs/rate-limiting.md)
 - [`docs/admin.md`](docs/admin.md) — créer le premier super administrateur
+- [`docs/oauth-providers.md`](docs/oauth-providers.md) — activer Google et Discord, checklist de recette
 - [`docs/testing.md`](docs/testing.md)
 
 ---
@@ -165,7 +177,7 @@ Toutes les PR sont annoncées sur Discord, PR empilées comprises ; une fusion d
 ## Déploiement (Vercel)
 
 1. Importer le repo sur Vercel
-2. Configurer les variables de **Production** et **Preview** (voir `.env.example`)
+2. Configurer les variables de **Production** et **Preview** (voir `.env.example`) ; les `SUPABASE_AUTH_EXTERNAL_*` n’y vont jamais (local : `supabase/.env`, production : dashboard Supabase)
 3. Déployer — les migrations restent gérées via `npm run db:migrate` / Supabase CLI
 
 ---
