@@ -127,6 +127,70 @@ export function createProviderAccount(
 }
 
 /**
+ * Links a provider identity to an existing account, the way Supabase Auth does when a visitor
+ * signs in with a provider whose e-mail matches an account: one `auth.identities` row for
+ * `userId`, with the account's e-mail, `email_verified: true` and a new provider id.
+ * `claims` is what the provider returned and overrides those defaults, e.g.
+ * `{ email_verified: false }`. Throws when the database refuses the insert. The identity goes
+ * with the account, which `cleanup` deletes.
+ */
+export function linkProviderIdentity(
+  userId: string,
+  provider: "google" | "discord",
+  claims: Record<string, unknown> = {},
+): void {
+  if (!/^[0-9a-f-]{36}$/.test(userId))
+    throw new Error("linkProviderIdentity : identifiant invalide");
+  const providerId = randomUUID();
+  const literal = (value: unknown) => `'${JSON.stringify(value).replaceAll("'", "''")}'::jsonb`;
+  const identityData = {
+    email_verified: true,
+    provider_id: providerId,
+    sub: providerId,
+    ...claims,
+  };
+  sql(
+    `with new_identity as (
+       insert into auth.identities (
+         id, provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at
+       )
+       select gen_random_uuid(), '${providerId}', u.id,
+              jsonb_build_object('email', u.email) || ${literal(identityData)},
+              '${provider}', now(), now(), now()
+       from auth.users u where u.id = '${userId}'
+       returning id
+     )
+     select count(*)::int as identities from new_identity`,
+  );
+}
+
+/**
+ * Updates the `identity_data` of an account's provider identity, the way Supabase Auth does at
+ * each repeated sign-in (`tx.UpdateOnly(identity, "identity_data", "last_sign_in_at")`): the
+ * claims override the stored ones, `last_sign_in_at` moves. `auth.identities.email` follows
+ * `identity_data`. Throws when the database refuses the update, or when no identity matched.
+ */
+export function updateProviderIdentity(
+  userId: string,
+  provider: "google" | "discord",
+  claims: Record<string, unknown>,
+): void {
+  if (!/^[0-9a-f-]{36}$/.test(userId))
+    throw new Error("updateProviderIdentity : identifiant invalide");
+  const literal = (value: unknown) => `'${JSON.stringify(value).replaceAll("'", "''")}'::jsonb`;
+  const rows = sql<{ updated: number }>(
+    `with updated as (
+       update auth.identities
+       set identity_data = identity_data || ${literal(claims)}, last_sign_in_at = now()
+       where user_id = '${userId}' and provider = '${provider}'
+       returning id
+     )
+     select count(*)::int as updated from updated`,
+  );
+  if (rows[0]?.updated !== 1) throw new Error("updateProviderIdentity : identité introuvable");
+}
+
+/**
  * Mints the auth code Supabase Auth hands back after a provider sign-in: an `auth.flow_state`
  * row for `userId`, bound to the PKCE `codeChallenge` (S256) the app sent to /authorize.
  * `/token?grant_type=pkce` accepts the returned code with the matching verifier, once, within

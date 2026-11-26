@@ -55,3 +55,35 @@ test("signing up in English stores the English locale", async ({ page }) => {
   expect(error).toBeNull();
   expect(data?.locale).toBe("en");
 });
+
+test("an e-mail signup started with a returnTo lands on that page, signed in", async ({ page }) => {
+  const email = `test-${randomUUID().slice(0, 8)}@example.test`;
+
+  await page.goto("/fr/signup?returnTo=%2Ffr%2Fcollection");
+  await page.getByLabel("E-mail").fill(email);
+  await page.getByLabel("Mot de passe").fill(randomUUID());
+  await page.getByRole("button", { name: "S'inscrire" }).click();
+
+  // requireUser sends a signed-out visitor back to the login: staying here proves the session.
+  await expect(page).toHaveURL(/\/fr\/collection$/, { timeout: 20_000 });
+  await adoptUserByEmail(email);
+});
+
+test("an e-mail signup whose hidden returnTo is forged lands on the home", async ({ page }) => {
+  const email = `test-${randomUUID().slice(0, 8)}@example.test`;
+
+  await page.goto("/fr/signup?returnTo=%2Ffr%2Fcollection");
+  // The e-mail form is the one holding the password field.
+  const emailForm = page.locator("form").filter({ has: page.getByLabel("Mot de passe") });
+  await emailForm
+    .locator('input[name="returnTo"]')
+    .evaluate((input: HTMLInputElement) => (input.value = "//evil.com"), undefined, {
+      timeout: 5_000,
+    });
+  await page.getByLabel("E-mail").fill(email);
+  await page.getByLabel("Mot de passe").fill(randomUUID());
+  await page.getByRole("button", { name: "S'inscrire" }).click();
+
+  await expect(page).toHaveURL(/\/fr$/, { timeout: 20_000 });
+  await adoptUserByEmail(email);
+});

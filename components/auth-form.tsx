@@ -23,14 +23,7 @@ export function AuthForm({ locale, mode, action, returnTo }: Props) {
   const [state, formAction, pending] = useActionState(boundAction, {});
 
   return (
-    <form
-      action={formAction}
-      className="relative isolate flex w-full max-w-sm flex-col gap-4 overflow-hidden rounded-2xl border border-border bg-surface/80 p-6 shadow-[var(--shadow-card)] backdrop-blur-md sm:p-8"
-    >
-      <div aria-hidden className="absolute -right-16 -top-20 -z-10 size-56 rounded-full bg-brand/15 blur-3xl" />
-      <h1 className="text-2xl font-extrabold uppercase tracking-tight">
-        {mode === "login" ? t("loginTitle") : t("signupTitle")}
-      </h1>
+    <form action={formAction} className="flex flex-col gap-4">
       {returnTo && <input type="hidden" name="returnTo" value={returnTo} />}
       <label className="flex flex-col gap-1.5 text-sm font-medium text-white/85">
         {t("email")}

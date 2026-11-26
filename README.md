@@ -86,6 +86,12 @@ npm run db:pull-cards     # copie le catalogue de cartes de la prod (lecture seu
 3. `[auth.external.google]` de `supabase/config.toml` est déjà activé, avec `skip_nonce_check = true` (requis en local).
 4. Tester « Continuer avec Google » sur `http://localhost:3000` ou `http://127.0.0.1:3000`.
 
+#### Discord en local
+
+1. Créer une application dans le portail développeur Discord, avec l’URI de redirection `http://127.0.0.1:55321/auth/v1/callback`.
+2. Exporter `SUPABASE_AUTH_EXTERNAL_DISCORD_CLIENT_ID` et `SUPABASE_AUTH_EXTERNAL_DISCORD_SECRET` (jamais commités), puis relancer `npx supabase stop && npx supabase start`.
+3. `[auth.external.discord]` de `supabase/config.toml` est déjà activé ; tester « Continuer avec Discord » sur la connexion ou l’inscription.
+
 ### Lancer l’app
 
 ```bash

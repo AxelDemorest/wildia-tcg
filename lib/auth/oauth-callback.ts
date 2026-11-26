@@ -46,17 +46,20 @@ export async function runOAuthCallback(
     returnTo,
     error,
     errorCode,
+    errorDescription,
   }: {
     locale: string;
     code: string | null;
     returnTo: string | null;
-    /** `error` and `error_code` of the callback URL, as Supabase Auth sent them. */
+    /** `error`, `error_code` and `error_description` of the callback URL, as Supabase Auth sent them. */
     error: string | null;
     errorCode: string | null;
+    errorDescription: string | null;
   },
   deps: OAuthCallbackDeps,
 ): Promise<string> {
-  if (error) return failureUrl(locale, oauthErrorCode(error, errorCode), returnTo);
+  if (error)
+    return failureUrl(locale, oauthErrorCode(error, errorCode, errorDescription), returnTo);
   if (!code) return failureUrl(locale, "failed", returnTo);
 
   let user: ExchangedUser;

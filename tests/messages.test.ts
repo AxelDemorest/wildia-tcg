@@ -103,6 +103,7 @@ describe("Admin home role help", () => {
 const oauthErrorCodes: Record<OAuthErrorCode, true> = {
   access_denied: true,
   email_unusable: true,
+  account_refused: true,
   failed: true,
 };
 
@@ -118,6 +119,47 @@ describe("Auth oauth error messages", () => {
     };
     const message = messages.Auth.oauthError?.[code];
     expect(typeof message === "string" && message.trim().length > 0).toBe(true);
+  });
+
+  // Decision 2: the messages are neutral, whichever provider the visitor used.
+  it.each(
+    Object.keys(oauthErrorCodes).flatMap((code) => [
+      ["fr", code],
+      ["en", code],
+    ]),
+  )("names no provider in the %s message for the OAuth error code %s", (locale, code) => {
+    const messages = (locale === "fr" ? fr : en) as unknown as {
+      Auth: { oauthError?: Record<string, unknown> };
+    };
+    const message = messages.Auth.oauthError?.[code];
+    expect(message as string).not.toMatch(/google|discord/i);
+  });
+});
+
+describe("Auth messages", () => {
+  it("has the same keys in fr and en, none empty", () => {
+    const auth = (messages: unknown) => (messages as Record<string, unknown>).Auth;
+    expect(auth(fr)).toBeDefined();
+    expect(auth(en)).toBeDefined();
+    // The oauthError.* keys are checked code by code above.
+    const keys = (messages: unknown) =>
+      flatKeys(auth(messages))
+        .filter((key) => !key.startsWith("oauthError."))
+        .sort();
+    expect(keys(en)).toEqual(keys(fr));
+    expect(keys(fr).length).toBeGreaterThan(0);
+
+    const read = (messages: unknown, key: string) =>
+      key
+        .split(".")
+        .reduce<unknown>((node, part) => (node as Record<string, unknown>)[part], auth(messages));
+    for (const messages of [fr, en]) {
+      const empty = keys(messages).filter((key) => {
+        const value = read(messages, key);
+        return typeof value !== "string" || value.trim().length === 0;
+      });
+      expect(empty).toEqual([]);
+    }
   });
 });
 

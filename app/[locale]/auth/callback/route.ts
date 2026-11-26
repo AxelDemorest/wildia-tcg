@@ -14,6 +14,7 @@ export async function GET(request: NextRequest, { params }: Props) {
     returnTo: searchParams.get("returnTo"),
     error: searchParams.get("error"),
     errorCode: searchParams.get("error_code"),
+    errorDescription: searchParams.get("error_description"),
   });
   redirect(to);
 }

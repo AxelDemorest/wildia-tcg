@@ -126,12 +126,18 @@
     "submitLogin": "Log in",
     "submitSignup": "Sign up",
     "continueWithGoogle": "Continue with Google",
-    "errorGeneric": "Something went wrong. Please try again.",
+    "continueWithDiscord": "Continue with Discord",
+    "separator": "or",
+    "noAccount": "No account yet?",
+    "createAccount": "Create an account",
+    "haveAccount": "Already have an account?",
+    "logIn": "Log in",
     "errorRateLimited": "Too many attempts. Wait a minute and try again.",
     "oauthError": {
-      "access_denied": "You declined access to your Google account. Try again or use your e-mail.",
-      "email_unusable": "The e-mail of your Google account is not verified or cannot be used. Use another way to sign in.",
-      "failed": "Signing in with Google failed. Try again."
+      "access_denied": "You declined access to your account. Try again or use your e-mail.",
+      "email_unusable": "The e-mail of your account is missing, not verified or cannot be used. Use another way to sign in.",
+      "account_refused": "Sign-in refused: your e-mail is not verified with that service, or an account with a password already uses this address. Log in with your e-mail and password.",
+      "failed": "Signing in failed. Try again."
     }
   },
   "Catalog": {

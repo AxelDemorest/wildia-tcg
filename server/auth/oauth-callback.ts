@@ -28,6 +28,7 @@ export function completeOAuthSignIn(input: {
   returnTo: string | null;
   error: string | null;
   errorCode: string | null;
+  errorDescription: string | null;
 }): Promise<string> {
   return runOAuthCallback(input, {
     exchangeCode,

@@ -2,10 +2,11 @@ import { describe, expect, it, vi } from "vitest";
 import { runOAuthStart } from "@/lib/auth/oauth-start";
 
 // The contract under test:
-//   runOAuthStart({ locale, returnTo }, { checkRateLimit, getOrigin, buildAuthorizeUrl })
+//   runOAuthStart({ locale, returnTo, provider }, { checkRateLimit, getOrigin, buildAuthorizeUrl })
 //     -> { ok: true, url } | { ok: false, error: "rate_limited" | "failed" }
 // checkRateLimit(): true when the visitor's IP may start another auth attempt (as
-// `assertAuthRateLimit`); buildAuthorizeUrl(redirectTo) is the provider's authorize URL.
+// `assertAuthRateLimit`); buildAuthorizeUrl(redirectTo, provider) is the provider's authorize URL;
+// provider must be one of OAUTH_PROVIDERS (google, discord), anything else is refused.
 
 const ORIGIN = "https://tcg.example";
 
@@ -14,7 +15,8 @@ function deps(overrides: { allowed?: boolean } = {}) {
     checkRateLimit: vi.fn(async () => overrides.allowed ?? true),
     getOrigin: vi.fn(async () => ORIGIN as string | null),
     buildAuthorizeUrl: vi.fn(
-      async (redirectTo: string) => `https://auth.test/authorize?to=${redirectTo}`,
+      async (redirectTo: string, provider: string) =>
+        `https://auth.test/authorize?provider=${provider}&to=${redirectTo}`,
     ),
   };
 }
@@ -23,7 +25,7 @@ describe("runOAuthStart", () => {
   it("refuses with rate_limited and never builds the authorize URL when the limiter refuses", async () => {
     const d = deps({ allowed: false });
 
-    const result = await runOAuthStart({ locale: "fr", returnTo: "" }, d);
+    const result = await runOAuthStart({ locale: "fr", returnTo: "", provider: "google" }, d);
 
     expect(result).toEqual({ ok: false, error: "rate_limited" });
     expect(d.buildAuthorizeUrl).not.toHaveBeenCalled();
@@ -33,7 +35,7 @@ describe("runOAuthStart", () => {
     const d = deps();
     d.getOrigin.mockResolvedValue(null);
 
-    const result = await runOAuthStart({ locale: "fr", returnTo: "" }, d);
+    const result = await runOAuthStart({ locale: "fr", returnTo: "", provider: "google" }, d);
 
     expect(result).toEqual({ ok: false, error: "failed" });
     expect(d.buildAuthorizeUrl).not.toHaveBeenCalled();
@@ -42,7 +44,7 @@ describe("runOAuthStart", () => {
   it("gives the provider a callback URL on our origin for a forged locale", async () => {
     const d = deps();
 
-    await runOAuthStart({ locale: "/evil.com", returnTo: "" }, d);
+    await runOAuthStart({ locale: "/evil.com", returnTo: "", provider: "google" }, d);
 
     expect(d.buildAuthorizeUrl).toHaveBeenCalledTimes(1);
     const url = new URL(d.buildAuthorizeUrl.mock.calls[0][0]);
@@ -53,9 +55,27 @@ describe("runOAuthStart", () => {
   it("gives the provider a callback URL without returnTo for a protocol-relative returnTo", async () => {
     const d = deps();
 
-    await runOAuthStart({ locale: "fr", returnTo: "//evil.com" }, d);
+    await runOAuthStart({ locale: "fr", returnTo: "//evil.com", provider: "google" }, d);
 
     expect(d.buildAuthorizeUrl).toHaveBeenCalledTimes(1);
-    expect(d.buildAuthorizeUrl).toHaveBeenCalledWith(`${ORIGIN}/fr/auth/callback`);
+    expect(d.buildAuthorizeUrl.mock.calls[0][0]).toBe(`${ORIGIN}/fr/auth/callback`);
+  });
+
+  it("builds the authorize URL for the provider the visitor chose", async () => {
+    const d = deps();
+
+    await runOAuthStart({ locale: "fr", returnTo: "", provider: "discord" }, d);
+
+    expect(d.buildAuthorizeUrl).toHaveBeenCalledTimes(1);
+    expect(d.buildAuthorizeUrl).toHaveBeenCalledWith(`${ORIGIN}/fr/auth/callback`, "discord");
+  });
+
+  it("answers failed and never builds the authorize URL for a provider outside the closed list", async () => {
+    const d = deps();
+
+    const result = await runOAuthStart({ locale: "fr", returnTo: "", provider: "github" }, d);
+
+    expect(result).toEqual({ ok: false, error: "failed" });
+    expect(d.buildAuthorizeUrl).not.toHaveBeenCalled();
   });
 });

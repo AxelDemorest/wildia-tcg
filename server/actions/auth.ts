@@ -29,6 +29,8 @@ export async function signUp(
 
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
+  // Sanitized again here: the form's hidden field can be forged.
+  const returnTo = safeReturnTo(String(formData.get("returnTo") ?? ""), locale);
   const supabase = await createClient();
   // handle_new_user stores it as the profile's locale.
   const { error } = await supabase.auth.signUp({ email, password, options: { data: { locale } } });
@@ -36,7 +38,7 @@ export async function signUp(
     return { error: error.message };
   }
   revalidatePath(`/${locale}`, "layout");
-  redirect(`/${locale}`);
+  redirect(returnTo);
 }
 
 export async function signIn(
@@ -61,26 +63,28 @@ export async function signIn(
   redirect(returnTo);
 }
 
-export async function signInWithGoogle(
+export async function signInWithProvider(
   sentLocale: string,
   _prev: AuthActionState,
   formData: FormData,
 ): Promise<AuthActionState> {
   const locale = knownLocaleOrDefault(sentLocale);
   const returnTo = String(formData.get("returnTo") ?? "");
+  // The clicked button's value; runOAuthStart refuses anything the site does not offer.
+  const provider = String(formData.get("provider") ?? "");
   const supabase = await createClient();
   const result = await runOAuthStart(
-    { locale, returnTo },
+    { locale, returnTo, provider },
     {
       checkRateLimit: assertAuthRateLimit,
       getOrigin: async () => {
         const h = await headers();
         return originFromHeaders((name) => h.get(name));
       },
-      buildAuthorizeUrl: async (redirectTo) => {
+      buildAuthorizeUrl: async (redirectTo, oauthProvider) => {
         // skipBrowserRedirect: the URL comes back here, the redirect is the action's.
         const { data, error } = await supabase.auth.signInWithOAuth({
-          provider: "google",
+          provider: oauthProvider,
           options: { redirectTo, skipBrowserRedirect: true },
         });
         if (error) throw error;
