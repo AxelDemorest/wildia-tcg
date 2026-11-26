@@ -322,6 +322,7 @@
     "nav": {
       "home": "Accueil",
       "accounts": "Registre des comptes",
+      "settings": "Paramètres",
       "backToSite": "Retour au site",
       "signOut": "Se déconnecter"
     },
@@ -378,6 +379,52 @@
         "rangeAndPage": "{count, plural, one {{from}–{to} sur {total} compte} other {{from}–{to} sur {total} comptes}} · page {page} sur {pageCount}",
         "previous": "Précédent",
         "next": "Suivant"
+      }
+    },
+    "settings": {
+      "title": "Paramètres",
+      "subtitle": "Réglages du jeu. Chaque changement s’applique tout de suite à tous les joueurs.",
+      "save": "Enregistrer",
+      "saved": "Enregistré",
+      "saveFailed": "L’enregistrement a échoué. Réessayez dans un instant.",
+      "restoreFailed": "La restauration a échoué. Réessayez dans un instant.",
+      "loadFailed": "Les paramètres n’ont pas pu être chargés. Réessayez dans un instant.",
+      "economy": "Économie",
+      "shop": "Boutique",
+      "fields": {
+        "farm_global_multiplier": {
+          "label": "Multiplicateur du farm",
+          "help": "Entre 0 et 5. Multiplie les pièces que toutes les cartes rapportent ; s’applique au prochain calcul de chaque joueur.",
+          "outOfRange": "Le multiplicateur doit être compris entre 0 et 5.",
+          "tooPrecise": "Le multiplicateur s’écrit avec deux décimales au plus.",
+          "restoreText": "Le multiplicateur du farm passera de <strong>{from}</strong> à <strong>{to}</strong>. Le changement s’applique tout de suite à tous les joueurs et sera ajouté à l’historique."
+        },
+        "booster_shop_slot_count": {
+          "label": "Emplacements par offre",
+          "help": "Entre 1 et 12. S’applique aux offres créées après le changement ; une offre déjà affichée garde ses emplacements jusqu’à la fenêtre boutique suivante.",
+          "outOfRange": "Le nombre d’emplacements doit être un entier compris entre 1 et 12.",
+          "restoreText": "Le nombre d’emplacements par offre passera de <strong>{from}</strong> à <strong>{to}</strong>. Le changement s’applique tout de suite à tous les joueurs et sera ajouté à l’historique."
+        }
+      },
+      "history": {
+        "title": "Historique des paramètres",
+        "note": "Les {count} derniers changements",
+        "date": "Date",
+        "author": "Auteur",
+        "setting": "Paramètre",
+        "before": "Avant",
+        "after": "Après",
+        "action": "Action",
+        "restored": "Restauration",
+        "restoreText": "Restaurer",
+        "restoreAccessibleName": "Restaurer {setting} à {value}",
+        "deletedAuthor": "Compte supprimé",
+        "empty": "Aucun changement enregistré pour l’instant."
+      },
+      "restoreDialog": {
+        "title": "Restaurer cette valeur ?",
+        "cancel": "Annuler",
+        "confirm": "Restaurer"
       }
     }
   }

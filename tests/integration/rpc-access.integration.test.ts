@@ -11,7 +11,9 @@ import {
   createBooster,
   createCard,
   createPlayer,
+  economyConfigValue,
   giveCoins,
+  setEconomyConfigValue,
   setShopSlot,
   shopSlotExhaustionOf,
   shopWindowNow,
@@ -302,5 +304,48 @@ describe("admin_list_accounts", () => {
     expect(error).toBeNull();
     expect(typeof data.total).toBe("number");
     expect(Array.isArray(data.accounts)).toBe(true);
+  });
+});
+
+describe("admin_set_economy_config", () => {
+  const args = (authorId: string) => ({
+    p_key: "farm_global_multiplier",
+    p_value: 4.5,
+    p_author_id: authorId,
+    p_restored_from: null,
+  });
+
+  // Would catch: a grant to anon, which would let the internet set the farm multiplier.
+  it("cannot be called by a visitor, and changes nothing", async () => {
+    const member = await createPlayer();
+    await addTeamMember(member.id, "super_admin");
+    const before = await economyConfigValue("farm_global_multiplier");
+
+    try {
+      const { data, error } = await visitor.rpc("admin_set_economy_config", args(member.id));
+
+      expect(error?.code).toBe("42501");
+      expect(data).toBeNull();
+      expect(await economyConfigValue("farm_global_multiplier")).toBe(before);
+    } finally {
+      await setEconomyConfigValue("farm_global_multiplier", before);
+    }
+  });
+
+  // Would catch: a grant to authenticated: even a super_admin only changes it through the server.
+  it("cannot be called by a signed-in super_admin with their own client, and changes nothing", async () => {
+    const member = await createPlayer();
+    await addTeamMember(member.id, "super_admin");
+    const before = await economyConfigValue("farm_global_multiplier");
+
+    try {
+      const { data, error } = await member.client.rpc("admin_set_economy_config", args(member.id));
+
+      expect(error?.code).toBe("42501");
+      expect(data).toBeNull();
+      expect(await economyConfigValue("farm_global_multiplier")).toBe(before);
+    } finally {
+      await setEconomyConfigValue("farm_global_multiplier", before);
+    }
   });
 });

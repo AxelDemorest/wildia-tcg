@@ -1,10 +1,16 @@
 import { getTranslations } from "next-intl/server";
-import { AdminArrowLeftIcon, AdminHomeIcon, AdminUsersIcon } from "@/components/admin/admin-icons";
+import {
+  AdminArrowLeftIcon,
+  AdminHomeIcon,
+  AdminSettingsIcon,
+  AdminUsersIcon,
+} from "@/components/admin/admin-icons";
 import { AdminNav, type AdminNavItem } from "@/components/admin/admin-nav";
 import { idleSidebarEntry, topBarIconButton } from "@/components/admin/admin-nav-styles";
 import { AdminSignOut } from "@/components/admin/admin-sign-out";
 import { BrandLogo } from "@/components/layout/brand-logo";
 import { Link } from "@/i18n/navigation";
+import { SETTINGS_ROLE } from "@/lib/admin/setting-values";
 import type { StaffSession } from "@/lib/auth/staff-session";
 import { displayLabel } from "@/lib/profiles/display-label";
 import { initials } from "@/lib/profiles/initials";
@@ -30,6 +36,10 @@ export async function AdminShell({ locale, session, children }: Props) {
   const navItems: AdminNavItem[] = [
     { href: "/admin", label: t("nav.home"), icon: <AdminHomeIcon /> },
     { href: "/admin/accounts", label: t("nav.accounts"), icon: <AdminUsersIcon /> },
+    // Hidden from the other rôles d’équipe, which the page sends to the admin home.
+    ...(session.role === SETTINGS_ROLE
+      ? [{ href: "/admin/settings", label: t("nav.settings"), icon: <AdminSettingsIcon /> }]
+      : []),
   ];
 
   return (

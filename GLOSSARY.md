@@ -84,6 +84,10 @@ _Avoid_: Résolution, feedback joueur
 Monnaie gagnée en jeu (farming, bonus) et dépensée pour ouvrir des boosters.
 _Avoid_: Crédits, gems, gold
 
+**Multiplicateur global du farm** :
+Facteur appliqué aux pièces que rapportent toutes les cartes de tous les joueurs, réglé par le super administrateur entre 0 et 5. Il vaut au prochain calcul des pièces de chaque joueur, pour tout le temps écoulé depuis son calcul précédent.
+_Avoid_: Bonus de farm, boost, taux global
+
 ## Boosters
 
 **Définition de booster** :
@@ -149,3 +153,11 @@ _Avoid_: Role, permission (sans qualification), RBAC (jargon)
 **Registre des comptes inscrits** :
 Vue équipe qui recense tous les comptes joueur créés par **inscription**, en consultation seule dans le premier lot (identité affichée, dates, visibilité publique du profil).
 _Avoid_: Liste utilisateurs, user list, annuaire joueurs
+
+**Paramètres du jeu** :
+Réglages qui valent pour tous les joueurs (multiplicateur global du farm, nombre d’emplacements de chaque offre boutique) et que seul le **super administrateur** change depuis l’espace administration ; chaque changement s’applique tout de suite.
+_Avoid_: Config, settings (libellé métier), réglages admin
+
+**Historique des paramètres** :
+Trace de chaque changement d’un paramètre du jeu (qui, quand, valeur avant et après), du plus récent au plus ancien ; une ligne peut être **restaurée** après confirmation, ce qui remet sa valeur « Avant » et ajoute elle-même une ligne.
+_Avoid_: Logs, audit (sans précision), journal (réservé au ledger des pièces)

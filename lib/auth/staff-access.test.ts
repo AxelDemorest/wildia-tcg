@@ -64,4 +64,29 @@ describe("runStaffAccess", () => {
     const session: StaffSession = { id: "user-2", email: "member@example.test", role };
     expect(decision).toEqual({ kind: "staff", session });
   });
+
+  it("sends a moderator to the admin home when the page asks for a super administrator", async () => {
+    const decision = await runStaffAccess(
+      { locale: "en", path: "/en/admin/settings", role: "super_admin" },
+      {
+        getUser: async () => ({ id: "user-4", email: "member@example.test" }),
+        readTeamRole: async () => "moderator",
+      },
+    );
+
+    expect(decision).toEqual({ kind: "redirect", to: "/en/admin" });
+  });
+
+  it("gives a super administrator exactly their staff session on a page that asks for that role", async () => {
+    const decision = await runStaffAccess(
+      { locale: "en", path: "/en/admin/settings", role: "super_admin" },
+      {
+        getUser: async () => ({ id: "user-5", email: "boss@example.test" }),
+        readTeamRole: async () => "super_admin",
+      },
+    );
+
+    const session: StaffSession = { id: "user-5", email: "boss@example.test", role: "super_admin" };
+    expect(decision).toEqual({ kind: "staff", session });
+  });
 });

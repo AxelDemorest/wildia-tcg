@@ -14,10 +14,11 @@ export type StaffAccess =
 /**
  * Who may open the espace administration at `path`; dependencies are injected so it runs without
  * Next nor Supabase. A visitor signs in first and comes back to `path`; a player without a rôle
- * d’équipe goes to the site home, with no hint that the espace administration exists.
+ * d’équipe goes to the site home, with no hint that the espace administration exists. A page
+ * reserved to one rôle d’équipe (`role`) sends the other membres équipe to the admin home.
  */
 export async function runStaffAccess(
-  { locale, path }: { locale: string; path: string },
+  { locale, path, role: requiredRole }: { locale: string; path: string; role?: TeamRole },
   deps: StaffAccessDeps,
 ): Promise<StaffAccess> {
   const user = await deps.getUser();
@@ -28,6 +29,7 @@ export async function runStaffAccess(
   // Fails closed: a read that fails (database error, missing service key) counts as no role.
   const role = await deps.readTeamRole(user.id).catch(() => null);
   if (!role) return { kind: "redirect", to: `/${locale}` };
+  if (requiredRole && role !== requiredRole) return { kind: "redirect", to: `/${locale}/admin` };
 
   return { kind: "staff", session: { id: user.id, email: user.email, role } };
 }

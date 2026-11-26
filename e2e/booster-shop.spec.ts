@@ -1,11 +1,11 @@
 import { randomUUID } from "node:crypto";
 import { expect, test, type Page } from "@playwright/test";
 import {
-  admin,
   boosterBySlug,
   cleanup,
   createCatalogCard,
   createPlayer,
+  economyConfigValue,
   giveCoins,
   moveShopOffer,
   setShopSlot,
@@ -18,11 +18,23 @@ import {
 // The shop page of a signed-in player: timer, refusals, double click, empty offer, guest.
 // Uses the real "standard" booster; the test adds one displayable card so the catalogue is never
 // empty (on an empty database every slot falls back to it).
+// The page's tests assume 8 emplacements: the spec sets that count for its own run (the super
+// administrator can change it on the settings page) and puts the original value back afterwards.
+let originalSlotCount: number | null = null;
+
 test.beforeAll(async () => {
+  originalSlotCount = await economyConfigValue("booster_shop_slot_count");
+  await setShopSlotCount(8);
   await createCatalogCard("common", `Carte E2E ${randomUUID().slice(0, 8)}`);
 });
 
-test.afterAll(cleanup);
+test.afterAll(async () => {
+  try {
+    if (originalSlotCount !== null) await setShopSlotCount(originalSlotCount);
+  } finally {
+    await cleanup();
+  }
+});
 
 // A cold `next dev` compiles the pages on first visit; a window change would split a test.
 test.beforeEach(async () => {
@@ -444,13 +456,7 @@ test("a new window brings a new offer, with no emplacement exhausted", async ({ 
 });
 
 test("a shop with no emplacement shows the empty message", async ({ page }) => {
-  const { data, error } = await admin
-    .from("economy_config")
-    .select("value")
-    .eq("key", "booster_shop_slot_count")
-    .single();
-  if (error) throw error;
-  const original = Number(data.value);
+  const original = await economyConfigValue("booster_shop_slot_count");
 
   // Global config: the single Playwright worker keeps other journeys from reading it meanwhile.
   try {
