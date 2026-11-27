@@ -63,7 +63,7 @@ export async function saveProfileBanner(
     return { ok: false, message: "invalid" };
   }
 
-  const user = await requireUser(parsed.data.locale, `/${parsed.data.locale}/settings/profile`);
+  const user = await requireUser(parsed.data.locale, `/${parsed.data.locale}`);
   const file = formData.get("banner");
   if (!(file instanceof File) || file.size === 0) {
     return { ok: false, message: "invalid" };
