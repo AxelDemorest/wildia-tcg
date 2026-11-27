@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
+import { AVATAR_REMOTE_PATTERNS } from "./lib/profiles/avatar-hosts";
 
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
@@ -14,6 +15,7 @@ const nextConfig: NextConfig = {
   },
   images: {
     remotePatterns: [
+      ...AVATAR_REMOTE_PATTERNS,
       {
         protocol: "https",
         hostname: "**.supabase.co",

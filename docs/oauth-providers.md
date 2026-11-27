@@ -124,7 +124,7 @@ Un déploiement d’aperçu a un hôte qui n’est ni celui de la Site URL ni da
 
 ### Google
 
-- [ ] **G1 — Inscription.** Nouveau compte Google depuis `/en/signup` : arrivée sur `/en`, connecté. Dans Studio, `profiles.locale = en`, avec le nom et l’avatar Google.
+- [ ] **G1 — Inscription.** Nouveau compte Google depuis `/en/signup` : arrivée sur `/en`, connecté. Dans Studio, `profiles.locale = en`, avec le nom et l’avatar Google. L’en-tête affiche l’avatar Google (seule étape qui télécharge un vrai avatar : les tests e2e simulent `/_next/image`).
 - [ ] **G2 — Retour sur la page voulue.** **Au moins 5 minutes après G1** (le compte n’est plus « tout juste créé »), se déconnecter, ouvrir `/fr/login?returnTo=/fr/boosters`, puis Google : arrivée sur `/fr/boosters`, `locale` toujours `en`.
 - [ ] **G3 — Refus.** Annuler sur l’écran de Google : retour sur `/fr/login` avec le message de refus et le `returnTo` conservé.
 - [ ] **G4 — Même adresse que le compte e-mail.** S’inscrire par e-mail avec une adresse Gmail, puis Google avec la même adresse : **refusé** avec `account_refused` (R2), jusqu’à CYR-119.
@@ -132,7 +132,7 @@ Un déploiement d’aperçu a un hôte qui n’est ni celui de la Site URL ni da
 
 ### Discord
 
-- [ ] **D1 — Inscription.** Nouveau compte depuis `/fr/signup` : l’écran de Discord demande l’e-mail. Arrivée sur `/fr`, connecté, avec le nom d’affichage Discord (ou le pseudo), l’avatar personnalisé importé, et `locale = fr`.
+- [ ] **D1 — Inscription.** Nouveau compte depuis `/fr/signup` : l’écran de Discord demande l’e-mail. Arrivée sur `/fr`, connecté, avec le nom d’affichage Discord (ou le pseudo), l’avatar personnalisé importé, et `locale = fr`. L’en-tête affiche l’avatar Discord (seule étape qui télécharge un vrai avatar : les tests e2e simulent `/_next/image`).
 - [ ] **D2 — Connexion.** Depuis `/en/login?returnTo=/en/collection` : arrivée sur la collection. Une seconde connexion réutilise le même compte.
 - [ ] **D3 — Refus.** Refuser le consentement : message de refus, aucune ligne dans `auth.users`.
 - [ ] **D4 — E-mail non vérifié.** Un compte Discord dont l’e-mail n’est pas vérifié : message `account_refused`, aucune ligne dans `auth.users`.
