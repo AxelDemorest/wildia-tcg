@@ -2,7 +2,6 @@ import { Suspense } from "react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { CatalogFilters } from "@/components/cards/catalog-filters";
 import { TradingCard } from "@/components/cards/trading-card";
-import { PageHeader } from "@/components/ui/page-header";
 import { Surface } from "@/components/ui/surface";
 import { CARD_RARITIES, type CardRarity } from "@/lib/cards/types";
 import { listCatalogCards } from "@/server/cards/queries";
@@ -34,24 +33,25 @@ export default async function CardsPage({ params, searchParams }: Props) {
   }
 
   return (
-    <div className="flex w-full flex-col gap-5">
-      <PageHeader title={t("title")} subtitle={t("subtitle")} />
+    <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
+      <header className="mb-8 space-y-2">
+        <h1 className="text-3xl font-bold tracking-tight text-brand-strong">{t("title")}</h1>
+        <p className="max-w-2xl text-muted">{t("subtitle")}</p>
+      </header>
 
-      <Surface className="px-5 py-4">
-        <Suspense fallback={<p className="text-sm text-muted">{t("loadingFilters")}</p>}>
-          <CatalogFilters />
-        </Suspense>
-      </Surface>
+      <Suspense fallback={<p className="text-sm text-muted">{t("loadingFilters")}</p>}>
+        <CatalogFilters />
+      </Suspense>
 
       {loadError ? (
-        <Surface className="p-6 text-center text-sm text-red-300">{loadError}</Surface>
+        <Surface className="mt-8 p-6 text-center text-sm text-red-700">{loadError}</Surface>
       ) : cards.length === 0 ? (
-        <Surface className="p-10 text-center">
+        <Surface className="mt-8 p-10 text-center">
           <p className="font-medium text-foreground">{t("emptyTitle")}</p>
           <p className="mt-2 text-sm text-muted">{t("emptyBody")}</p>
         </Surface>
       ) : (
-        <ul className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-8 2xl:grid-cols-10">
+        <ul className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-6">
           {cards.map((card, index) => (
             <li key={card.id} className="min-w-0">
               <TradingCard

@@ -1,9 +1,10 @@
 import "server-only";
 
 import { headers } from "next/headers";
-import { clientIpFromHeaders } from "@/lib/rate-limit/client-ip";
 
 export async function getClientIpForRateLimit(): Promise<string> {
   const h = await headers();
-  return clientIpFromHeaders((name) => h.get(name));
+  const forwarded = h.get("x-forwarded-for");
+  const ip = forwarded?.split(",")[0]?.trim() ?? h.get("x-real-ip") ?? "unknown";
+  return ip;
 }

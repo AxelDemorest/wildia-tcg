@@ -7,7 +7,7 @@ Compteurs **en mémoire** (`lib/rate-limit/check.ts`), fenêtre fixe par clé. U
 | Route / action | Clé | Limite |
 |----------------|-----|--------|
 | `signIn` / `signUp` | `auth:{ip}` | 20 / minute |
-| `openShopSlot` | `open_booster:{userId}` | 12 / minute |
+| `openBooster` | `open_booster:{userId}` | 12 / minute |
 
 En cas de dépassement :
 

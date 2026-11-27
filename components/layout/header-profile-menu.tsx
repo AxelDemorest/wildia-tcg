@@ -12,7 +12,6 @@ type Props = {
   avatarAlt: string;
   logoutLabel: string;
   profileLabel: string;
-  collectionLabel: string;
   settingsLabel: string;
 };
 
@@ -23,7 +22,6 @@ export function HeaderProfileMenu({
   avatarAlt,
   logoutLabel,
   profileLabel,
-  collectionLabel,
   settingsLabel,
 }: Props) {
   const [open, setOpen] = useState(false);
@@ -55,39 +53,29 @@ export function HeaderProfileMenu({
         aria-controls={menuId}
         aria-label={avatarAlt}
         onClick={() => setOpen((value) => !value)}
-        className="relative cursor-pointer size-9 shrink-0 overflow-hidden rounded-md bg-gradient-to-br from-brand to-secondary p-[2px] transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border-2 border-white bg-zinc-200 shadow-sm ring-1 ring-black/10 transition hover:ring-black/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
       >
-        <span className="relative block size-full overflow-hidden rounded-[4px]">
-          <Image src={avatarUrl} alt="" fill sizes="36px" className="object-cover" />
-        </span>
+        <Image src={avatarUrl} alt="" fill sizes="40px" className="object-cover" />
       </button>
 
       {open && (
         <div
           id={menuId}
           role="menu"
-          className="absolute right-0 top-[calc(100%+0.5rem)] z-50 min-w-[12rem] overflow-hidden rounded-lg border border-border-strong bg-panel py-1.5 shadow-[0_16px_40px_-16px_rgb(0_0_0/0.8)]"
+          className="absolute right-0 top-[calc(100%+0.35rem)] z-50 min-w-[11rem] overflow-hidden rounded-lg border border-border bg-surface py-1 shadow-lg"
         >
           <Link
             href={`/players/${userId}`}
             role="menuitem"
-            className="block px-3.5 py-2 text-sm text-foreground hover:bg-white/[0.05]"
+            className="block px-3 py-2 text-sm text-foreground hover:bg-black/[0.04]"
             onClick={() => setOpen(false)}
           >
             {profileLabel}
           </Link>
           <Link
-            href={`/players/${userId}/collection`}
+            href="/settings/profile"
             role="menuitem"
-            className="block px-3.5 py-2 text-sm text-foreground hover:bg-white/[0.05]"
-            onClick={() => setOpen(false)}
-          >
-            {collectionLabel}
-          </Link>
-          <Link
-            href={`/players/${userId}/settings`}
-            role="menuitem"
-            className="block px-3.5 py-2 text-sm text-foreground hover:bg-white/[0.05]"
+            className="block px-3 py-2 text-sm text-foreground hover:bg-black/[0.04]"
             onClick={() => setOpen(false)}
           >
             {settingsLabel}
@@ -101,7 +89,7 @@ export function HeaderProfileMenu({
             <button
               type="submit"
               role="menuitem"
-              className="block w-full px-3.5 py-2 text-left text-sm text-red-300 hover:bg-white/[0.05]"
+              className="block w-full px-3 py-2 text-left text-sm text-brand-strong hover:bg-black/[0.04]"
             >
               {logoutLabel}
             </button>

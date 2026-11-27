@@ -7,17 +7,3 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
-
-## Agent skills
-
-### Issue tracker
-
-Issues live in Linear (workspace CyraaTV, team `CYR`, project TCG V2), via the Linear MCP tools. See `docs/agents/issue-tracker.md`.
-
-### Triage labels
-
-Five canonical triage labels on Linear (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). See `docs/agents/triage-labels.md`.
-
-### Domain docs
-
-Single-context layout: root `GLOSSARY.md` and `docs/adr/`. See `docs/agents/domain.md`.

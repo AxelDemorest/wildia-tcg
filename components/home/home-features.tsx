@@ -116,15 +116,15 @@ function FeatureCard({
 
   return (
     <article
-      className={`group relative flex flex-col overflow-hidden p-6 transition-colors duration-300 sm:p-7 ${
+      className={`group relative flex flex-col overflow-hidden rounded-3xl p-6 ring-1 transition duration-300 hover:-translate-y-1 sm:p-7 ${
         highlighted
-          ? "bg-[linear-gradient(135deg,#0b4a33_0%,#17684a_100%)] text-white"
-          : "bg-background text-foreground hover:bg-surface"
+          ? "bg-brand-strong text-white shadow-[var(--shadow-card)] ring-brand-strong"
+          : "bg-surface text-foreground shadow-[0_10px_30px_-18px_rgb(19_35_26_/_0.3)] ring-black/[0.06] hover:shadow-[var(--shadow-card)]"
       } ${SPANS[featureKey]}`}
     >
       <span
-        className={`flex h-11 w-11 items-center justify-center rounded-md ${
-          highlighted ? "bg-white/12 text-accent" : "bg-brand/10 text-secondary ring-1 ring-inset ring-brand/25"
+        className={`flex h-12 w-12 items-center justify-center rounded-2xl ${
+          highlighted ? "bg-white/12 text-accent" : "bg-brand/10 text-brand"
         }`}
       >
         <Icon className="h-6 w-6" />
@@ -144,7 +144,7 @@ function FeatureCard({
           {RARITY_DOTS.map((dot, i) => (
             <span key={dot} className="flex items-center gap-1.5">
               <span className={`h-2.5 w-2.5 rounded-full ${dot}`} />
-              {i < RARITY_DOTS.length - 1 ? <span className="h-px w-5 bg-white/15 sm:w-8" /> : null}
+              {i < RARITY_DOTS.length - 1 ? <span className="h-px w-5 bg-border sm:w-8" /> : null}
             </span>
           ))}
         </div>
@@ -157,16 +157,13 @@ export async function HomeFeatures() {
   const t = await getTranslations("Home");
 
   return (
-    <section
-      id="features"
-      className="scroll-mt-4 border-t border-border py-12 sm:py-16"
-    >
+    <section id="features" className="scroll-mt-4 border-t border-border/60 bg-background py-16 sm:py-24">
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
         <header className="mx-auto max-w-3xl text-center">
-          <p className="text-xs font-semibold uppercase tracking-wider text-secondary sm:text-sm">
+          <p className="text-sm font-semibold tracking-wide text-secondary sm:text-base">
             {t("featuresKicker")}
           </p>
-          <h2 className="mt-3 text-balance text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-4xl md:leading-[1.15]">
+          <h2 className="mt-3 text-balance text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-[2.75rem] md:leading-[1.15]">
             {t("featuresTitle")}
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-pretty text-base text-muted sm:text-lg">
@@ -174,7 +171,7 @@ export async function HomeFeatures() {
           </p>
         </header>
 
-        <div className="mt-10 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:mt-12 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-12 grid gap-4 sm:mt-16 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
           {FEATURES.map((key) => (
             <FeatureCard
               key={key}

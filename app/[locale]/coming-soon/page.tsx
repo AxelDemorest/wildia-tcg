@@ -21,7 +21,7 @@ export default async function ComingSoonPage({ params }: Props) {
 
   return (
     <main className="flex h-dvh w-full flex-col gap-3 overflow-hidden p-3 sm:gap-4 sm:p-4 md:flex-row md:gap-5 md:p-5">
-      <section className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-[2rem] bg-background md:rounded-[2.75rem]">
+      <section className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-[2rem] bg-background bg-[image:var(--background-shine)] md:rounded-[2.75rem]">
         <div className="@container flex min-h-0 flex-1 flex-col justify-start overflow-y-auto overflow-x-hidden px-7 pb-7 pt-10 sm:px-12 sm:pb-10 md:px-14 md:pt-14 [scrollbar-width:thin]">
           {/* The claws asset has ~16% transparent padding on its left: pull it back so it lines up with the text below. */}
           <div className="flex items-center gap-1 [--logo-h:clamp(3.5rem,9dvh,5.5rem)]">

@@ -46,6 +46,6 @@ export async function devGrantCard(
     return { ok: false, message: "failed" };
   }
 
-  revalidatePath(`/${locale}/players/${user.id}/collection`);
+  revalidatePath(`/${locale}/collection`);
   return { ok: true };
 }

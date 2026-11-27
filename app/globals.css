@@ -1,35 +1,31 @@
 @import "tailwindcss";
 
 :root {
-  color-scheme: dark;
-  /* Green-tinted neutrals: the planes share the brand hue instead of fighting it. */
-  --background: #0b0d0c;
-  --foreground: #ffffff;
-  --surface: #121614;
-  --panel: #181d1a;
-  --muted: #8e9a93;
-  --border: #212825;
-  --border-strong: #2f3833;
-  --brand: #1a7d52;
-  --brand-strong: #146443;
-  /* Signal green: active states, kickers and green text (brand fails AA as small text). */
-  --secondary: #4fd69c;
+  --background: #f6f7f9;
+  --background-shine:
+    radial-gradient(circle at 50% 0%, rgb(255 255 255 / 0.85), transparent 58%),
+    radial-gradient(circle at 80% 20%, rgb(255 255 255 / 0.45), transparent 42%);
+  --foreground: #14231a;
+  --surface: #ffffff;
+  --muted: #5c6b62;
+  --border: #e2e3e8;
+  --brand: #0d7a4e;
+  --brand-strong: #045a38;
+  --secondary: #045a38;
   --ink: #13231a;
-  --accent: #f5c04a;
-  /* UI chrome only. Trading cards and boosters keep their own silhouette. */
-  --radius-sm: 0.25rem;
-  --radius-md: 0.375rem;
-  --radius-lg: 0.625rem;
+  --accent: #c9a227;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --shadow-card: 0 8px 24px -12px rgb(13 122 78 / 0.35);
+  --shadow-how-card: 0 28px 48px -24px rgb(19 35 26 / 0.55);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-surface: var(--surface);
-  --color-panel: var(--panel);
   --color-muted: var(--muted);
   --color-border: var(--border);
-  --color-border-strong: var(--border-strong);
   --color-brand: var(--brand);
   --color-brand-strong: var(--brand-strong);
   --color-secondary: var(--secondary);
@@ -38,7 +34,6 @@
   --font-sans: var(--font-lexend);
   --font-mono: var(--font-geist-mono);
   --font-display: var(--font-google-sans-flex);
-  --radius-sm: var(--radius-sm);
   --radius-md: var(--radius-md);
   --radius-lg: var(--radius-lg);
 }
@@ -49,9 +44,8 @@ html {
 
 body {
   min-height: 100%;
-  background:
-    radial-gradient(70rem 32rem at 50% -12rem, rgb(26 125 82 / 0.12), transparent 70%) no-repeat,
-    var(--background);
+  background-color: var(--background);
+  background-image: var(--background-shine);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
 }
@@ -66,17 +60,15 @@ h6 {
 }
 
 /*
- * Trading card (ADR 0003). The face takes the silhouette, double frame and corner
- * bands of the brand back; the rarity only changes the palette and the shine.
- * Everything is sized in container-query units (cqw) so the card scales with its
- * container, whatever the grid or the reveal size.
+ * Trading card. Everything is sized in container-query units (cqw) so the
+ * layout scales with the card width, whatever the grid or the reveal size.
  */
 .tcg-card {
-  --card-base: #0e3a32;
-  --card-base-deep: #06201b;
-  --card-band: #1f6f5f;
-  --card-line: #8fe0c4;
-  --card-glow: rgb(13 122 78 / 0.35);
+  --card-edge: #dfe9d6;
+  --card-face: #f5f7ef;
+  --card-leaf-light: #cfe2c5;
+  --card-leaf-mid: #a8d08c;
+  --card-leaf-dark: #6aab45;
 
   container-type: inline-size;
   position: relative;
@@ -85,150 +77,65 @@ h6 {
   width: 100%;
   /* cqw would resolve against an ancestor here, so use width/height percentages (2:3 card). */
   border-radius: 6% / 4%;
-  background: radial-gradient(130% 90% at 50% 38%, var(--card-base) 0%, var(--card-base-deep) 100%);
-  box-shadow:
-    0 8px 24px -12px var(--card-glow),
-    inset 0 0 0 1px rgb(255 255 255 / 0.08);
+  background-color: var(--card-edge);
+  box-shadow: inset 0 0 0 1px rgb(19 35 26 / 0.06);
   isolation: isolate;
-  transition:
-    translate 0.3s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.3s ease;
 }
 
+/* Palette follows the rarity tag colour. */
 .tcg-card[data-rarity="common"] {
-  --card-base: #2c312e;
-  --card-base-deep: #161917;
-  --card-band: #59615c;
-  --card-line: #c9ccc6;
-  --card-glow: rgb(19 35 26 / 0.35);
+  --card-edge: #e6e6e3;
+  --card-face: #f7f7f5;
+  --card-leaf-light: #d6d6d2;
+  --card-leaf-mid: #b0b0ab;
+  --card-leaf-dark: #8a8a85;
 }
 
 .tcg-card[data-rarity="uncommon"] {
-  --card-base: #0e3a32;
-  --card-base-deep: #06201b;
-  --card-band: #1f6f5f;
-  --card-line: #8fe0c4;
+  --card-edge: #dfe9d6;
+  --card-face: #f5f7ef;
+  --card-leaf-light: #cfe2c5;
+  --card-leaf-mid: #a8d08c;
+  --card-leaf-dark: #6aab45;
 }
 
 .tcg-card[data-rarity="rare"] {
-  --card-base: #123150;
-  --card-base-deep: #08182a;
-  --card-band: #2a6496;
-  --card-line: #9fd0f3;
-  --card-glow: rgb(56 140 210 / 0.45);
+  --card-edge: #d9e8f2;
+  --card-face: #f3f8fc;
+  --card-leaf-light: #c3dcee;
+  --card-leaf-mid: #8fc3e4;
+  --card-leaf-dark: #4a9dd0;
 }
 
 .tcg-card[data-rarity="epic"] {
-  --card-base: #2d1a4d;
-  --card-base-deep: #150b27;
-  --card-band: #5a3a94;
-  --card-line: #cfb2f5;
-  --card-glow: rgb(139 102 196 / 0.5);
+  --card-edge: #e6dff2;
+  --card-face: #f8f5fc;
+  --card-leaf-light: #d6c9ec;
+  --card-leaf-mid: #b9a3dd;
+  --card-leaf-dark: #8b66c4;
 }
 
-/* Legendary: solid gold leaf, the frames and lettering stamped in dark bronze. */
 .tcg-card[data-rarity="legendary"] {
-  --card-base: #e9c46a;
-  --card-base-deep: #7a5410;
-  --card-band: #a8781f;
-  --card-line: #4a3006;
-  --card-glow: rgb(245 196 80 / 0.8);
-  background: linear-gradient(
-    135deg,
-    #8a5d12 0%,
-    #e9c46a 16%,
-    #fff1b8 30%,
-    #d4a53c 44%,
-    #9a6c18 58%,
-    #f0cf74 76%,
-    #fff3c4 88%,
-    #b88a2a 100%
-  );
-  box-shadow:
-    0 8px 24px -12px var(--card-glow),
-    inset 0 0 0 1px rgb(255 244 200 / 0.55);
+  --card-edge: #f4e8c8;
+  --card-face: #fdf9ee;
+  --card-leaf-light: #f1dc9f;
+  --card-leaf-mid: #e9c261;
+  --card-leaf-dark: #d49a12;
 }
 
-/*
- * Mythic: near-black violet with a rare oil-slick foil (::before) that keeps
- * drifting across the face. The gem facets are kept as a barely-there texture.
- */
 .tcg-card[data-rarity="mythic"] {
-  --card-base: #1a0f2e;
-  --card-base-deep: #0b0614;
-  --card-band: rgb(196 181 253 / 0.07);
-  --card-line: #e8d5ff;
-  --card-glow: rgb(139 92 246 / 0.6);
-  --holo: linear-gradient(
-    115deg,
-    rgb(125 211 252 / 0.22) 0%,
-    rgb(196 181 253 / 0.26) 35%,
-    rgb(249 168 212 / 0.22) 65%,
-    rgb(125 211 252 / 0.22) 100%
-  );
-  --holo-ring: conic-gradient(
-    from var(--holo-angle),
-    #2a1d45,
-    #7dd3fc 12%,
-    #2a1d45 25%,
-    #c4b5fd 40%,
-    #2a1d45 55%,
-    #f9a8d4 68%,
-    #2a1d45 80%,
-    #e8d5ff 90%,
-    #2a1d45
-  );
-  background:
-    conic-gradient(
-        from -34.8deg,
-        rgb(232 213 255 / 0.035) 0 69.6deg,
-        transparent 0 180deg,
-        rgb(0 0 0 / 0.12) 0 249.6deg,
-        rgb(232 213 255 / 0.015) 0
-      )
-      0 0 / 8cqw 11.5cqw,
-    radial-gradient(120% 85% at 30% 18%, #2a1a4a 0%, #1a0f2e 38%, #0b0614 100%);
-  box-shadow:
-    0 8px 24px -12px var(--card-glow),
-    -6px 2px 20px -12px rgb(125 211 252 / 0.4),
-    6px -2px 20px -12px rgb(196 181 253 / 0.45),
-    inset 0 0 0 1px rgb(232 213 255 / 0.16);
+  --card-edge: #f6dbe1;
+  --card-face: #fdf5f7;
+  --card-leaf-light: #f3c2cd;
+  --card-leaf-mid: #ec8fa4;
+  --card-leaf-dark: #d93c62;
 }
 
-/* Oil-slick foil: thin accent bands separated by long dark stretches, never a full rainbow. */
-.tcg-card[data-rarity="mythic"]::before {
-  content: "";
+.tcg-card-face {
   position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(
-      118deg,
-      transparent 10%,
-      rgb(125 211 252 / 0.24) 20%,
-      rgb(196 181 253 / 0.32) 27%,
-      rgb(249 168 212 / 0.24) 34%,
-      transparent 44%,
-      transparent 58%,
-      rgb(196 181 253 / 0.2) 66%,
-      rgb(125 211 252 / 0.26) 72%,
-      rgb(232 213 255 / 0.16) 78%,
-      transparent 88%
-    )
-    0 0 / 250% 250%;
-  mix-blend-mode: screen;
-}
-
-.tcg-card-back {
-  background: #112a1c;
-}
-
-@media (hover: hover) {
-  .tcg-card-link:hover > .tcg-card {
-    translate: 0 -1.5%;
-    box-shadow:
-      0 20px 34px -16px var(--card-glow),
-      inset 0 0 0 1px rgb(255 255 255 / 0.08);
-  }
+  inset: 2.6cqw 2.6cqw 2.6cqw 4cqw;
+  border-radius: 4.5cqw;
+  background-color: var(--card-face);
 }
 
 .tcg-card-deco {
@@ -236,530 +143,112 @@ h6 {
   inset: 0;
   width: 100%;
   height: 100%;
-  fill: var(--card-band);
   pointer-events: none;
 }
 
-.tcg-card-frame {
-  position: absolute;
-  inset: 3.5cqw;
-  border: max(1px, 0.35cqw) solid color-mix(in srgb, var(--card-line) 55%, transparent);
-  border-radius: 1.5cqw;
-  pointer-events: none;
-}
-
-.tcg-card-frame::after {
-  content: "";
-  position: absolute;
-  inset: 1.6cqw;
-  border: max(1px, 0.35cqw) solid var(--card-line);
-  border-radius: 0.8cqw;
-  opacity: 0.85;
+.tcg-card-deco-front {
+  z-index: 2;
 }
 
 .tcg-card-body {
   position: absolute;
-  inset: 8.5cqw 8.5cqw 7.5cqw;
+  inset: 0;
   z-index: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 2.2cqw;
+  gap: 2.4cqw;
+  padding: 6cqw 5cqw 5cqw 6cqw;
 }
 
-/* Preview window: the species sits inside the frame, never edge to edge. */
-.tcg-card-art {
-  position: relative;
-  flex: 1;
-  width: 100%;
-  min-height: 0;
-  overflow: hidden;
-  border: max(1.5px, 0.7cqw) solid var(--card-line);
-  border-radius: 2.4cqw;
-  background-color: var(--card-base-deep);
-  box-shadow:
-    0 0 0 max(1px, 0.9cqw) rgb(0 0 0 / 0.25),
-    0 2cqw 4cqw -2cqw rgb(0 0 0 / 0.6);
-}
-
-.tcg-card-art::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  box-shadow: inset 0 0 6cqw rgb(0 0 0 / 0.35);
-  pointer-events: none;
-}
-
-.tcg-card-seal {
-  position: absolute;
-  top: 2cqw;
-  right: 2cqw;
-  z-index: 1;
-  display: grid;
-  place-items: center;
-  width: max(15px, 9cqw);
-  height: max(15px, 9cqw);
-  border-radius: 50%;
-  color: #fff;
-  font-size: max(7px, 3.6cqw);
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  line-height: 1;
-  box-shadow:
-    0 0 0 max(1px, 0.5cqw) var(--card-line),
-    0 1cqw 2cqw rgb(0 0 0 / 0.4);
-}
-
-.tcg-card-divider {
-  flex-shrink: 0;
-  display: grid;
-  place-items: center;
-  width: 70%;
-  height: 2.6cqw;
-  background: linear-gradient(
-      90deg,
-      transparent,
-      var(--card-line) 30%,
-      var(--card-line) 70%,
-      transparent
-    )
-    center / 100% max(1px, 0.3cqw) no-repeat;
-}
-
-.tcg-card-divider > span {
-  width: 2.2cqw;
-  height: 2.2cqw;
-  rotate: 45deg;
-  background-color: var(--card-line);
-}
-
-/* Two lines tall whatever the name, so every art window has the same size. */
-.tcg-card-name {
-  flex-shrink: 0;
-  display: grid;
-  place-items: center;
-  width: 100%;
-  height: 2.3em;
-  color: var(--card-line);
-  font-family: var(--font-display), var(--font-sans), system-ui, sans-serif;
-  font-size: max(8.5px, 5.4cqw);
-  font-weight: 700;
-  line-height: 1.15;
-  letter-spacing: max(0.04em, 0.55cqw);
-  text-align: center;
-  text-transform: uppercase;
-  hyphens: auto;
-  text-shadow: 0 1px 0 rgb(0 0 0 / 0.45);
-}
-
-.tcg-card-name > span {
-  display: -webkit-box;
-  overflow: hidden;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  text-wrap: balance;
-}
-
-.tcg-card-footer {
-  flex-shrink: 0;
+.tcg-card-header {
   display: flex;
-  justify-content: center;
-  max-width: 100%;
-  min-height: 8cqw;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2.5cqw;
+  min-height: 11cqw;
+  padding-left: 11cqw;
 }
 
-/* Rarity badge, recoloured to the card metal. */
-.tcg-card-footer > span {
-  max-width: 100%;
-  overflow: hidden;
-  border-radius: 9999px;
-  border-color: color-mix(in srgb, var(--card-line) 70%, transparent);
-  background-color: rgb(0 0 0 / 0.25);
-  padding: 1.1cqw 3.4cqw;
-  color: var(--card-line);
-  font-size: max(8px, 3.3cqw);
-  letter-spacing: max(0.06em, 0.4cqw);
+.tcg-card-name {
+  min-width: 0;
+  color: var(--ink);
+  font-size: max(11px, 6.4cqw);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
   white-space: nowrap;
+  overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.tcg-card-quantity {
-  position: absolute;
-  top: 2cqw;
-  left: 2cqw;
-  z-index: 1;
-  border-radius: 9999px;
-  background-color: var(--card-line);
-  padding: 0.8cqw 2.6cqw;
-  color: var(--card-base-deep);
-  font-size: max(9px, 3.6cqw);
+.tcg-card-seal {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 8.5cqw;
+  height: 8.5cqw;
+  border-radius: 50%;
+  color: #fff;
+  font-size: max(8px, 3.6cqw);
   font-weight: 700;
-  line-height: 1.2;
-  box-shadow: 0 1cqw 2cqw rgb(0 0 0 / 0.4);
-}
-
-.tcg-card-shine {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.tcg-card[data-shine="static"] .tcg-card-shine,
-.tcg-card[data-shine="hover"] .tcg-card-shine {
-  background: linear-gradient(
-    125deg,
-    transparent 16%,
-    rgb(255 255 255 / 0.24) 30%,
-    transparent 42%,
-    transparent 60%,
-    rgb(255 255 255 / 0.14) 72%,
-    transparent 82%
-  );
-  mix-blend-mode: screen;
-}
-
-/* Legendary gold. */
-.tcg-card[data-rarity="legendary"] .tcg-card-art {
-  border-color: #fff0b8;
-  box-shadow:
-    0 0 0 max(1px, 0.9cqw) rgb(74 48 6 / 0.55),
-    0 2cqw 4cqw -2cqw rgb(60 36 0 / 0.7);
-}
-.tcg-card[data-rarity="legendary"] .tcg-card-name {
-  text-shadow: 0 1px 0 rgb(255 245 205 / 0.6);
-}
-.tcg-card[data-rarity="legendary"] .tcg-card-footer > span {
-  background-color: rgb(255 248 220 / 0.45);
-}
-.tcg-card[data-rarity="legendary"] .tcg-card-quantity {
-  color: #fff1bf;
-}
-
-/* Mythic trims: a dark iridescent ring on the frames and art border, pale lettering. */
-@property --holo-angle {
-  syntax: "<angle>";
-  inherits: true;
-  initial-value: 0deg;
-}
-.tcg-card[data-rarity="mythic"] .tcg-card-frame {
-  opacity: 0.7;
-}
-.tcg-card[data-rarity="mythic"] .tcg-card-frame,
-.tcg-card[data-rarity="mythic"] .tcg-card-frame::after {
-  border-image: var(--holo-ring) 1;
-}
-.tcg-card[data-rarity="mythic"] .tcg-card-art {
-  border-color: transparent;
-  background:
-    linear-gradient(var(--card-base-deep), var(--card-base-deep)) padding-box,
-    var(--holo-ring) border-box;
-  box-shadow:
-    0 0 0 max(1px, 0.9cqw) rgb(0 0 0 / 0.5),
-    0 0 4cqw -1cqw rgb(196 181 253 / 0.3),
-    0 2cqw 4cqw -2cqw rgb(0 0 0 / 0.8);
-}
-.tcg-card[data-rarity="mythic"] .tcg-card-name {
-  text-shadow:
-    0 1px 0 rgb(0 0 0 / 0.6),
-    0 0 3cqw rgb(196 181 253 / 0.4);
-}
-.tcg-card[data-rarity="mythic"] .tcg-card-footer > span {
-  border-color: rgb(232 213 255 / 0.4);
-  background:
-    var(--holo) 0 0 / 200% 100%,
-    rgb(11 6 20 / 0.7);
-  box-shadow:
-    inset 0 1px 0 rgb(232 213 255 / 0.18),
-    0 0 3cqw -1cqw rgb(125 211 252 / 0.35);
-}
-.tcg-card[data-rarity="mythic"] .tcg-card-shine {
-  background: linear-gradient(
-    125deg,
-    transparent 20%,
-    rgb(232 213 255 / 0.08) 32%,
-    transparent 44%
-  );
-}
-.tcg-card[data-rarity="mythic"][data-shine="hover"] .tcg-card-shine::after {
-  background-image: linear-gradient(
-    105deg,
-    transparent 42%,
-    rgb(232 213 255 / 0.18) 49%,
-    rgb(125 211 252 / 0.1) 52%,
-    transparent 58%
-  );
-}
-
-.tcg-card[data-shine="hover"] .tcg-card-shine::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    105deg,
-    transparent 40%,
-    rgb(255 255 255 / 0.55) 48%,
-    rgb(255 240 200 / 0.3) 52%,
-    transparent 60%
-  );
-  background-size: 300% 100%;
-  background-position: 100% 0;
-  opacity: 0;
-}
-
-@keyframes tcg-card-sheen {
-  0% {
-    background-position: 100% 0;
-  }
-  60%,
-  100% {
-    background-position: 0 0;
-  }
-}
-
-@media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  .tcg-card[data-shine="hover"]:hover .tcg-card-shine::after,
-  .tcg-card-link:focus-visible > .tcg-card[data-shine="hover"] .tcg-card-shine::after {
-    opacity: 1;
-    animation: tcg-card-sheen 2.2s ease-in-out infinite;
-  }
-
-  .tcg-card[data-rarity="mythic"]:hover .tcg-card-shine::after,
-  .tcg-card-link:focus-visible > .tcg-card[data-rarity="mythic"] .tcg-card-shine::after {
-    animation-duration: 3.6s;
-  }
-}
-
-/* Mythic is always alive: ring spin, foil drift and badge slide run at rest; hover only adds the sheen and the lift. */
-@media (prefers-reduced-motion: no-preference) {
-  .tcg-card[data-rarity="mythic"] {
-    animation: tcg-holo-spin 12s linear infinite;
-  }
-  .tcg-card[data-rarity="mythic"]::before {
-    animation: tcg-petrol-drift 5s ease-in-out infinite alternate;
-  }
-  .tcg-card[data-rarity="mythic"] .tcg-card-footer > span {
-    animation: tcg-holo-slide 3s ease-in-out infinite alternate;
-  }
-}
-
-@media (hover: hover) {
-  .tcg-card-link:hover > .tcg-card[data-rarity="mythic"] {
-    box-shadow:
-      0 20px 36px -16px var(--card-glow),
-      -10px 4px 28px -14px rgb(125 211 252 / 0.55),
-      10px -4px 28px -14px rgb(196 181 253 / 0.6),
-      inset 0 0 0 1px rgb(232 213 255 / 0.22);
-  }
-}
-
-@keyframes tcg-holo-slide {
-  to {
-    background-position: 100% 0;
-  }
-}
-
-@keyframes tcg-holo-spin {
-  to {
-    --holo-angle: 360deg;
-  }
-}
-
-@keyframes tcg-petrol-drift {
-  to {
-    background-position: 100% 70%;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .tcg-card {
-    transition: none;
-  }
-}
-
-/*
- * Showcase slab: a graded-card style acrylic case around each showcase card.
- * `.showcase-slab` is the size container; inner parts are sized in cqw. The accent
- * follows the card rarity (same hues as `--card-line`).
- */
-.showcase-slab {
-  --slab-accent: var(--border-strong);
-  container-type: inline-size;
-}
-.showcase-slab[data-rarity="common"] {
-  --slab-accent: #c9ccc6;
-}
-.showcase-slab[data-rarity="uncommon"] {
-  --slab-accent: #8fe0c4;
-}
-.showcase-slab[data-rarity="rare"] {
-  --slab-accent: #9fd0f3;
-}
-.showcase-slab[data-rarity="epic"] {
-  --slab-accent: #cfb2f5;
-}
-.showcase-slab[data-rarity="legendary"] {
-  --slab-accent: #e4c46e;
-}
-.showcase-slab[data-rarity="mythic"] {
-  --slab-accent: #c4b5fd;
-}
-/* Epic's accent is lavender too, so the mythic label strip carries the oil-slick hues. */
-.showcase-slab[data-rarity="mythic"] .showcase-slab-label::after {
-  background: linear-gradient(90deg, var(--brand) 0%, #7dd3fc 45%, #c4b5fd 72%, #f9a8d4 100%);
-}
-
-.showcase-slab-case {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 3.5cqw;
-  padding: 4.5cqw 4.5cqw 3cqw;
-  border-radius: 5cqw;
-  background:
-    linear-gradient(
-      160deg,
-      rgb(255 255 255 / 0.11) 0%,
-      rgb(255 255 255 / 0.02) 38%,
-      rgb(255 255 255 / 0.05) 100%
-    ),
-    #0c1210;
-  border: 1px solid rgb(255 255 255 / 0.14);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.22),
-    inset 0 -1px 0 rgb(0 0 0 / 0.7),
-    inset 0 0 0 1.6cqw rgb(255 255 255 / 0.025),
-    0 0 0 1px rgb(0 0 0 / 0.55),
-    0 22px 34px -20px rgb(0 0 0 / 0.95);
-  transition:
-    translate 0.3s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.3s ease;
-}
-/* Acrylic reflection over the whole case, card included. */
-.showcase-slab-case::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  border-radius: inherit;
-  pointer-events: none;
-  background:
-    linear-gradient(
-      118deg,
-      transparent 0%,
-      transparent 52%,
-      rgb(255 255 255 / 0.07) 56%,
-      rgb(255 255 255 / 0.015) 66%,
-      transparent 70%
-    ),
-    linear-gradient(180deg, rgb(255 255 255 / 0.06) 0%, transparent 18%);
-}
-
-/* Dark green band with the claws logo tiled faintly behind the wordmark. */
-.showcase-slab-label {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  padding: 5.4cqw 3cqw 4.4cqw;
-  border-radius: 2.5cqw;
-  background:
-    radial-gradient(70% 120% at 50% 50%, rgb(26 125 82 / 0.35), transparent 75%),
-    linear-gradient(180deg, #0f3524 0%, #072015 100%);
-  box-shadow:
-    inset 0 0 0 1px rgb(255 255 255 / 0.07),
-    0 1px 0 rgb(255 255 255 / 0.05);
-}
-.showcase-slab-label::before {
-  content: "";
-  position: absolute;
-  inset: -60% -20%;
-  rotate: -18deg;
-  background: var(--foreground);
-  opacity: 0.09;
-  mask-image: var(--slab-logo), var(--slab-logo);
-  mask-size: 15cqw 15cqw;
-  mask-position:
-    0 0,
-    7.5cqw 7.5cqw;
-  mask-repeat: repeat;
-  pointer-events: none;
-}
-.showcase-slab-label::after {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto;
-  height: 1.2cqw;
-  background: linear-gradient(90deg, var(--brand) 0%, var(--slab-accent) 100%);
-}
-
-.showcase-slab-brand {
-  position: relative;
-  font-family: var(--font-display), var(--font-sans), system-ui, sans-serif;
-  font-size: max(12px, 9cqw);
-  font-weight: 800;
-  line-height: 1;
   letter-spacing: 0.04em;
-  color: var(--foreground);
-  text-shadow: 0 0.6cqw 1.6cqw rgb(0 0 0 / 0.6);
+  line-height: 1;
 }
 
-.showcase-slab-well {
+.tcg-card-art {
   position: relative;
-  padding: 3cqw;
-  border-radius: 3cqw;
-  background: rgb(0 0 0 / 0.5);
-  box-shadow:
-    inset 0 0 0 1px rgb(255 255 255 / 0.06),
-    inset 0 2cqw 5cqw rgb(0 0 0 / 0.65);
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  border: max(2px, 0.8cqw) solid #fff;
+  border-radius: 4cqw;
+  background-color: #1b2733;
+  box-shadow: 0 1px 3px rgb(19 35 26 / 0.12);
 }
-.showcase-slab-empty {
+
+/* Thin inner white frame; stays on the edges so the animal remains visible. */
+.tcg-card-ornament {
+  position: absolute;
+  inset: 2.4cqw;
+  border: max(1px, 0.3cqw) solid rgb(255 255 255 / 0.7);
+  border-radius: 2.6cqw;
+  pointer-events: none;
+}
+
+.tcg-card-art-wave {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: var(--card-leaf-light);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.tcg-card-footer {
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 6cqw;
-  text-align: center;
-  font-size: max(11px, 6cqw);
-  color: var(--muted);
-  aspect-ratio: 2 / 3;
-  border-radius: 6% / 4%;
-  border: 1px dashed var(--border-strong);
-  background:
-    radial-gradient(80% 60% at 50% 40%, rgb(26 125 82 / 0.08), transparent 70%),
-    rgb(255 255 255 / 0.015);
+  gap: 2cqw;
+  min-height: 13cqw;
+  padding: 0 3cqw;
+  border-radius: 9999px;
+  background-color: #fbfcf7;
+  box-shadow: inset 0 0 0 1px rgb(19 35 26 / 0.05);
 }
 
-/* Moulded grip at the bottom edge of the case. */
-.showcase-slab-foot {
-  height: 2.2cqw;
-  margin: 0 18%;
-  border-radius: 1cqw;
-  background: repeating-linear-gradient(
-    90deg,
-    rgb(255 255 255 / 0.1) 0 1px,
-    transparent 1px 1.6cqw
-  );
-  opacity: 0.7;
+.tcg-card-footer > span:first-child {
+  padding: 1.4cqw 4cqw;
+  font-size: max(9px, 3.6cqw);
+  letter-spacing: 0.12em;
 }
 
-@media (hover: hover) {
-  .showcase-slab-link:hover .showcase-slab-case {
-    translate: 0 -1.5%;
-    box-shadow:
-      inset 0 1px 0 rgb(255 255 255 / 0.22),
-      inset 0 -1px 0 rgb(0 0 0 / 0.7),
-      inset 0 0 0 1.6cqw rgb(255 255 255 / 0.025),
-      0 0 0 1px color-mix(in srgb, var(--slab-accent) 40%, transparent),
-      0 26px 38px -20px color-mix(in srgb, var(--slab-accent) 45%, black);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .showcase-slab-case {
-    transition: none;
-  }
+.tcg-card-quantity {
+  border-radius: 9999px;
+  background-color: var(--brand-strong);
+  padding: 0.6cqw 2.5cqw;
+  color: #fff;
+  font-size: max(10px, 3.6cqw);
+  font-weight: 700;
 }
 
 /* Coming-soon contest card: 3D tilt + glare driven by CSS variables (see TiltCard). */
@@ -813,772 +302,6 @@ h6 {
   }
 }
 
-/*
- * Booster pack (V3 design). Drawn in CSS only, on a 9:16 body sized in container-query
- * units (cqw) like the trading card. `data-look` picks the palette (premium adds the
- * holo and the rays), `data-state` the idle, opening (glow + shake) or exhausted
- * (torn open, empty, crumpled, grey) rendering.
- */
-.booster-pack {
-  --gold: #e4c46e;
-  width: 100%;
-  /* Keeps the pack near its mockup size when a shop has only a few slots. */
-  max-width: 11rem;
-}
-.booster-pack-body {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 9/16;
-  container-type: inline-size;
-  filter: drop-shadow(0 14px 14px rgb(0 0 0 / 0.55)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.5));
-  transition:
-    translate 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    rotate 0.35s,
-    filter 0.35s;
-}
-@media (hover: hover) {
-  .booster-pack:hover .booster-pack-body {
-    translate: 0 -7px;
-    rotate: -1.5deg;
-    filter: drop-shadow(0 22px 22px rgb(0 0 0 / 0.6)) drop-shadow(0 0 16px rgb(95 199 154 / 0.3));
-  }
-}
-.booster-pack-foil {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  --z: 6cqw;
-  background: radial-gradient(110% 70% at 45% 42%, #1a6243 0%, #0c3424 52%, #051a11 100%);
-  clip-path: polygon(
-    0% 0%,
-    100% 0%,
-    100% 8%,
-    98.6% 10.5%,
-    99.3% 15.4%,
-    99.3% 84.6%,
-    98.6% 89.5%,
-    100% 92%,
-    100% 100%,
-    0% 100%,
-    0% 92%,
-    1.4% 89.5%,
-    0.7% 84.6%,
-    0.7% 15.4%,
-    1.4% 10.5%,
-    0% 8%
-  );
-  -webkit-mask:
-    conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) top/var(--z) 51%
-      repeat-x,
-    conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom/var(--z) 51%
-      repeat-x;
-  mask:
-    conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) top/var(--z) 51%
-      repeat-x,
-    conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom/var(--z) 51%
-      repeat-x;
-}
-.booster-pack-arc {
-  position: absolute;
-  border-radius: 50%;
-  border: 1.6cqw solid rgb(63 185 133 / 0.14);
-}
-.booster-pack-arc-a {
-  width: 170%;
-  aspect-ratio: 1;
-  left: -105%;
-  top: -6%;
-}
-.booster-pack-arc-b {
-  width: 160%;
-  aspect-ratio: 1;
-  right: -110%;
-  bottom: -24%;
-}
-.booster-pack-rays {
-  display: none;
-  position: absolute;
-  left: 50%;
-  top: 39%;
-  width: 120%;
-  aspect-ratio: 1;
-  translate: -50% -50%;
-  background: repeating-conic-gradient(
-    from 0deg,
-    rgb(228 196 110 / 0.14) 0 4deg,
-    transparent 4deg 15deg
-  );
-  -webkit-mask: radial-gradient(closest-side, #000 25%, transparent 100%);
-  mask: radial-gradient(closest-side, #000 25%, transparent 100%);
-}
-.booster-pack-frame {
-  position: absolute;
-  inset: 18.2% 13%;
-  border-radius: 2.6cqw;
-  border: 1px solid color-mix(in srgb, var(--gold) 60%, transparent);
-}
-.booster-pack-frame::after {
-  content: "";
-  position: absolute;
-  inset: 1.6cqw;
-  border-radius: 1.8cqw;
-  border: 1px solid color-mix(in srgb, var(--gold) 28%, transparent);
-}
-.booster-pack-emblem {
-  position: absolute;
-  left: 50%;
-  top: 21.5%;
-  width: 58%;
-  translate: -50% 0;
-  filter: drop-shadow(0 2px 5px rgb(0 0 0 / 0.55));
-}
-.booster-pack-label {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 58.5%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1cqw;
-  text-align: center;
-}
-.booster-pack-kicker {
-  font-size: max(7px, 4.6cqw);
-  font-weight: 600;
-  letter-spacing: 0.38em;
-  padding-left: 0.38em;
-  color: color-mix(in srgb, var(--gold) 80%, #ffffff);
-  text-transform: uppercase;
-}
-.booster-pack-name {
-  font-size: max(12px, 11.5cqw);
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  line-height: 1;
-  text-transform: uppercase;
-  background: linear-gradient(180deg, #fff3c9 0%, var(--gold) 55%, #a8822f 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-.booster-pack-count {
-  position: absolute;
-  left: 50%;
-  bottom: 21.5%;
-  translate: -50% 0;
-  font-size: max(8px, 4.2cqw);
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  color: #d8f3e4;
-  padding: 1cqw 3cqw;
-  border-radius: 99px;
-  border: 1px solid rgb(143 224 196 / 0.35);
-  background: rgb(5 26 17 / 0.6);
-}
-.booster-pack-cards {
-  position: absolute;
-  left: 9%;
-  right: 9%;
-  top: 15.4%;
-  bottom: 15.4%;
-  border-radius: 4cqw;
-  pointer-events: none;
-  background: linear-gradient(
-    158deg,
-    rgb(255 255 255 / 0.07),
-    transparent 32%,
-    transparent 72%,
-    rgb(0 0 0 / 0.14)
-  );
-  box-shadow:
-    inset 0.7cqw 0.9cqw 0.9cqw rgb(255 255 255 / 0.15),
-    inset -0.8cqw -1cqw 1.2cqw rgb(0 0 0 / 0.42),
-    0 0 0 0.35cqw rgb(0 0 0 / 0.3),
-    -0.4cqw -0.6cqw 1cqw rgb(255 255 255 / 0.08),
-    0.7cqw 1.3cqw 1.8cqw rgb(0 0 0 / 0.5),
-    0 0 0 80cqw rgb(0 0 0 / 0.17);
-}
-.booster-pack-cards::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  translate: 0 0.9cqw;
-  box-shadow:
-    0 0.3cqw 0 rgb(0 0 0 / 0.28),
-    0 0.6cqw 0 rgb(255 255 255 / 0.05);
-}
-.booster-pack-taper {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 7.4%;
-  pointer-events: none;
-}
-.booster-pack-taper-top {
-  top: 8%;
-  background:
-    linear-gradient(
-      180deg,
-      rgb(0 0 0 / 0.4),
-      rgb(0 0 0 / 0.06) 45%,
-      rgb(255 255 255 / 0.07) 78%,
-      rgb(0 0 0 / 0.22)
-    ),
-    repeating-linear-gradient(
-      90deg,
-      rgb(255 255 255 / 0.11) 0 0.5cqw,
-      rgb(0 0 0 / 0.3) 0.5cqw 1.3cqw,
-      transparent 1.3cqw 3.7cqw
-    ),
-    repeating-linear-gradient(
-      90deg,
-      transparent 0 2cqw,
-      rgb(0 0 0 / 0.22) 2cqw 2.7cqw,
-      transparent 2.7cqw 6.1cqw
-    );
-  -webkit-mask: linear-gradient(180deg, #000, rgb(0 0 0 / 0.55) 55%, rgb(0 0 0 / 0.15));
-  mask: linear-gradient(180deg, #000, rgb(0 0 0 / 0.55) 55%, rgb(0 0 0 / 0.15));
-}
-.booster-pack-taper-bottom {
-  bottom: 8%;
-  background:
-    linear-gradient(
-      0deg,
-      rgb(0 0 0 / 0.45),
-      rgb(0 0 0 / 0.08) 45%,
-      rgb(255 255 255 / 0.05) 78%,
-      rgb(0 0 0 / 0.25)
-    ),
-    repeating-linear-gradient(
-      90deg,
-      rgb(255 255 255 / 0.1) 0 0.5cqw,
-      rgb(0 0 0 / 0.3) 0.5cqw 1.3cqw,
-      transparent 1.3cqw 4.1cqw
-    ),
-    repeating-linear-gradient(
-      90deg,
-      transparent 0 2.4cqw,
-      rgb(0 0 0 / 0.22) 2.4cqw 3.1cqw,
-      transparent 3.1cqw 6.7cqw
-    );
-  -webkit-mask: linear-gradient(0deg, #000, rgb(0 0 0 / 0.55) 55%, rgb(0 0 0 / 0.15));
-  mask: linear-gradient(0deg, #000, rgb(0 0 0 / 0.55) 55%, rgb(0 0 0 / 0.15));
-}
-.booster-pack-crease {
-  position: absolute;
-  width: 0.9cqw;
-  height: 9%;
-  pointer-events: none;
-  border-radius: 1cqw;
-  background: linear-gradient(90deg, rgb(255 255 255 / 0.16), rgb(0 0 0 / 0.42));
-}
-.booster-pack-crease-tl {
-  left: 9.5%;
-  top: 7.2%;
-  transform-origin: 50% 100%;
-  rotate: -38deg;
-}
-.booster-pack-crease-tr {
-  right: 9.5%;
-  top: 7.2%;
-  transform-origin: 50% 100%;
-  rotate: 38deg;
-}
-.booster-pack-crease-bl {
-  left: 9.5%;
-  bottom: 7.2%;
-  transform-origin: 50% 0%;
-  rotate: 38deg;
-}
-.booster-pack-crease-br {
-  right: 9.5%;
-  bottom: 7.2%;
-  transform-origin: 50% 0%;
-  rotate: -38deg;
-}
-.booster-pack-shade {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(
-    90deg,
-    rgb(0 0 0 / 0.55) 0%,
-    rgb(0 0 0 / 0.2) 4%,
-    rgb(255 255 255 / 0.05) 8%,
-    transparent 9.5% 90.5%,
-    rgb(0 0 0 / 0.26) 92%,
-    rgb(0 0 0 / 0.62) 100%
-  );
-}
-.booster-pack-seal {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 8%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background:
-    repeating-linear-gradient(
-      90deg,
-      rgb(255 255 255 / 0.16) 0 0.5cqw,
-      rgb(0 0 0 / 0.34) 0.5cqw 1.1cqw,
-      transparent 1.1cqw 1.8cqw
-    ),
-    linear-gradient(180deg, #123a29, #071a11 70%, #0c2c1e);
-}
-.booster-pack-seal-top {
-  top: 0;
-  border-bottom: 1px solid color-mix(in srgb, var(--gold) 55%, transparent);
-}
-.booster-pack-seal-bottom {
-  bottom: 0;
-  border-top: 1px solid color-mix(in srgb, var(--gold) 55%, transparent);
-}
-.booster-pack-brand {
-  margin-top: 2.6cqw;
-  font-size: max(7px, 4.8cqw);
-  font-weight: 700;
-  letter-spacing: 0.42em;
-  padding-left: 0.42em;
-  text-transform: uppercase;
-  color: var(--gold);
-  text-shadow: 0 -0.3cqw 0 rgb(0 0 0 / 0.6);
-}
-.booster-pack-holo {
-  display: none;
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  mix-blend-mode: color-dodge;
-  opacity: 0.6;
-  background: linear-gradient(
-    125deg,
-    transparent 18%,
-    rgb(255 80 160 / 0.25) 30%,
-    rgb(110 220 255 / 0.28) 42%,
-    rgb(255 236 140 / 0.3) 54%,
-    rgb(170 120 255 / 0.25) 66%,
-    transparent 80%
-  );
-}
-.booster-pack-gloss {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  mix-blend-mode: screen;
-  background:
-    linear-gradient(
-      115deg,
-      transparent 28%,
-      rgb(255 255 255 / 0.13) 40%,
-      rgb(255 255 255 / 0.04) 48%,
-      transparent 56%
-    ),
-    radial-gradient(38% 2.2% at 36% 15.9%, rgb(255 255 255 / 0.28), transparent 80%),
-    radial-gradient(30% 2% at 30% 84.4%, rgb(255 255 255 / 0.1), transparent 80%),
-    radial-gradient(3% 30% at 9.6% 40%, rgb(255 255 255 / 0.14), transparent 80%);
-}
-.booster-pack-tear,
-.booster-pack-crumple {
-  display: none;
-}
-.booster-pack[data-look="premium"] .booster-pack-foil {
-  background: radial-gradient(110% 70% at 45% 42%, #302812 0%, #15110a 52%, #070605 100%);
-}
-.booster-pack[data-look="premium"] .booster-pack-seal {
-  background:
-    repeating-linear-gradient(
-      90deg,
-      rgb(255 255 255 / 0.38) 0 0.5cqw,
-      rgb(90 60 10 / 0.4) 0.5cqw 1.1cqw,
-      transparent 1.1cqw 1.8cqw
-    ),
-    linear-gradient(180deg, #f9e7ad, #c39a45 50%, #7d5f1f);
-}
-.booster-pack[data-look="premium"] .booster-pack-brand {
-  color: #2a1f08;
-  text-shadow: 0 0.3cqw 0 rgb(255 240 200 / 0.5);
-}
-.booster-pack[data-look="premium"] .booster-pack-arc {
-  border-color: rgb(228 196 110 / 0.12);
-}
-.booster-pack[data-look="premium"] .booster-pack-rays,
-.booster-pack[data-look="premium"] .booster-pack-holo {
-  display: block;
-}
-.booster-pack[data-look="premium"] .booster-pack-count {
-  color: #fbe9b7;
-  border-color: rgb(228 196 110 / 0.4);
-  background: rgb(20 16 8 / 0.7);
-}
-.booster-pack[data-state="opening"] .booster-pack-body {
-  translate: 0 -8px;
-  filter: drop-shadow(0 0 24px rgb(95 199 154 / 0.6)) drop-shadow(0 16px 20px rgb(0 0 0 / 0.6));
-}
-.booster-pack[data-state="opening"] .booster-pack-foil {
-  animation: booster-pack-shake 0.6s ease-in-out infinite;
-}
-@keyframes booster-pack-shake {
-  0%,
-  100% {
-    rotate: 0deg;
-  }
-  25% {
-    rotate: -1.6deg;
-  }
-  75% {
-    rotate: 1.6deg;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .booster-pack-body {
-    transition: none;
-  }
-  .booster-pack[data-state="opening"] .booster-pack-foil {
-    animation: none;
-  }
-}
-.booster-pack[data-state="exhausted"] .booster-pack-body {
-  filter: drop-shadow(0 8px 8px rgb(0 0 0 / 0.45));
-}
-.booster-pack[data-state="exhausted"]:hover .booster-pack-body {
-  translate: none;
-  rotate: none;
-}
-.booster-pack[data-state="exhausted"] .booster-pack-foil {
-  filter: grayscale(0.85) brightness(0.5);
-  clip-path: polygon(
-    0% 9.2%,
-    6% 7.6%,
-    11% 9.6%,
-    17% 8.1%,
-    24% 10%,
-    31% 8.3%,
-    38% 9.7%,
-    46% 7.9%,
-    53% 9.5%,
-    61% 8.2%,
-    68% 10.1%,
-    76% 8.4%,
-    83% 9.6%,
-    90% 8%,
-    100% 9.3%,
-    100% 100%,
-    0% 100%
-  );
-}
-.booster-pack[data-state="exhausted"] .booster-pack-seal-top,
-.booster-pack[data-state="exhausted"] .booster-pack-cards,
-.booster-pack[data-state="exhausted"] .booster-pack-crease-tl,
-.booster-pack[data-state="exhausted"] .booster-pack-crease-tr {
-  display: none;
-}
-.booster-pack[data-state="exhausted"] .booster-pack-tear,
-.booster-pack[data-state="exhausted"] .booster-pack-crumple {
-  display: block;
-}
-.booster-pack-tear {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 12%;
-  pointer-events: none;
-  background: linear-gradient(180deg, #e2e8e4, #8a948f);
-  clip-path: polygon(
-    0% 77%,
-    6% 63%,
-    11% 80%,
-    17% 68%,
-    24% 83%,
-    31% 69%,
-    38% 81%,
-    46% 66%,
-    53% 79%,
-    61% 68%,
-    68% 84%,
-    76% 70%,
-    83% 80%,
-    90% 67%,
-    100% 78%,
-    100% 86%,
-    90% 75%,
-    83% 88%,
-    76% 78%,
-    68% 92%,
-    61% 76%,
-    53% 87%,
-    46% 74%,
-    38% 89%,
-    31% 77%,
-    24% 91%,
-    17% 76%,
-    11% 88%,
-    6% 71%,
-    0% 85%
-  );
-}
-.booster-pack-crumple {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  mix-blend-mode: soft-light;
-  background:
-    repeating-linear-gradient(
-      72deg,
-      transparent 0 9cqw,
-      rgb(255 255 255 / 0.5) 9cqw 9.5cqw,
-      rgb(0 0 0 / 0.5) 9.5cqw 10.3cqw,
-      transparent 10.3cqw 19cqw
-    ),
-    repeating-linear-gradient(
-      -64deg,
-      transparent 0 13cqw,
-      rgb(255 255 255 / 0.4) 13cqw 13.5cqw,
-      rgb(0 0 0 / 0.45) 13.5cqw 14.3cqw,
-      transparent 14.3cqw 26cqw
-    );
-}
-.booster-pack-stamp {
-  position: absolute;
-  left: 50%;
-  top: 46%;
-  translate: -50% -50%;
-  rotate: -14deg;
-  font-size: max(10px, 9cqw);
-  font-weight: 800;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  color: #e5e7eb;
-  padding: 1.6cqw 4cqw;
-  border: 0.8cqw solid #e5e7eb;
-  border-radius: 2cqw;
-  background: rgb(20 20 20 / 0.55);
-}
-.booster-pack-ground {
-  width: 84%;
-  height: 18px;
-  margin: -10px auto 0;
-  background: radial-gradient(closest-side, rgb(0 0 0 / 0.7), transparent);
-  filter: blur(2px);
-}
-.booster-pack[data-state="opening"] .booster-pack-ground {
-  background: radial-gradient(closest-side, rgb(95 199 154 / 0.55), transparent);
-}
-
-/*
- * Boutique explainer tiles: one small looping 3D scene per tile (a pack swaying inside an orbit,
- * a spinning coin with a real edge, a card flipping over to its glowing face).
- */
-.shop-explainer-stage {
-  position: relative;
-  flex-shrink: 0;
-  width: 6.5rem;
-  height: 7rem;
-  perspective: 520px;
-}
-.shop-explainer-showcase,
-.shop-explainer-coin-stage,
-.shop-explainer-cards {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  transform-style: preserve-3d;
-}
-
-.shop-explainer-pack {
-  width: 3.3rem;
-  transform-style: preserve-3d;
-  animation: shop-explainer-sway 5s ease-in-out infinite;
-}
-.shop-explainer-orbit {
-  position: absolute;
-  left: 50%;
-  top: 58%;
-  width: 6rem;
-  aspect-ratio: 1;
-  translate: -50% -50%;
-  border-radius: 50%;
-  border: 1px solid rgb(79 214 156 / 0.4);
-  box-shadow: 0 0 14px rgb(79 214 156 / 0.18);
-  animation: shop-explainer-orbit 3.5s linear infinite;
-}
-.shop-explainer-orbit-dot {
-  position: absolute;
-  left: 50%;
-  top: -4px;
-  width: 7px;
-  height: 7px;
-  margin-left: -3.5px;
-  border-radius: 50%;
-  background: var(--secondary);
-  box-shadow: 0 0 10px var(--secondary);
-}
-@keyframes shop-explainer-sway {
-  0%,
-  100% {
-    transform: rotateY(-30deg) translateY(0);
-  }
-  50% {
-    transform: rotateY(30deg) translateY(-5px);
-  }
-}
-@keyframes shop-explainer-orbit {
-  from {
-    transform: rotateX(74deg) rotateZ(0deg);
-  }
-  to {
-    transform: rotateX(74deg) rotateZ(360deg);
-  }
-}
-
-.shop-explainer-coin {
-  position: relative;
-  width: 3.9rem;
-  height: 3.9rem;
-  transform-style: preserve-3d;
-  animation:
-    shop-explainer-coin-spin 3.2s linear infinite,
-    shop-explainer-bob 3.2s ease-in-out infinite;
-}
-.shop-explainer-coin-face {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  backface-visibility: hidden;
-}
-.shop-explainer-coin-front {
-  transform: translateZ(3px);
-}
-.shop-explainer-coin-back {
-  transform: rotateY(180deg) translateZ(3px);
-}
-.shop-explainer-coin-edge {
-  position: absolute;
-  inset: 8.5%;
-  border-radius: 50%;
-  background: #b07a0e;
-  transform: translateZ(calc(var(--layer) * 1.2px));
-}
-.shop-explainer-coin-shadow {
-  position: absolute;
-  bottom: 0.6rem;
-  left: 50%;
-  width: 3.2rem;
-  height: 0.6rem;
-  margin-left: -1.6rem;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgb(0 0 0 / 0.65), transparent);
-  animation: shop-explainer-shadow 3.2s ease-in-out infinite;
-}
-@keyframes shop-explainer-coin-spin {
-  from {
-    transform: rotateY(0deg);
-  }
-  to {
-    transform: rotateY(360deg);
-  }
-}
-@keyframes shop-explainer-bob {
-  0%,
-  100% {
-    translate: 0 0;
-  }
-  50% {
-    translate: 0 -7px;
-  }
-}
-@keyframes shop-explainer-shadow {
-  0%,
-  100% {
-    scale: 1;
-    opacity: 1;
-  }
-  50% {
-    scale: 0.7;
-    opacity: 0.6;
-  }
-}
-
-.shop-explainer-card {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 3rem;
-  height: 4.5rem;
-  margin: -2.25rem 0 0 -1.5rem;
-  border-radius: 0.3rem;
-  object-fit: cover;
-  box-shadow: 0 8px 14px -4px rgb(0 0 0 / 0.6);
-}
-.shop-explainer-card-left {
-  transform: translateX(-1.2rem) translateZ(-24px) rotate(-14deg);
-  filter: brightness(0.7);
-}
-.shop-explainer-card-right {
-  transform: translateX(1.2rem) translateZ(-24px) rotate(14deg);
-  filter: brightness(0.7);
-}
-.shop-explainer-flip {
-  position: absolute;
-  inset: 0;
-  transform-style: preserve-3d;
-  animation: shop-explainer-flip 4.5s cubic-bezier(0.65, 0, 0.35, 1) infinite;
-}
-.shop-explainer-flip-back,
-.shop-explainer-flip-front {
-  backface-visibility: hidden;
-}
-.shop-explainer-flip-front {
-  display: grid;
-  place-items: center;
-  transform: rotateY(180deg);
-  color: #fbe9b7;
-  border: 1px solid rgb(228 196 110 / 0.7);
-  background: radial-gradient(120% 90% at 50% 35%, #2a6b4c 0%, #0c3424 60%, #051a11 100%);
-  box-shadow:
-    0 0 18px rgb(228 196 110 / 0.5),
-    0 8px 14px -4px rgb(0 0 0 / 0.6);
-}
-@keyframes shop-explainer-flip {
-  0%,
-  22% {
-    transform: rotateY(0deg) translateY(0);
-  }
-  42%,
-  72% {
-    transform: rotateY(180deg) translateY(-6px);
-  }
-  92%,
-  100% {
-    transform: rotateY(360deg) translateY(0);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .shop-explainer-pack,
-  .shop-explainer-orbit,
-  .shop-explainer-coin,
-  .shop-explainer-coin-shadow,
-  .shop-explainer-flip {
-    animation: none;
-  }
-  .shop-explainer-orbit {
-    transform: rotateX(74deg);
-  }
-  .shop-explainer-coin {
-    transform: rotateY(-25deg);
-  }
-}
-
 @utility bg-ink {
   background-color: var(--ink);
 }
@@ -1586,3 +309,5 @@ h6 {
 @utility text-secondary {
   color: var(--secondary);
 }
+
+

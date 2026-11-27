@@ -131,23 +131,6 @@ Autres docs utiles :
 
 ---
 
-## Branches
-
-- `main` = la **prod**. On n’y pousse jamais directement.
-- `dev` = la branche d’intégration. Chaque changement part de `dev` et y revient par une PR, avec la CI verte.
-- Mise en prod = une PR `dev` → `main`.
-
-```bash
-git switch dev && git pull
-git switch -c feat/ma-modif
-# … commits …
-gh pr create --base dev
-```
-
-Toutes les PR sont annoncées sur Discord, PR empilées comprises ; une fusion dans `main` est annoncée comme une mise en prod (`.github/workflows/discord-pr.yml`).
-
----
-
 ## Déploiement (Vercel)
 
 1. Importer le repo sur Vercel

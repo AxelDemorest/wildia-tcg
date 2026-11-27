@@ -16,33 +16,45 @@ export function compareRarity(a: CardRarity, b: CardRarity): number {
 export function rarityAccentClass(rarity: CardRarity): string {
   switch (rarity) {
     case "common":
-      return "bg-zinc-50 text-zinc-700";
+      return "border-zinc-300 bg-zinc-50 text-zinc-700";
     case "uncommon":
-      return "bg-emerald-50 text-emerald-800";
+      return "border-emerald-300 bg-emerald-50 text-emerald-800";
     case "rare":
-      return "bg-sky-50 text-sky-800";
+      return "border-sky-300 bg-sky-50 text-sky-800";
     case "epic":
-      return "bg-violet-50 text-violet-800";
+      return "border-violet-300 bg-violet-50 text-violet-800";
     case "legendary":
-      return "bg-amber-50 text-amber-900";
+      return "border-amber-400 bg-amber-50 text-amber-900";
     case "mythic":
-      return "bg-rose-50 text-rose-950";
+      return "border-rose-500 bg-rose-50 text-rose-950";
   }
 }
 
-/** How the card face catches the light: matte, fixed reflections, or a sheen on hover. */
-export type CardShine = "none" | "static" | "hover";
+/** Soft outer glow for the highest rarities; other cards keep the default shadow. */
+export function rarityGlowClass(rarity: CardRarity): string {
+  switch (rarity) {
+    case "legendary":
+      return "shadow-amber-300/60";
+    case "mythic":
+      return "shadow-rose-400/70";
+    default:
+      return "";
+  }
+}
 
-export function cardShine(rarity: CardRarity): CardShine {
+export function rarityFrameClass(rarity: CardRarity): string {
   switch (rarity) {
     case "common":
+      return "ring-zinc-200";
     case "uncommon":
-      return "none";
+      return "ring-emerald-200";
     case "rare":
+      return "ring-sky-300";
     case "epic":
-      return "static";
+      return "ring-violet-300";
     case "legendary":
+      return "ring-amber-400 shadow-amber-200/60";
     case "mythic":
-      return "hover";
+      return "ring-rose-500 shadow-rose-300/70";
   }
 }

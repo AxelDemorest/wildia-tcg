@@ -13,13 +13,11 @@
 ## Quand utiliser quoi
 
 - **Lecture catalogue** (`cards`, `card_translations`) : client anon, policies `SELECT` publiques.
-- **Inventaire** (`user_cards`) : `SELECT` own row ; `SELECT` aussi pour `anon` / `authenticated` lorsque le `profiles` du `user_id` a `is_public = true` (ADR 0002) ; écritures via RPC `grant_card` (service role) ou Server Actions.
-- **Boutique boosters** (`booster_shop_slots`) : `SELECT` own user only ; aucune policy d’écriture, les lignes sont écrites uniquement par la RPC `get_booster_shop_offer` et marquées épuisées (`opened_at`, `draw_id`) uniquement par la RPC `open_booster_shop_slot` (toutes deux `SECURITY DEFINER`).
-- **Ledger, tirages** (sprints suivants) : écritures via Server Actions + service role ou RPC `SECURITY DEFINER`, pas d’`INSERT` direct depuis le navigateur. `currency_ledger` est append-only (trigger `private.currency_ledger_append_only`), même pour le service role ; seule la suppression d’un compte efface ses lignes, en cascade depuis `auth.users`.
+- **Inventaire** (`user_cards`) : `SELECT` own user only ; écritures via RPC `grant_card` (service role) ou Server Actions.
+- **Ledger, tirages** (sprints suivants) : écritures via Server Actions + service role ou RPC `SECURITY DEFINER`, pas d’`INSERT` direct depuis le navigateur.
 - **Storage `card-art`** : lecture publique ; écriture réservée au service role.
 - **Storage `profile-banners`** : lecture publique ; upload/update/delete par l’utilisateur authentifié dans son dossier `{user_id}/`.
-- **`profiles`** : lecture own row ; lecture rows `is_public = true` pour anon/authenticated ; update own only, **et seulement sur les colonnes que l’app écrit** : `display_name`, `bio`, `is_public`, `banner_url`, `updated_at`. `last_economy_sync_at` (horloge du farm) n’est modifiable que par `sync_user_economy` : sinon un joueur pourrait la reculer et se créditer des pièces. Une nouvelle colonne modifiable par le joueur demande un `grant update (colonne) on public.profiles to authenticated` explicite.
-- **`profile_showcase_slots`** : six emplacements (`slot` 1–6) par profil, `card_id` nullable ; lecture own row et lecture des profils `is_public` pour anon/authenticated ; insert/update/delete own only. Une carte renseignée doit être possédée (`user_cards`, trigger `profile_showcase_slots_owned`). Suppression d’une ligne `user_cards` → emplacements concernés vidés via le trigger `SECURITY DEFINER` `profile_showcase_slots_clear_on_inventory_loss` (non exécutable par l’API).
+- **`profiles`** : lecture own row ; lecture rows `is_public = true` pour anon/authenticated ; update own only. Carte vitrine validée côté serveur (possession `user_cards`).
 
 Voir aussi `docs/rate-limiting.md`.
 
@@ -30,21 +28,6 @@ Voir aussi `docs/rate-limiting.md`.
 3. Pas de policy `INSERT`/`UPDATE`/`DELETE` pour `anon` si l’écriture passe par le serveur
 4. Tester avec le rôle anon dans le SQL editor Supabase
 5. Documenter les exceptions (RPC, triggers `security definer`)
-
-## Checklist nouvelle fonction SQL
-
-Toute fonction du schéma `public` est appelable par l’API (`POST /rest/v1/rpc/<nom>`) par ceux qui ont `EXECUTE`. Depuis la migration `restrict_rpc_execute`, une fonction créée par une migration n’est exécutable que par son propriétaire et le service role : les privilèges par défaut de Supabase (qui donnaient `EXECUTE` à `anon` et `authenticated` en direct) et celui de Postgres pour `PUBLIC` sont retirés.
-
-1. Si le joueur doit appeler la fonction, l’autoriser explicitement, et rien de plus :
-   ```sql
-   grant execute on function public.ma_fonction(args) to authenticated;
-   ```
-   Les triggers et les fonctions appelées depuis une fonction `SECURITY DEFINER` n’en ont pas besoin.
-2. Une fonction `SECURITY DEFINER` qui accepte un `p_user_id` doit refuser un appel sans `auth.uid()` venant d’`anon` : un visiteur n’a pas d’`auth.uid()` non plus. Le plus simple est de ne pas lui donner `EXECUTE`.
-3. `set search_path = ''` et noms qualifiés (`public.table`).
-4. Ajouter un test dans `tests/integration/rpc-access.integration.test.ts` : refusé pour un visiteur, refusé ou limité pour un joueur, accepté pour le bon appelant.
-
-Droits actuels : `grant_card`, `user_currency_balance` et `pick_weighted_rarity` → service role seulement ; `open_booster_pack` → service role seulement (la vitrine est la seule entrée joueur) ; `sync_user_economy` → joueur connecté (sur son propre compte) et service role ; `get_booster_shop_offer` et `open_booster_shop_slot` → joueur connecté seulement (sur son propre compte, via `auth.uid()`, sans paramètre de compte) ; `private.booster_shop_window`, `private.pick_shop_booster` et `private.open_booster_for` → aucun rôle de l’API (schéma `private` non exposé).
 
 ## Modèles de policies
 

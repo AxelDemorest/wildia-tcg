@@ -11,7 +11,7 @@ import {
   cardArtWebpPathForSlug,
   isCardArtWebpPath,
 } from "@/lib/cards/import/card-art-webp";
-import type { WorkEntry } from "@/lib/cards/import/work-entry";
+import { evaluateEntry, type WorkEntry } from "@/lib/cards/import/work-entry";
 import { convertImageFileToWebp } from "./lib/webp";
 import {
   entriesInSeedOrder,

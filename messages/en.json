@@ -5,14 +5,13 @@
     "navHome": "Home",
     "catalog": "Catalog",
     "boosters": "Boosters",
-    "collection": "My collection",
+    "collection": "My binder",
     "login": "Log in",
     "signup": "Sign up",
     "logout": "Log out",
     "hello": "Hello, {name}",
     "profile": "My profile",
     "ctaCatalog": "Browse catalog",
-    "heroKicker": "Welcome to Wildia",
     "heroTitle": "Collect animal cards online",
     "heroSubtitle": "Discover rare animals, open boosters, and farm coins with the cards you own.",
     "heroCtaJoin": "Create an account",
@@ -76,39 +75,7 @@
     "footerGameTitle": "Game",
     "footerDiscoverTitle": "Discover",
     "footerAccountTitle": "Account",
-    "footerCopyright": "© {year} WILDIA TCG. All rights reserved.",
-    "statsLabel": "Game statistics",
-    "statsBoostersToday": "Boosters opened today",
-    "statsPlayers": "Registered players",
-    "statsSpecies": "Species in the catalog",
-    "mainNavLabel": "Main navigation",
-    "faq": "FAQ",
-    "rules": "How to play",
-    "language": "Language",
-    "notifications": "Notifications"
-  },
-  "Chat": {
-    "title": "English chat",
-    "label": "Player chat",
-    "rarePull": "{rarity} pull",
-    "perHour": "/ h",
-    "placeholder": "Type a message…",
-    "send": "Send",
-    "m1_user": "Lynx_Nomad",
-    "m1_text": "three boosters in a row and no rare… the savanna hates me",
-    "m2_user": "mara.wild",
-    "m2_text": "the red panda looks so good in person 😍",
-    "m3_user": "Okapi42",
-    "m3_text": "anyone seen a mythic this week?",
-    "m4_user": "SelvaJo",
-    "m4_text": "gg on that pull!!",
-    "m5_user": "fennec_fan",
-    "m5_text": "tip: keep your duplicates, they farm too",
-    "m6_user": "RedIbis",
-    "m6_text": "4 species left to finish the Arctic page",
-    "m7_user": "Taiga",
-    "m7_text": "the new card back is amazing",
-    "pullUser": "Koalaa"
+    "footerCopyright": "© {year} WILDIA TCG. All rights reserved."
   },
   "Economy": {
     "currencyShort": "coins",
@@ -138,7 +105,6 @@
     "emptyBody": "Try another filter or run the development seed.",
     "errorLoad": "Could not load the catalog.",
     "backToCatalog": "Back to catalog",
-    "cardBack": "WILDIA card back",
     "stats": "Stats",
     "ownedBadge": "In your collection · ×{count}",
     "notOwnedHint": "You don't own this card yet. Farm coins or open boosters.",
@@ -179,15 +145,7 @@
     "emptyBody": "Open boosters or browse the catalog to start collecting.",
     "ctaCatalog": "Browse catalog",
     "ctaBoosters": "Open boosters",
-    "errorLoad": "Could not load your collection.",
-    "titleVisitor": "{name}'s binder",
-    "subtitleVisitor": "Species this player owns (read-only).",
-    "emptyTitleVisitor": "Empty binder",
-    "emptyBodyVisitor": "This player does not have any cards in their binder yet.",
-    "paginationLabel": "Binder pagination",
-    "paginationPrev": "Previous page",
-    "paginationNext": "Next page",
-    "paginationStatus": "Page {page} of {pageCount}"
+    "errorLoad": "Could not load your collection."
   },
   "Boosters": {
     "title": "Boosters",
@@ -196,39 +154,21 @@
     "slots": "{count} cards",
     "loginRequired": "Log in to open a booster.",
     "loginCta": "Log in",
-    "open": "Open {name}, slot {position}",
-    "openCta": "Open",
-    "exhausted": "Exhausted",
-    "countdownLabel": "New offer in",
+    "open": "Open {name}",
     "opening": "Opening…",
     "emptyBoosters": "No boosters available right now.",
     "revealTitle": "Your pulls",
     "revealNext": "Next card ({current}/{total})",
     "revealDone": "Pack opened!",
     "goCollection": "View my binder",
-    "packKicker": "Booster",
-    "explainer": {
-      "rotation": {
-        "title": "A rotating shop",
-        "body": "When the timer runs out, a new selection of boosters arrives for everyone at the same time."
-      },
-      "price": {
-        "title": "Pay with coins",
-        "body": "Your cards earn coins over time. Spend them to open the boosters in the shop."
-      },
-      "reveal": {
-        "title": "One open per slot",
-        "body": "Each slot opens only once per shop rotation. The cards you pull go straight to your binder."
-      }
-    },
     "pack": {
       "standard": {
         "name": "Standard booster",
-        "short": "Standard"
+        "description": "5 cards — balanced odds to grow your collection."
       },
       "premium": {
         "name": "Premium booster",
-        "short": "Premium"
+        "description": "5 cards — better odds for high rarities."
       }
     },
     "error": {
@@ -236,11 +176,7 @@
       "invalid": "Invalid request.",
       "insufficient_balance": "Insufficient balance. Farm more coins first.",
       "failed": "Could not open the booster.",
-      "rate_limited": "Too many opens in a short time. Try again shortly.",
-      "slot_not_found": "This slot does not exist.",
-      "slot_exhausted": "This slot has already been opened.",
-      "window_closed": "This offer has ended. A new offer is available.",
-      "booster_unavailable": "This booster is no longer available."
+      "rate_limited": "Too many opens in a short time. Try again shortly."
     }
   },
   "DevGrants": {
@@ -258,10 +194,6 @@
       "failed": "Grant failed."
     }
   },
-  "DevCards": {
-    "title": "Card chrome",
-    "subtitle": "One card per rarity, front and back. Local development only."
-  },
   "Profile": {
     "settingsTitle": "Public profile",
     "settingsSubtitle": "Bio, visibility, and showcase card on your player page.",
@@ -269,9 +201,6 @@
     "displayName": "Display name",
     "bio": "Bio",
     "featuredCard": "Showcase card",
-    "showcaseTitle": "Profile showcase",
-    "showcaseHint": "Up to six owned cards, one per slot.",
-    "showcaseSlot": "Slot {slot}",
     "featuredNone": "None",
     "isPublic": "Profile visible to everyone",
     "save": "Save",
@@ -288,43 +217,9 @@
     "editProfile": "Edit my profile",
     "localeHint": "Player's preferred locale: {locale}",
     "featuredTitle": "Showcase card",
-    "showcase": {
-      "title": "Showcase",
-      "subtitle": "Up to six species featured on this profile.",
-      "emptySlot": "Empty slot",
-      "edit": "Edit showcase"
-    },
-    "stats": {
-      "title": "Statistics",
-      "subtitle": "Collection progress (economy hidden from visitors).",
-      "sidebarLabel": "Collection summary",
-      "species": "Species",
-      "copies": "Copies",
-      "catalogPercent": "Catalog %",
-      "opens": "Opens",
-      "rarestOwned": "Rarest card owned",
-      "rarityBreakdown": "By rarity"
-    },
-    "hub": {
-      "navLabel": "Profile navigation",
-      "memberSince": "Member since {date}",
-      "binderWorld": "Binder world",
-      "binderWorldSoon": "Coming soon",
-      "tabSoonTitle": "Coming soon",
-      "tabSoonBody": "This section is coming in a future update.",
-      "privateNotice": "Your profile is private: only you can see this page.",
-      "tabs": {
-        "overview": "Overview",
-        "collection": "Collection",
-        "showcase": "Showcase",
-        "stats": "Stats",
-        "settings": "Settings"
-      }
-    },
     "error": {
       "invalid": "Invalid input.",
       "featured_not_owned": "You must own the selected showcase card.",
-      "showcase_not_owned": "You must own every card selected in the showcase.",
       "failed": "Could not save profile."
     },
     "bannerError": {

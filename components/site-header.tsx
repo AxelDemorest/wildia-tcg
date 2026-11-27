@@ -8,8 +8,6 @@ import { HeaderGuestActions } from "@/components/layout/header-guest-actions";
 import { HeaderProfile } from "@/components/layout/header-profile";
 import { HeaderProfileSkeleton } from "@/components/layout/header-profile-skeleton";
 import { SiteNavPills, type SiteNavItem } from "@/components/layout/site-nav-pills";
-import { LocaleSelect } from "@/components/locale-switcher";
-import { BellIcon, BoosterIcon, CatalogIcon, HomeIcon, ProfileIcon } from "@/components/ui/icons";
 import { Link } from "@/i18n/navigation";
 import { getUser } from "@/server/auth/require-user";
 
@@ -17,72 +15,53 @@ type Props = { locale: string };
 
 export async function SiteHeader({ locale }: Props) {
   const t = await getTranslations("Home");
-  const tLayout = await getTranslations("Layout");
   const user = await getUser();
 
   const navItems: SiteNavItem[] = [
-    { href: "/", label: t("navHome"), icon: <HomeIcon />, exact: true },
-    { href: "/cards", label: t("catalog"), icon: <CatalogIcon /> },
-    { href: "/boosters", label: t("boosters"), icon: <BoosterIcon /> },
-    ...(user ? [] : [{ href: "/login", label: t("profile"), icon: <ProfileIcon /> }]),
+    { href: "/", label: t("navHome"), exact: true },
+    { href: "/cards", label: t("catalog") },
+    { href: "/boosters", label: t("boosters") },
+    { href: "/collection", label: t("collection") },
   ];
 
   return (
-    <header className="sticky top-0 z-40 shrink-0 border-b border-border bg-background/85 backdrop-blur-md">
-      <div className="flex min-h-[4.5rem] items-center gap-4 px-4 py-2 sm:px-6 xl:gap-5">
-        <Link
-          href="/"
-          aria-label="WILDIA TCG"
-          className="flex shrink-0 items-center gap-1 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
-        >
-          <BrandLogo alt="" aria-hidden className="h-8 w-auto" />
-          <span className="hidden min-[420px]:inline">
-            <BrandWordmark className="origin-left scale-[0.82]" />
-          </span>
-        </Link>
+    <header className="shrink-0 border-0 bg-transparent">
+      <div className="relative mx-auto w-full max-w-7xl px-4 py-4 sm:px-6">
+        <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+          <Link
+            href="/"
+            aria-label="WILDIA TCG"
+            className="flex min-w-0 items-center gap-2.5 justify-self-start rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+          >
+            <BrandLogo alt="" priority aria-hidden className="h-9 w-auto sm:h-10" />
+            <span className="hidden min-[420px]:inline">
+              <BrandWordmark />
+            </span>
+          </Link>
 
-        <div className="ml-2 hidden min-w-0 lg:block">
-          <SiteNavPills items={navItems} label={tLayout("mainNavLabel")} />
-        </div>
-
-        <div className="ml-auto flex items-center gap-2.5 sm:gap-3 xl:gap-4">
-          <div className="hidden items-center gap-4 text-[11px] font-medium uppercase tracking-wider text-muted 2xl:flex">
-            <Link href="/#faq" className="transition hover:text-white">
-              {tLayout("faq")}
-            </Link>
-            <Link href="/#how-it-works" className="transition hover:text-white">
-              {tLayout("rules")}
-            </Link>
+          <div className="hidden justify-self-center md:block">
+            <SiteNavPills items={navItems} />
           </div>
 
-          <span className="hidden sm:inline-flex">
-            <LocaleSelect label={tLayout("language")} />
-          </span>
-
-          {user ? (
-            <>
-              <Suspense fallback={<HeaderCurrencyOrbSkeleton />}>
-                <HeaderCurrencyOrb userId={user.id} />
-              </Suspense>
-              <span
-                title={tLayout("notifications")}
-                aria-hidden
-                className="hidden size-9 place-items-center rounded-md border border-border text-muted sm:grid"
-              >
-                <BellIcon />
-              </span>
-              <Suspense fallback={<HeaderProfileSkeleton />}>
-                <HeaderProfile userId={user.id} locale={locale} email={user.email} />
-              </Suspense>
-            </>
-          ) : (
-            <HeaderGuestActions />
-          )}
+          <div className="flex items-center justify-end gap-2 justify-self-end sm:gap-2.5">
+            {user ? (
+              <>
+                <Suspense fallback={<HeaderCurrencyOrbSkeleton />}>
+                  <HeaderCurrencyOrb userId={user.id} />
+                </Suspense>
+                <Suspense fallback={<HeaderProfileSkeleton />}>
+                  <HeaderProfile userId={user.id} locale={locale} email={user.email} />
+                </Suspense>
+              </>
+            ) : (
+              <HeaderGuestActions />
+            )}
+          </div>
         </div>
-      </div>
 
-      <div className="px-4 pb-3 pt-0.5 sm:px-6 lg:hidden">
-        <SiteNavPills items={navItems} label={tLayout("mainNavLabel")} />
+        <div className="mt-3 flex justify-center md:hidden">
+          <SiteNavPills items={navItems} />
+        </div>
       </div>
     </header>
   );

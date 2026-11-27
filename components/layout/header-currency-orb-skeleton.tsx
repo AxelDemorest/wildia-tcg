@@ -1,3 +1,3 @@
 export function HeaderCurrencyOrbSkeleton() {
-  return <span className="inline-block h-9 w-24 animate-pulse rounded-md bg-surface" aria-hidden />;
+  return <span className="inline-block h-10 w-10 rounded-full bg-border" aria-hidden />;
 }

@@ -13,13 +13,13 @@ export default async function HomePage({ params }: Props) {
   setRequestLocale(locale);
 
   return (
-    <div className="flex flex-col gap-5">
+    <>
       <HomeHero locale={locale} />
       <HomeRecentDrawsSection locale={locale} />
       <HomeHowItWorks />
       <HomeFeatures />
       <HomeFaq />
       <HomeCta />
-    </div>
+    </>
   );
 }

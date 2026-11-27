@@ -44,22 +44,22 @@ export function rarityFromIucnStatus(status: IucnStatus): CardRarity | null {
 export function iucnAccentClass(status: IucnStatus): string {
   switch (status) {
     case "LC":
-      return "bg-emerald-50 text-emerald-800";
+      return "border-emerald-300 bg-emerald-50 text-emerald-800";
     case "NT":
-      return "bg-lime-50 text-lime-800";
+      return "border-lime-300 bg-lime-50 text-lime-800";
     case "VU":
-      return "bg-yellow-50 text-yellow-800";
+      return "border-yellow-300 bg-yellow-50 text-yellow-800";
     case "EN":
-      return "bg-orange-50 text-orange-800";
+      return "border-orange-300 bg-orange-50 text-orange-800";
     case "CR":
-      return "bg-red-50 text-red-800";
+      return "border-red-300 bg-red-50 text-red-800";
     case "EW":
-      return "bg-purple-50 text-purple-900";
+      return "border-purple-300 bg-purple-50 text-purple-900";
     case "EX":
-      return "bg-zinc-900 text-white";
+      return "border-zinc-800 bg-zinc-900 text-white";
     case "DD":
     case "NE":
-      return "bg-zinc-50 text-zinc-600";
+      return "border-zinc-300 bg-zinc-50 text-zinc-600";
   }
 }
 

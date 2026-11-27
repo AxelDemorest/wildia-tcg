@@ -5,14 +5,13 @@
     "navHome": "Accueil",
     "catalog": "Catalogue",
     "boosters": "Boosters",
-    "collection": "Ma collection",
+    "collection": "Mon classeur",
     "login": "Connexion",
     "signup": "Créer un compte",
     "logout": "Déconnexion",
     "hello": "Bonjour, {name}",
     "profile": "Mon profil",
     "ctaCatalog": "Voir le catalogue",
-    "heroKicker": "Bienvenue sur Wildia",
     "heroTitle": "Collectionnez des cartes d'animaux en ligne",
     "heroSubtitle": "Découvrez des animaux rares, ouvrez des boosters et farmez des pièces avec les cartes que vous possédez.",
     "heroCtaJoin": "Créer un compte",
@@ -76,39 +75,7 @@
     "footerGameTitle": "Jeu",
     "footerDiscoverTitle": "Découvrir",
     "footerAccountTitle": "Compte",
-    "footerCopyright": "© {year} WILDIA TCG. Tous droits réservés.",
-    "statsLabel": "Statistiques du jeu",
-    "statsBoostersToday": "Boosters ouverts aujourd’hui",
-    "statsPlayers": "Joueurs inscrits",
-    "statsSpecies": "Espèces au catalogue",
-    "mainNavLabel": "Navigation principale",
-    "faq": "FAQ",
-    "rules": "Règles du jeu",
-    "language": "Langue",
-    "notifications": "Notifications"
-  },
-  "Chat": {
-    "title": "Salon francophone",
-    "label": "Discussion des joueurs",
-    "rarePull": "Tirage {rarity}",
-    "perHour": "/ h",
-    "placeholder": "Écrire un message…",
-    "send": "Envoyer",
-    "m1_user": "Lynx_Nomade",
-    "m1_text": "trois boosters d’affilée sans rare… la savane me boude",
-    "m2_user": "mara.wild",
-    "m2_text": "le panda roux est trop beau en vrai 😍",
-    "m3_user": "Okapi42",
-    "m3_text": "quelqu’un a déjà vu un mythique cette semaine ?",
-    "m4_user": "SelvaJo",
-    "m4_text": "gg pour le tirage !!",
-    "m5_user": "fennec_fan",
-    "m5_text": "astuce : gardez vos doublons, ils farment aussi",
-    "m6_user": "Ibis.Rouge",
-    "m6_text": "il me manque 4 espèces pour finir la page Arctique",
-    "m7_user": "Taiga",
-    "m7_text": "le nouveau dos de carte est incroyable",
-    "pullUser": "Koalaa"
+    "footerCopyright": "© {year} WILDIA TCG. Tous droits réservés."
   },
   "Economy": {
     "currencyShort": "pièces",
@@ -138,7 +105,6 @@
     "emptyBody": "Essayez un autre filtre ou lancez le seed de développement.",
     "errorLoad": "Impossible de charger le catalogue.",
     "backToCatalog": "Retour au catalogue",
-    "cardBack": "Dos de carte WILDIA",
     "stats": "Statistiques",
     "ownedBadge": "Dans votre collection · ×{count}",
     "notOwnedHint": "Vous ne possédez pas encore cette carte. Farmez des pièces ou ouvrez des boosters.",
@@ -179,15 +145,7 @@
     "emptyBody": "Ouvrez des boosters ou explorez le catalogue pour commencer votre collection.",
     "ctaCatalog": "Voir le catalogue",
     "ctaBoosters": "Ouvrir des boosters",
-    "errorLoad": "Impossible de charger votre collection.",
-    "titleVisitor": "Classeur de {name}",
-    "subtitleVisitor": "Espèces possédées par ce joueur (lecture seule).",
-    "emptyTitleVisitor": "Classeur vide",
-    "emptyBodyVisitor": "Ce joueur n’a pas encore de cartes dans son classeur.",
-    "paginationLabel": "Pagination du classeur",
-    "paginationPrev": "Page précédente",
-    "paginationNext": "Page suivante",
-    "paginationStatus": "Page {page} sur {pageCount}"
+    "errorLoad": "Impossible de charger votre collection."
   },
   "Boosters": {
     "title": "Boosters",
@@ -196,39 +154,21 @@
     "slots": "{count} cartes",
     "loginRequired": "Connectez-vous pour ouvrir un booster.",
     "loginCta": "Se connecter",
-    "open": "Ouvrir {name}, emplacement {position}",
-    "openCta": "Ouvrir",
-    "exhausted": "Épuisé",
-    "countdownLabel": "Nouvelle offre dans",
+    "open": "Ouvrir {name}",
     "opening": "Ouverture…",
     "emptyBoosters": "Aucun booster disponible pour le moment.",
     "revealTitle": "Vos tirages",
     "revealNext": "Carte suivante ({current}/{total})",
     "revealDone": "Booster ouvert !",
     "goCollection": "Voir mon classeur",
-    "packKicker": "Booster",
-    "explainer": {
-      "rotation": {
-        "title": "Une vitrine qui tourne",
-        "body": "À la fin du chrono, une nouvelle sélection de boosters arrive pour tout le monde en même temps."
-      },
-      "price": {
-        "title": "Payez en pièces",
-        "body": "Vos cartes rapportent des pièces en continu. Dépensez-les pour ouvrir les boosters de la vitrine."
-      },
-      "reveal": {
-        "title": "Une ouverture par emplacement",
-        "body": "Chaque emplacement s’ouvre une seule fois par vitrine. Les cartes tirées rejoignent votre classeur."
-      }
-    },
     "pack": {
       "standard": {
         "name": "Booster standard",
-        "short": "Standard"
+        "description": "5 cartes — bon équilibre pour compléter la collection."
       },
       "premium": {
         "name": "Booster premium",
-        "short": "Premium"
+        "description": "5 cartes — meilleures chances sur les raretés élevées."
       }
     },
     "error": {
@@ -236,11 +176,7 @@
       "invalid": "Requête invalide.",
       "insufficient_balance": "Solde insuffisant. Farmez ou attendez un peu.",
       "failed": "Impossible d’ouvrir le booster.",
-      "rate_limited": "Trop d’ouvertures rapides. Réessayez dans un instant.",
-      "slot_not_found": "Cet emplacement n’existe pas.",
-      "slot_exhausted": "Cet emplacement est déjà ouvert.",
-      "window_closed": "Cette offre est terminée. Une nouvelle offre est disponible.",
-      "booster_unavailable": "Ce booster n’est plus disponible."
+      "rate_limited": "Trop d’ouvertures rapides. Réessayez dans un instant."
     }
   },
   "DevGrants": {
@@ -258,10 +194,6 @@
       "failed": "Échec de l’attribution."
     }
   },
-  "DevCards": {
-    "title": "Chrome des cartes",
-    "subtitle": "Une carte par rareté, face et dos. Réservé au développement local."
-  },
   "Profile": {
     "settingsTitle": "Profil public",
     "settingsSubtitle": "Bio, visibilité et carte vitrine affichées sur votre page joueur.",
@@ -269,9 +201,6 @@
     "displayName": "Pseudo affiché",
     "bio": "Bio",
     "featuredCard": "Carte vitrine",
-    "showcaseTitle": "Vitrine (profil)",
-    "showcaseHint": "Jusqu’à six cartes possédées, une par emplacement.",
-    "showcaseSlot": "Emplacement {slot}",
     "featuredNone": "Aucune",
     "isPublic": "Profil visible par tous",
     "save": "Enregistrer",
@@ -288,43 +217,9 @@
     "editProfile": "Modifier mon profil",
     "localeHint": "Langue préférée du joueur : {locale}",
     "featuredTitle": "Carte vitrine",
-    "showcase": {
-      "title": "Vitrine",
-      "subtitle": "Jusqu’à six espèces mises en avant sur ce profil.",
-      "emptySlot": "Emplacement vide",
-      "edit": "Modifier la vitrine"
-    },
-    "stats": {
-      "title": "Statistiques",
-      "subtitle": "Progression de collection (hors économie pour les visiteurs).",
-      "sidebarLabel": "Résumé collection",
-      "species": "Espèces",
-      "copies": "Exemplaires",
-      "catalogPercent": "% catalogue",
-      "opens": "Ouvertures",
-      "rarestOwned": "Carte la plus rare",
-      "rarityBreakdown": "Par rareté"
-    },
-    "hub": {
-      "navLabel": "Navigation du profil",
-      "memberSince": "Membre depuis {date}",
-      "binderWorld": "Monde classeur",
-      "binderWorldSoon": "Bientôt",
-      "tabSoonTitle": "Bientôt disponible",
-      "tabSoonBody": "Cette section arrive dans une prochaine mise à jour.",
-      "privateNotice": "Votre profil est privé : seul vous voyez cette page.",
-      "tabs": {
-        "overview": "Aperçu",
-        "collection": "Collection",
-        "showcase": "Vitrine",
-        "stats": "Statistiques",
-        "settings": "Paramètres"
-      }
-    },
     "error": {
       "invalid": "Données invalides.",
       "featured_not_owned": "Vous devez posséder la carte vitrine choisie.",
-      "showcase_not_owned": "Vous devez posséder chaque carte choisie dans la vitrine.",
       "failed": "Impossible d’enregistrer le profil."
     },
     "bannerError": {

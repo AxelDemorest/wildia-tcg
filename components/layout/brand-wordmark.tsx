@@ -29,7 +29,7 @@ export function BrandWordmark({ className = "", size = "md" }: Props) {
   return (
     <span
       aria-hidden
-      className={`${momoTrustDisplay.className} relative isolate inline-block pr-3 font-normal leading-none text-foreground ${sizes.root} ${className}`}
+      className={`${momoTrustDisplay.className} relative isolate inline-block pr-3 font-normal leading-none text-brand-strong ${sizes.root} ${className}`}
     >
       <span className="inline-flex items-baseline">
         <span>W</span>
@@ -38,7 +38,7 @@ export function BrandWordmark({ className = "", size = "md" }: Props) {
           alt=""
           width={girafe.width}
           height={girafe.height}
-          className={`inline-block shrink-0 object-contain object-bottom brightness-0 invert ${sizes.girafe}`}
+          className={`inline-block shrink-0 object-contain object-bottom ${sizes.girafe}`}
         />
         <span>ldia</span>
       </span>

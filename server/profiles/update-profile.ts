@@ -1,9 +1,16 @@
 import "server-only";
 
-import { updateProfileInputSchema, type UpdateProfileInput } from "@/lib/profiles/profile-form";
-import { SHOWCASE_SLOT_COUNT } from "@/lib/profiles/showcase";
+import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
-import { setShowcaseSlot } from "@/server/profiles/showcase";
+
+export const updateProfileInputSchema = z.object({
+  bio: z.string().max(500).optional().nullable(),
+  isPublic: z.boolean(),
+  featuredCardId: z.string().uuid().nullable(),
+  displayName: z.string().min(1).max(40).optional().nullable(),
+});
+
+export type UpdateProfileInput = z.infer<typeof updateProfileInputSchema>;
 
 async function userOwnsCard(userId: string, cardId: string): Promise<boolean> {
   const supabase = await createClient();
@@ -18,14 +25,16 @@ async function userOwnsCard(userId: string, cardId: string): Promise<boolean> {
   return (data?.quantity ?? 0) > 0;
 }
 
-export async function updateUserProfile(userId: string, input: UpdateProfileInput): Promise<void> {
+export async function updateUserProfile(
+  userId: string,
+  input: UpdateProfileInput,
+): Promise<void> {
   const parsed = updateProfileInputSchema.parse(input);
 
-  for (const cardId of parsed.showcaseSlots) {
-    if (!cardId) continue;
-    const owns = await userOwnsCard(userId, cardId);
+  if (parsed.featuredCardId) {
+    const owns = await userOwnsCard(userId, parsed.featuredCardId);
     if (!owns) {
-      throw new Error("showcase_not_owned");
+      throw new Error("featured_not_owned");
     }
   }
 
@@ -35,14 +44,11 @@ export async function updateUserProfile(userId: string, input: UpdateProfileInpu
     .update({
       bio: parsed.bio?.trim() || null,
       is_public: parsed.isPublic,
+      featured_card_id: parsed.featuredCardId,
       display_name: parsed.displayName?.trim() || null,
       updated_at: new Date().toISOString(),
     })
     .eq("id", userId);
 
   if (error) throw new Error(error.message);
-
-  for (let slot = 1; slot <= SHOWCASE_SLOT_COUNT; slot++) {
-    await setShowcaseSlot(userId, slot, parsed.showcaseSlots[slot - 1] ?? null);
-  }
 }
