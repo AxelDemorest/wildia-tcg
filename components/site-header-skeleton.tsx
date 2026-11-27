@@ -3,15 +3,13 @@ import { HeaderProfileSkeleton } from "@/components/layout/header-profile-skelet
 
 export function SiteHeaderSkeleton() {
   return (
-    <header className="shrink-0 border-0 bg-transparent">
-      <div className="mx-auto w-full max-w-7xl px-4 py-4 sm:px-6">
-        <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
-          <div className="h-10 w-28 rounded-lg bg-border" aria-hidden />
-          <div className="hidden h-11 w-56 rounded-full bg-border md:block" aria-hidden />
-          <div className="flex items-center justify-end gap-2.5">
-            <HeaderCurrencyOrbSkeleton />
-            <HeaderProfileSkeleton />
-          </div>
+    <header className="sticky top-0 z-40 shrink-0 border-b border-border bg-background/85 backdrop-blur-md">
+      <div className="flex min-h-[4.5rem] items-center gap-4 px-4 py-2 sm:px-6">
+        <div className="h-8 w-32 animate-pulse rounded-md bg-surface" aria-hidden />
+        <div className="ml-2 hidden h-9 w-[30rem] animate-pulse rounded-md bg-surface lg:block" aria-hidden />
+        <div className="ml-auto flex items-center gap-3">
+          <HeaderCurrencyOrbSkeleton />
+          <HeaderProfileSkeleton />
         </div>
       </div>
     </header>

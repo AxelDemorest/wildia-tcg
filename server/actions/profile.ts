@@ -2,22 +2,22 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { parseProfileForm } from "@/lib/profiles/profile-form";
 import { getUser, requireUser } from "@/server/auth/require-user";
 import { updateUserProfile } from "@/server/profiles/update-profile";
 import { uploadProfileBanner } from "@/server/profiles/upload-banner";
 
-const profileSchema = z.object({
-  locale: z.string(),
-  bio: z.string().max(500).optional(),
-  isPublic: z.enum(["true", "false"]),
-  featuredCardId: z.string().uuid().or(z.literal("")),
-  displayName: z.string().max(40).optional(),
-});
-
 export type ProfileActionState = {
   ok: boolean;
-  message?: "invalid" | "featured_not_owned" | "failed";
+  message?: "invalid" | "showcase_not_owned" | "failed";
 };
+
+function revalidatePlayerProfile(locale: string, userId: string) {
+  revalidatePath(`/${locale}/players/${userId}`);
+  revalidatePath(`/${locale}/players/${userId}/collection`);
+  revalidatePath(`/${locale}/players/${userId}/showcase`);
+  revalidatePath(`/${locale}/players/${userId}/settings`);
+}
 
 export async function saveProfileSettings(
   _prev: ProfileActionState,
@@ -28,33 +28,20 @@ export async function saveProfileSettings(
     return { ok: false, message: "failed" };
   }
 
-  const parsed = profileSchema.safeParse({
-    locale: formData.get("locale"),
-    bio: formData.get("bio") ?? "",
-    isPublic: formData.get("isPublic") === "true" ? "true" : "false",
-    featuredCardId: formData.get("featuredCardId") ?? "",
-    displayName: formData.get("displayName") ?? "",
-  });
-
-  if (!parsed.success) {
+  const localeField = z.string().safeParse(formData.get("locale"));
+  const input = parseProfileForm(formData);
+  if (!localeField.success || !input) {
     return { ok: false, message: "invalid" };
   }
-
-  const { locale, bio, isPublic, featuredCardId, displayName } = parsed.data;
+  const locale = localeField.data;
 
   try {
-    await updateUserProfile(user.id, {
-      bio: bio || null,
-      isPublic: isPublic === "true",
-      featuredCardId: featuredCardId || null,
-      displayName: displayName?.trim() || null,
-    });
-    revalidatePath(`/${locale}/settings/profile`);
-    revalidatePath(`/${locale}/players/${user.id}`);
+    await updateUserProfile(user.id, input);
+    revalidatePlayerProfile(locale, user.id);
     return { ok: true };
   } catch (e) {
-    if (e instanceof Error && e.message === "featured_not_owned") {
-      return { ok: false, message: "featured_not_owned" };
+    if (e instanceof Error && e.message === "showcase_not_owned") {
+      return { ok: false, message: "showcase_not_owned" };
     }
     return { ok: false, message: "failed" };
   }
@@ -84,8 +71,7 @@ export async function saveProfileBanner(
 
   try {
     await uploadProfileBanner(user.id, file);
-    revalidatePath(`/${parsed.data.locale}/settings/profile`);
-    revalidatePath(`/${parsed.data.locale}/players/${user.id}`);
+    revalidatePlayerProfile(parsed.data.locale, user.id);
     return { ok: true };
   } catch (e) {
     if (e instanceof Error) {

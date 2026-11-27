@@ -1,20 +1,17 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
+import { BoosterShopSlot } from "@/components/boosters/booster-shop-slot";
+import { ShopCountdown } from "@/components/boosters/shop-countdown";
 import { TradingCard } from "@/components/cards/trading-card";
 import { Button } from "@/components/ui/button";
 import { Surface } from "@/components/ui/surface";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import type { CardRarity, IucnStatus } from "@/lib/cards/types";
-import { openBooster, type OpenBoosterActionResult } from "@/server/actions/open-booster";
-
-export type BoosterShopItem = {
-  id: string;
-  slug: string;
-  costCoins: number;
-  slots: number;
-};
+import { refusalReloadsOffer } from "@/lib/boosters/open-shop-slot";
+import { shopWindowSeconds, type BoosterShopOffer } from "@/lib/boosters/shop";
+import { openShopSlot } from "@/server/actions/open-booster";
 
 export type RevealedCard = {
   cardId: string;
@@ -30,19 +27,22 @@ export type RevealedCard = {
 
 type Props = {
   locale: string;
-  boosters: BoosterShopItem[];
+  offer: BoosterShopOffer | null;
+  /** Seconds left in the offer's window, computed on the server at render. */
+  secondsLeft: number;
   isLoggedIn: boolean;
+  userId: string | null;
 };
 
-export function BoosterShop({ locale, boosters, isLoggedIn }: Props) {
+export function BoosterShop({ locale, offer, secondsLeft, isLoggedIn, userId }: Props) {
   const t = useTranslations("Boosters");
-  const [selectedId, setSelectedId] = useState(boosters[0]?.id ?? "");
+  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [revealed, setRevealed] = useState<RevealedCard[] | null>(null);
   const [revealIndex, setRevealIndex] = useState(0);
+  const [openingSlot, setOpeningSlot] = useState<number | null>(null);
+  const revealRef = useRef<HTMLHeadingElement>(null);
   const [pending, startTransition] = useTransition();
-
-  const selected = boosters.find((b) => b.id === selectedId) ?? boosters[0];
 
   const displayCards = useMemo(() => {
     if (!revealed) return [];
@@ -58,26 +58,35 @@ export function BoosterShop({ locale, boosters, isLoggedIn }: Props) {
     return Array.from(map.values());
   }, [revealed]);
 
-  function handleOpen() {
-    if (!selected || !isLoggedIn) return;
+  function handleOpen(slotIndex: number) {
+    if (!offer) return;
     setError(null);
     setRevealed(null);
     setRevealIndex(0);
 
     const formData = new FormData();
     formData.set("locale", locale);
-    formData.set("boosterId", selected.id);
+    formData.set("windowIndex", String(offer.windowIndex));
+    formData.set("slotIndex", String(slotIndex));
 
+    setOpeningSlot(slotIndex);
     startTransition(async () => {
-      const res: OpenBoosterActionResult = await openBooster(formData);
+      const res = await openShopSlot(formData);
+      setOpeningSlot(null);
       if (!res.ok) {
         setError(t(`error.${res.error}`));
+        if (refusalReloadsOffer(res.error)) router.refresh();
         return;
       }
       setRevealed(res.cards);
       setRevealIndex(0);
     });
   }
+
+  // Brings the reveal into view and into the reading order once it is on screen.
+  useEffect(() => {
+    if (revealed) revealRef.current?.focus();
+  }, [revealed]);
 
   function showNextCard() {
     if (!revealed) return;
@@ -86,61 +95,64 @@ export function BoosterShop({ locale, boosters, isLoggedIn }: Props) {
     }
   }
 
-  if (boosters.length === 0) {
+  if (!isLoggedIn) {
     return (
-      <Surface className="p-8 text-center text-sm text-muted">{t("emptyBoosters")}</Surface>
+      <Surface className="p-6 text-center">
+        <p className="text-muted">{t("loginRequired")}</p>
+        <Link
+          href="/login"
+          className="mt-4 inline-flex rounded-md bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-strong"
+        >
+          {t("loginCta")}
+        </Link>
+      </Surface>
     );
   }
 
-  return (
-    <div className="space-y-8">
-      <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2">
-        {boosters.map((booster) => (
-          <button
-            key={booster.id}
-            type="button"
-            onClick={() => setSelectedId(booster.id)}
-            className={`min-w-[min(100%,280px)] shrink-0 snap-center rounded-xl border p-4 text-left transition ${
-              selected?.id === booster.id
-                ? "border-brand bg-emerald-50 ring-2 ring-brand/30"
-                : "border-border bg-surface hover:border-zinc-300"
-            }`}
-          >
-            <p className="text-lg font-semibold text-brand-strong">
-              {t(`pack.${booster.slug}.name`)}
-            </p>
-            <p className="mt-1 text-sm text-muted">{t(`pack.${booster.slug}.description`)}</p>
-            <p className="mt-3 text-sm font-medium">
-              {t("cost", { amount: booster.costCoins })} · {t("slots", { count: booster.slots })}
-            </p>
-          </button>
-        ))}
-      </div>
+  if (!offer || offer.slots.length === 0) {
+    return <Surface className="p-8 text-center text-sm text-muted">{t("emptyBoosters")}</Surface>;
+  }
 
-      {!isLoggedIn ? (
-        <Surface className="p-6 text-center">
-          <p className="text-muted">{t("loginRequired")}</p>
-          <Link
-            href="/login"
-            className="mt-4 inline-flex rounded-md bg-brand px-4 py-2 text-sm font-medium text-white"
-          >
-            {t("loginCta")}
-          </Link>
-        </Surface>
-      ) : (
-        <div className="flex flex-wrap items-center gap-4">
-          <Button type="button" onClick={handleOpen} disabled={pending || !selected}>
-            {pending ? t("opening") : t("open", { name: t(`pack.${selected.slug}.name`) })}
-          </Button>
-          {error && (
-            <p className="text-sm text-red-600" role="alert">{error}</p>
-          )}
-        </div>
+  return (
+    <div className="space-y-5">
+      <ShopCountdown
+        secondsAtRender={secondsLeft}
+        windowIndex={offer.windowIndex}
+        windowSeconds={shopWindowSeconds(offer)}
+      />
+      {error && (
+        <p className="text-sm text-red-300" role="alert">
+          {error}
+        </p>
       )}
+      <ul className="grid w-full grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 xl:grid-cols-6">
+        {offer.slots.map((slot) => (
+          <BoosterShopSlot
+            key={slot.slotIndex}
+            slot={slot}
+            isOpening={openingSlot === slot.slotIndex}
+            disabled={pending}
+            onOpen={handleOpen}
+          />
+        ))}
+      </ul>
 
       {revealed && revealed.length > 0 && (
-        <section className="space-y-4" aria-live="polite">
-          <h2 className="text-lg font-semibold">{t("revealTitle")}</h2>
+        <section
+          className="relative isolate space-y-5 overflow-hidden rounded-lg border border-border bg-surface p-5 sm:p-6"
+          aria-live="polite"
+        >
+          <div
+            aria-hidden
+            className="absolute left-1/2 top-24 -z-10 size-80 -translate-x-1/2 rounded-full bg-brand/20 blur-3xl"
+          />
+          <h2
+            ref={revealRef}
+            tabIndex={-1}
+            className="text-lg outline-none font-bold uppercase tracking-tight"
+          >
+            {t("revealTitle")}
+          </h2>
           <div className="mx-auto max-w-xs">
             <TradingCard
               card={{
@@ -186,12 +198,14 @@ export function BoosterShop({ locale, boosters, isLoggedIn }: Props) {
                   </li>
                 ))}
               </ul>
-              <Link
-                href="/collection"
-                className="inline-flex rounded-md bg-brand px-4 py-2 text-sm font-medium text-white"
-              >
-                {t("goCollection")}
-              </Link>
+              {userId && (
+                <Link
+                  href={`/players/${userId}/collection`}
+                  className="inline-flex rounded-md bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-strong"
+                >
+                  {t("goCollection")}
+                </Link>
+              )}
             </div>
           )}
         </section>

@@ -35,6 +35,7 @@ export async function HeaderProfile({ userId, locale, email }: Props) {
       avatarAlt={label}
       logoutLabel={tHome("logout")}
       profileLabel={tHome("profile")}
+      collectionLabel={tHome("collection")}
       settingsLabel={tProfile("settingsTitle")}
     />
   );

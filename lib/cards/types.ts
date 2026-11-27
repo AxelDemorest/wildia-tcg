@@ -8,7 +8,6 @@ export const CARD_RARITIES = [
 ] as const;
 
 export type CardRarity = (typeof CARD_RARITIES)[number];
-
 /** Global IUCN Red List categories, least to most threatened, then unassessed. */
 export const IUCN_STATUSES = ["LC", "NT", "VU", "EN", "CR", "EW", "EX", "DD", "NE"] as const;
 

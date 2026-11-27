@@ -12,6 +12,9 @@
 
 # testing
 /coverage
+/test-results/
+/playwright-report/
+/blob-report/
 
 # next.js
 /.next/
@@ -41,6 +44,7 @@ yarn-error.log*
 
 # local / temp
 .cursor/
+.agents/
 .tmp-preview/
 
 # vercel

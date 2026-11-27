@@ -20,20 +20,18 @@ async function loadContestCard(locale: string): Promise<CatalogCard | null> {
 export async function ContestSection({ locale }: Props) {
   const t = await getTranslations("ComingSoon");
   const card = await loadContestCard(locale);
-  const cardName = card?.name ?? t("contestCardFallback");
-
   return (
     <section aria-labelledby="contest-title" className="mt-auto pt-10">
       <div
-        className={`relative grid gap-7 overflow-hidden rounded-[2rem] bg-[#14231a] p-6 shadow-[var(--shadow-how-card)] sm:p-8 ${card ? "xl:grid-cols-[minmax(0,1fr)_auto] xl:items-start xl:gap-10" : ""}`}
+        className={`relative grid gap-7 overflow-hidden rounded-[2rem] bg-[linear-gradient(115deg,#04211a_0%,#0b4a33_38%,#17684a_72%,#0a2a1f_100%)] p-6 sm:p-8 ${card ? "xl:grid-cols-[minmax(0,1fr)_auto] xl:items-start xl:gap-10" : ""}`}
       >
         <div
           aria-hidden
-          className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-brand/40 blur-3xl"
+          className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-brand/25 blur-3xl"
         />
         <div
           aria-hidden
-          className="pointer-events-none absolute -bottom-28 -right-20 h-80 w-80 rounded-full bg-accent/20 blur-3xl"
+          className="pointer-events-none absolute -bottom-28 -right-20 h-80 w-80 rounded-full bg-[#2fa876]/30 blur-3xl"
         />
 
         <div className="relative min-w-0 max-w-lg self-start">

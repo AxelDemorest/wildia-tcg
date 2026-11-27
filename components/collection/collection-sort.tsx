@@ -3,7 +3,8 @@
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import type { CollectionSortOption } from "@/server/inventory/queries";
+import { chipClass } from "@/components/ui/chip";
+import type { CollectionSortOption } from "@/lib/inventory/collection";
 
 const SORTS: CollectionSortOption[] = ["rarity", "name", "quantity"];
 
@@ -16,6 +17,7 @@ export function CollectionSort() {
 
   function setSort(value: CollectionSortOption) {
     const params = new URLSearchParams(searchParams.toString());
+    params.delete("page");
     if (value === "rarity") {
       params.delete("sort");
     } else {
@@ -33,7 +35,7 @@ export function CollectionSort() {
           key={sort}
           type="button"
           onClick={() => setSort(sort)}
-          className={`rounded-full border px-3 py-1 text-sm transition ${current === sort ? "border-brand bg-emerald-50 text-brand-strong" : "border-border bg-surface text-muted hover:border-zinc-300"}`}
+          className={chipClass(current === sort)}
         >
           {t(`sort.${sort}`)}
         </button>

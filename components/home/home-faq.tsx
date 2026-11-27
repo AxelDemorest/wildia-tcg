@@ -6,28 +6,31 @@ export async function HomeFaq() {
   const t = await getTranslations("Home");
 
   return (
-    <section id="faq" className="scroll-mt-4 border-t border-border/60 bg-[#f2f2f2] py-16 sm:py-24">
+    <section
+      id="faq"
+      className="scroll-mt-4 border-t border-border py-12 sm:py-16"
+    >
       <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
         <header className="text-center lg:sticky lg:top-8 lg:self-start lg:text-left">
-          <p className="text-sm font-semibold tracking-wide text-secondary sm:text-base">{t("faqKicker")}</p>
-          <h2 className="mt-3 text-balance text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-[2.75rem] md:leading-[1.15]">
+          <p className="text-xs font-semibold uppercase tracking-wider text-secondary sm:text-sm">{t("faqKicker")}</p>
+          <h2 className="mt-3 text-balance text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-4xl md:leading-[1.15]">
             {t("faqTitle")}
           </h2>
           <p className="mx-auto mt-4 max-w-md text-pretty text-base text-muted lg:mx-0">{t("faqSubtitle")}</p>
         </header>
 
-        <div className="space-y-3">
+        <div className="divide-y divide-border border-y border-border">
           {QUESTIONS.map((key) => (
             <details
               key={key}
               name="home-faq"
-              className="group rounded-2xl bg-surface shadow-[0_10px_30px_-20px_rgb(19_35_26_/_0.35)] ring-1 ring-black/[0.06] transition open:ring-brand/30"
+              className="group transition-colors hover:bg-white/[0.02] open:bg-white/[0.02]"
             >
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 rounded-2xl px-5 py-4 text-left text-base font-semibold text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand sm:px-6 sm:py-5 [&::-webkit-details-marker]:hidden">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-left text-base font-semibold text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand sm:px-6 sm:py-5 [&::-webkit-details-marker]:hidden">
                 <span>{t(`faq_${key}_q`)}</span>
                 <span
                   aria-hidden
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand transition duration-300 group-open:rotate-45 group-open:bg-brand group-open:text-white"
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-brand/10 text-secondary transition duration-300 group-open:rotate-45 group-open:bg-brand group-open:text-white"
                 >
                   <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                     <path d="M8 2v12M2 8h12" />
