@@ -84,6 +84,10 @@ _Avoid_: Résolution, feedback joueur
 Monnaie gagnée en jeu (farming, bonus) et dépensée pour ouvrir des boosters.
 _Avoid_: Crédits, gems, gold
 
+**Journal des pièces** :
+Liste, en ajout seul, de tous les mouvements de pièces d’un compte (farm, achat de booster, ajout de pièces) ; le solde d’un joueur est la somme de son journal. Le joueur lit ses propres lignes.
+_Avoid_: Ledger (libellé métier), historique (réservé aux paramètres), transactions
+
 **Multiplicateur global du farm** :
 Facteur appliqué aux pièces que rapportent toutes les cartes de tous les joueurs, réglé par le super administrateur entre 0 et 5. Il vaut au prochain calcul des pièces de chaque joueur, pour tout le temps écoulé depuis son calcul précédent.
 _Avoid_: Bonus de farm, boost, taux global
@@ -151,11 +155,15 @@ Niveau de droit d’un membre dans l’espace administration : **super administr
 _Avoid_: Role, permission (sans qualification), RBAC (jargon)
 
 **Registre des comptes inscrits** :
-Vue équipe qui recense tous les comptes joueur créés par **inscription**, en consultation seule dans le premier lot (identité affichée, dates, visibilité publique du profil).
+Vue équipe qui recense tous les comptes joueur créés par **inscription** (identité affichée, dates, visibilité publique du profil). En consultation seule, sauf pour le **super administrateur**, qui peut y faire un **ajout de pièces** à chaque compte.
 _Avoid_: Liste utilisateurs, user list, annuaire joueurs
 
+**Ajout de pièces** :
+Crédit d’un nombre entier de pièces à un compte joueur par le **super administrateur**, depuis le registre des comptes inscrits, avec un motif facultatif. Il entre au **journal des pièces** du compte ; l’auteur et le motif sont gardés à part, jamais montrés au joueur. Pas de retrait.
+_Avoid_: Ajustement (sans précision), don, cadeau
+
 **Paramètres du jeu** :
-Réglages qui valent pour tous les joueurs (multiplicateur global du farm, nombre d’emplacements de chaque offre boutique) et que seul le **super administrateur** change depuis l’espace administration ; chaque changement s’applique tout de suite.
+Réglages qui valent pour tous les joueurs (multiplicateur global du farm, nombre d’emplacements de chaque offre boutique, et pour chaque **définition de booster** : actif ou non, prix, nombre de cartes, poids dans l’offre boutique, chances par rareté) et que seul le **super administrateur** change depuis l’espace administration ; chaque changement s’applique tout de suite. Il reste toujours au moins un booster actif avec un poids boutique positif.
 _Avoid_: Config, settings (libellé métier), réglages admin
 
 **Historique des paramètres** :

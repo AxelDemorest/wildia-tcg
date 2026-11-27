@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import type { BoosterField } from "@/lib/admin/booster-values";
 import type { TeamRole } from "@/lib/auth/staff-session";
 import type { OpenShopSlotOutcome } from "@/lib/boosters/open-shop-slot";
 import en from "@/messages/en.json";
@@ -94,5 +95,58 @@ describe("Admin home role help", () => {
     };
     const help = messages.Admin?.home?.roleHelp?.[role];
     expect(typeof help === "string" && help.trim().length > 0).toBe(true);
+  });
+});
+
+// Contract: Admin.settings.boosters.fields.<field> holds the history label and the restore text
+// of each value of a booster, in both files; a rarity's chance is fields.rarity_weights.<rarity>.
+// A field added to BoosterField fails typecheck here until listed.
+const boosterFields: Record<BoosterField, true> = {
+  cost_coins: true,
+  slots: true,
+  shop_weight: true,
+  is_active: true,
+  "rarity_weights.common": true,
+  "rarity_weights.uncommon": true,
+  "rarity_weights.rare": true,
+  "rarity_weights.epic": true,
+  "rarity_weights.legendary": true,
+  "rarity_weights.mythic": true,
+};
+function messageAt(messages: unknown, path: string): unknown {
+  return path
+    .split(".")
+    .reduce<unknown>(
+      (node, key) =>
+        typeof node === "object" && node !== null
+          ? (node as Record<string, unknown>)[key]
+          : undefined,
+      messages,
+    );
+}
+
+describe("Admin booster history labels", () => {
+  it.each(
+    Object.keys(boosterFields).flatMap((field) =>
+      ["historyLabel", "restoreText"].flatMap((kind) => [
+        ["fr", field, kind],
+        ["en", field, kind],
+      ]),
+    ),
+  )("has a non-empty %s message for the booster field %s: %s", (locale, field, kind) => {
+    const messages = locale === "fr" ? fr : en;
+    const message = messageAt(messages, `Admin.settings.boosters.fields.${field}.${kind}`);
+    expect(typeof message === "string" && message.trim().length > 0).toBe(true);
+  });
+
+  it.each(
+    ["cost_coins", "slots", "shop_weight", "is_active"].flatMap((field) => [
+      ["fr", field],
+      ["en", field],
+    ]),
+  )("has a non-empty %s label for the booster field %s", (locale, field) => {
+    const messages = locale === "fr" ? fr : en;
+    const message = messageAt(messages, `Admin.settings.boosters.fields.${field}.label`);
+    expect(typeof message === "string" && message.trim().length > 0).toBe(true);
   });
 });

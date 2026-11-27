@@ -31,18 +31,20 @@ export type SettingWriteResult = { ok: true } | { ok: false; error: SettingWrite
 
 /**
  * Writes one change, then renders the page again; a failed write changes nothing, so the page is
- * not rendered again and the result says so.
+ * not rendered again and the result says so: the refusal `refusalOf` finds in the error, if any,
+ * else `failed`.
  */
-export async function writeThenRefresh(
-  write: SettingWrite,
-  deps: Pick<SaveSettingDeps, "writeSetting" | "refresh">,
-): Promise<SettingWriteResult> {
+export async function writeThenRefresh<Refusal extends string = never>(
+  write: () => Promise<void>,
+  refresh: () => void,
+  refusalOf: (error: unknown) => Refusal | null = () => null,
+): Promise<{ ok: true } | { ok: false; error: Refusal | "failed" }> {
   try {
-    await deps.writeSetting(write);
-  } catch {
-    return { ok: false, error: "failed" };
+    await write();
+  } catch (error) {
+    return { ok: false, error: refusalOf(error) ?? "failed" };
   }
-  deps.refresh();
+  refresh();
   return { ok: true };
 }
 
@@ -63,7 +65,8 @@ export async function runSaveSetting(
   if (!parsed.ok) return parsed;
 
   return writeThenRefresh(
-    { setting, value: parsed.value, authorId: session.id, restoredFrom: null },
-    deps,
+    () =>
+      deps.writeSetting({ setting, value: parsed.value, authorId: session.id, restoredFrom: null }),
+    deps.refresh,
   );
 }

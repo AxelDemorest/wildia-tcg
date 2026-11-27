@@ -84,6 +84,49 @@ export async function createPlayer(metadata?: Record<string, unknown>): Promise<
 }
 
 /**
+ * Creates an account the way Supabase Auth does for a new OAuth sign-in: the `auth.users` row
+ * is inserted with its provider already in `raw_app_meta_data` (the admin API of `createPlayer`
+ * inserts with provider `email` and merges the app metadata afterwards), with the matching
+ * `auth.identities` row. `claims` is what the provider returned (raw_user_meta_data).
+ * Returns the id and e-mail; the account is deleted by `cleanup`.
+ */
+export function createProviderAccount(
+  provider: "google" | "discord",
+  claims: Record<string, unknown>,
+): { id: string; email: string } {
+  const id = randomUUID();
+  const email = `test-${randomUUID()}@example.test`;
+  const literal = (value: unknown) => `'${JSON.stringify(value).replaceAll("'", "''")}'::jsonb`;
+  const userMetadata = { email, email_verified: true, provider_id: id, sub: id, ...claims };
+  // The id is tracked first: a failure halfway must not leave an account behind.
+  createdUsers.push(id);
+  sql(
+    `with new_user as (
+       insert into auth.users (
+         instance_id, id, aud, role, email, email_confirmed_at,
+         raw_app_meta_data, raw_user_meta_data, created_at, updated_at,
+         confirmation_token, recovery_token, email_change_token_new, email_change
+       ) values (
+         '00000000-0000-0000-0000-000000000000', '${id}', 'authenticated', 'authenticated',
+         '${email}', now(),
+         ${literal({ provider, providers: [provider] })}, ${literal(userMetadata)}, now(), now(),
+         '', '', '', ''
+       ) returning id
+     ), new_identity as (
+       insert into auth.identities (
+         id, provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at
+       ) values (
+         gen_random_uuid(), '${id}', '${id}', ${literal(userMetadata)}, '${provider}',
+         now(), now(), now()
+       ) returning id
+     )
+     select (select count(*) from new_user)::int as users,
+            (select count(*) from new_identity)::int as identities`,
+  );
+  return { id, email };
+}
+
+/**
  * Creates a confirmed account that never signed in (`last_sign_in_at` null), like a sign-up
  * whose owner never came back. `metadata` is the sign-up metadata, e.g. display_name or locale.
  * Returns the id, e-mail and password, without a client.
@@ -258,13 +301,18 @@ export async function setEconomyConfigValue(key: string, value: number): Promise
   if (error) throw error;
 }
 
-/** The id, cost, card count and shop weight of a real booster définition, by slug. */
-export async function boosterBySlug(
-  slug: string,
-): Promise<{ id: string; costCoins: number; slots: number; shopWeight: number }> {
+/** The id, cost, card count, shop weight, active flag and rarity chances of a booster définition, by slug. */
+export async function boosterBySlug(slug: string): Promise<{
+  id: string;
+  costCoins: number;
+  slots: number;
+  shopWeight: number;
+  isActive: boolean;
+  rarityWeights: Record<string, number>;
+}> {
   const { data, error } = await admin
     .from("booster_definitions")
-    .select("id, cost_coins, slots, shop_weight")
+    .select("id, cost_coins, slots, shop_weight, is_active, rarity_weights")
     .eq("slug", slug)
     .single();
   if (error) throw error;
@@ -273,7 +321,79 @@ export async function boosterBySlug(
     costCoins: Number(data.cost_coins),
     slots: Number(data.slots),
     shopWeight: Number(data.shop_weight),
+    isActive: data.is_active,
+    rarityWeights: data.rarity_weights as Record<string, number>,
   };
+}
+
+/** The slug of a booster définition, by id (a test booster's slug is generated). */
+export async function boosterSlugOf(id: string): Promise<string> {
+  const { data, error } = await admin
+    .from("booster_definitions")
+    .select("slug")
+    .eq("id", id)
+    .single();
+  if (error) throw error;
+  return data.slug;
+}
+
+/**
+ * Sets values of a booster définition straight in the table, through the service role and
+ * without any history row: to arrange a test, and to put a real booster back afterwards.
+ */
+export async function setBoosterDefinition(
+  slug: string,
+  values: {
+    costCoins?: number;
+    slots?: number;
+    shopWeight?: number;
+    isActive?: boolean;
+    rarityWeights?: Record<string, number>;
+  },
+): Promise<void> {
+  const { error } = await admin
+    .from("booster_definitions")
+    .update({
+      ...(values.costCoins === undefined ? {} : { cost_coins: values.costCoins }),
+      ...(values.slots === undefined ? {} : { slots: values.slots }),
+      ...(values.shopWeight === undefined ? {} : { shop_weight: values.shopWeight }),
+      ...(values.isActive === undefined ? {} : { is_active: values.isActive }),
+      ...(values.rarityWeights === undefined ? {} : { rarity_weights: values.rarityWeights }),
+    })
+    .eq("slug", slug);
+  if (error) throw error;
+}
+
+/**
+ * Runs `run` with `slug` as the only booster the boutique can offer: every other définition gets a
+ * shop weight of 0, straight in the table. Their weights are put back afterwards, even when `run`
+ * throws (the weights are global: the other test files rely on them).
+ */
+export async function withOnlyShopBooster<T>(slug: string, run: () => Promise<T>): Promise<T> {
+  const { data, error } = await admin.from("booster_definitions").select("id, slug, shop_weight");
+  if (error) throw error;
+  const others = (data ?? []).filter((row) => row.slug !== slug);
+  try {
+    for (const row of others) {
+      const { error: zeroError } = await admin
+        .from("booster_definitions")
+        .update({ shop_weight: 0 })
+        .eq("id", row.id);
+      if (zeroError) throw zeroError;
+    }
+    return await run();
+  } finally {
+    // Every restore is tried; a failed one is thrown so the weights never stay at 0 silently.
+    let restoreError: Error | null = null;
+    for (const row of others) {
+      const { error: restoreFailure } = await admin
+        .from("booster_definitions")
+        .update({ shop_weight: Number(row.shop_weight) })
+        .eq("id", row.id);
+      if (restoreFailure) restoreError ??= restoreFailure;
+    }
+    if (restoreError) throw restoreError;
+  }
 }
 
 export type ShopSlotRow = { window_index: number; slot_index: number; booster_id: string };
@@ -386,6 +506,40 @@ export type LedgerRow = {
   reference_id: string | null;
   metadata: Record<string, unknown>;
 };
+
+export type CoinGrantRow = {
+  id: string;
+  user_id: string;
+  amount: number;
+  reason: string | null;
+  author_id: string | null;
+  created_at: string;
+};
+
+/**
+ * The coin grants an author made (admin_coin_grants, CYR-118), oldest first. They go with their
+ * target's account, so cleanup() needs no step of its own.
+ */
+export async function coinGrantsBy(authorId: string): Promise<CoinGrantRow[]> {
+  const { data, error } = await admin
+    .from("admin_coin_grants")
+    .select("id, user_id, amount, reason, author_id, created_at")
+    .eq("author_id", authorId)
+    .order("created_at");
+  if (error) throw error;
+  return data as CoinGrantRow[];
+}
+
+/** The coin grants an account received (admin_coin_grants), oldest first, whoever the author. */
+export async function coinGrantsOf(userId: string): Promise<CoinGrantRow[]> {
+  const { data, error } = await admin
+    .from("admin_coin_grants")
+    .select("id, user_id, amount, reason, author_id, created_at")
+    .eq("user_id", userId)
+    .order("created_at");
+  if (error) throw error;
+  return data as CoinGrantRow[];
+}
 
 /** The player's coin movements, oldest first, optionally of one type only. */
 export async function ledgerOf(userId: string, type?: string): Promise<LedgerRow[]> {

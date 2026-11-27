@@ -1,8 +1,16 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import {
+  BoosterSettingsCard,
+  type BoosterRefusals,
+} from "@/components/admin/booster-settings-card";
 import { SettingCard } from "@/components/admin/setting-card";
 import { SettingsHistory } from "@/components/admin/settings-history";
+import { boosterName } from "@/lib/admin/booster-name";
+import { formatShare, rarityTotal, slotShares } from "@/lib/admin/booster-shares";
+import { byRarity } from "@/lib/admin/booster-values";
+import { formatCount } from "@/lib/admin/format-count";
 import {
   SETTING_RULES,
   SETTINGS_ROLE,
@@ -25,9 +33,11 @@ export default async function AdminSettingsPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
   const session = await requireStaff(locale, `/${locale}/admin/settings`, SETTINGS_ROLE);
-  const [settings, t] = await Promise.all([
+  const [settings, t, tPack, tRarity] = await Promise.all([
     loadSettings(session),
     getTranslations("Admin.settings"),
+    getTranslations("Boosters.pack"),
+    getTranslations("Catalog.rarity"),
   ]);
   // requireStaff has already sent any other rôle d’équipe away: the same outcome if one got here.
   if (settings.kind === "forbidden") redirect(`/${locale}/admin`);
@@ -48,7 +58,8 @@ export default async function AdminSettingsPage({ params }: Props) {
     );
   }
 
-  const { values, history } = settings;
+  const { values, boosters, history } = settings;
+  const appLocale = knownLocaleOrDefault(locale);
   const slotsOutOfRange = t("fields.booster_shop_slot_count.outOfRange");
   const valueErrors: Record<EditableSetting, Record<SettingValueError, string>> = {
     farm_global_multiplier: {
@@ -59,6 +70,26 @@ export default async function AdminSettingsPage({ params }: Props) {
     booster_shop_slot_count: { out_of_range: slotsOutOfRange, too_precise: slotsOutOfRange },
   };
   const labels = { save: t("save"), saved: t("saved"), failed: t("saveFailed") };
+  const boosterLabels = {
+    ...labels,
+    active: t("boosters.fields.is_active.label"),
+    price: t("boosters.fields.cost_coins.label"),
+    coins: t("boosters.fields.cost_coins.unit"),
+    slots: t("boosters.fields.slots.label"),
+    shopWeight: t("boosters.fields.shop_weight.label"),
+    chances: t("boosters.chances"),
+    rarities: byRarity((rarity) => tRarity(rarity)),
+  };
+  const boosterRefusals: BoosterRefusals = {
+    costCoins: t("boosters.fields.cost_coins.outOfRange"),
+    slots: t("boosters.fields.slots.outOfRange"),
+    shopWeight: t("boosters.fields.shop_weight.outOfRange"),
+    chance: t("boosters.chanceOutOfRange"),
+    noPositiveChance: t("boosters.noPositiveChance"),
+    noAvailableBooster: t("boosters.noAvailableBooster"),
+  };
+  // Like each card's total and chance shares, from the saved values: they follow "Enregistrer".
+  const shares = slotShares(boosters, appLocale);
   const multiplier = SETTING_RULES.farm_global_multiplier;
   const slots = SETTING_RULES.booster_shop_slot_count;
 
@@ -95,11 +126,40 @@ export default async function AdminSettingsPage({ params }: Props) {
         />
       </div>
 
+      <section className="flex flex-col gap-4">
+        <div className="flex flex-col gap-1">
+          <h2 className="text-xl/7 font-semibold text-admin-ink">{t("boosters.title")}</h2>
+          <p className="text-admin-muted">{t("boosters.intro")}</p>
+        </div>
+        {/* One card per booster définition, side by side while each has 480 px. */}
+        <div className="flex flex-wrap gap-4">
+          {boosters.map((booster) => {
+            const total = rarityTotal(booster.rarityWeights);
+            return (
+              <BoosterSettingsCard
+                key={booster.slug}
+                booster={booster}
+                name={boosterName(booster.slug, tPack)}
+                slotShare={t("boosters.slotShare", { share: shares[booster.slug] })}
+                chanceShares={byRarity((rarity) =>
+                  formatShare(booster.rarityWeights[rarity], total, appLocale),
+                )}
+                chancesTotal={t("boosters.chancesTotal", { total: formatCount(total, appLocale) })}
+                labels={boosterLabels}
+                refusals={boosterRefusals}
+              />
+            );
+          })}
+        </div>
+      </section>
+
       <SettingsHistory
         changes={history}
         values={values}
+        boosters={boosters}
         valueErrors={valueErrors}
-        locale={knownLocaleOrDefault(locale)}
+        boosterRefusals={boosterRefusals}
+        locale={appLocale}
       />
     </>
   );

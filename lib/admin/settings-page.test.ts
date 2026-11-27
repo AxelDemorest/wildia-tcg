@@ -34,8 +34,42 @@ const rows: SettingChangeRecord[] = [
   },
 ];
 
+// A booster définition as the page shows it, in the order the server reads them (sort_order).
+const boosters = [
+  {
+    slug: "standard",
+    costCoins: 150,
+    slots: 5,
+    shopWeight: 70,
+    isActive: true,
+    rarityWeights: { common: 70, uncommon: 20, rare: 8, epic: 2, legendary: 0, mythic: 0 },
+  },
+  {
+    slug: "premium",
+    costCoins: 500,
+    slots: 5,
+    shopWeight: 30,
+    isActive: false,
+    rarityWeights: { common: 0, uncommon: 40, rare: 40, epic: 15, legendary: 5, mythic: 0 },
+  },
+];
+
+// A history row of a booster, as the table holds it: the slug is the target.
+const boosterRow: SettingChangeRecord = {
+  id: 13,
+  scope: "booster_definition",
+  target: "premium",
+  field: "cost_coins",
+  old_value: 450,
+  new_value: 500,
+  author_id: "user-1",
+  changed_at: "2026-11-25T08:00:00+00:00",
+  restored_from: null,
+};
+
 function deps() {
   return {
+    readBoosters: vi.fn(async () => boosters),
     readValues: vi.fn(async () => ({ farm_global_multiplier: 1.2, booster_shop_slot_count: 6 })),
     readHistory: vi.fn(async () => rows),
     readAuthorNames: vi.fn(
@@ -64,6 +98,7 @@ describe("runLoadSettings", () => {
     expect(result).toEqual({
       kind: "loaded",
       values: { farm_global_multiplier: 1.2, booster_shop_slot_count: 6 },
+      boosters,
       history: [
         {
           id: 12,
@@ -87,6 +122,41 @@ describe("runLoadSettings", () => {
     });
   });
 
+  it("returns the history rows of the boosters with their slug, field, Avant and Après", async () => {
+    const d = deps();
+    d.readHistory.mockResolvedValue([
+      boosterRow,
+      { ...boosterRow, id: 14, field: "is_active", old_value: true, new_value: false },
+      rows[1],
+    ]);
+
+    const result = await runLoadSettings(superAdmin, d);
+
+    expect(result.kind).toBe("loaded");
+    if (result.kind !== "loaded") return;
+    expect(result.history).toEqual([
+      {
+        id: 13,
+        booster: { slug: "premium", field: "cost_coins" },
+        before: 450,
+        after: 500,
+        author: { kind: "member", name: "Chef E2E" },
+        changedAt: "2026-11-25T08:00:00+00:00",
+        isRestore: false,
+      },
+      {
+        id: 14,
+        booster: { slug: "premium", field: "is_active" },
+        before: true,
+        after: false,
+        author: { kind: "member", name: "Chef E2E" },
+        changedAt: "2026-11-25T08:00:00+00:00",
+        isRestore: false,
+      },
+      expect.objectContaining({ id: 11, setting: "booster_shop_slot_count" }),
+    ]);
+  });
+
   it("answers forbidden to a moderator, reading nothing", async () => {
     const d = deps();
 
@@ -94,6 +164,7 @@ describe("runLoadSettings", () => {
 
     expect(result).toEqual({ kind: "forbidden" });
     expect(d.readValues).not.toHaveBeenCalled();
+    expect(d.readBoosters).not.toHaveBeenCalled();
     expect(d.readHistory).not.toHaveBeenCalled();
     expect(d.readAuthorNames).not.toHaveBeenCalled();
   });
@@ -139,11 +210,7 @@ describe("runLoadSettings", () => {
     const result = await runLoadSettings(superAdmin, d);
 
     expect(d.readAuthorNames).not.toHaveBeenCalled();
-    expect(result).toEqual({
-      kind: "loaded",
-      values: { farm_global_multiplier: 1.2, booster_shop_slot_count: 6 },
-      history: [],
-    });
+    expect(result).toMatchObject({ kind: "loaded", history: [] });
   });
 
   it("shows a member without a display name when the names map lacks the author", async () => {
@@ -160,7 +227,7 @@ describe("runLoadSettings", () => {
     ]);
   });
 
-  it.each(["readValues", "readAuthorNames"] as const)(
+  it.each(["readValues", "readBoosters", "readAuthorNames"] as const)(
     "answers failed when %s rejects",
     async (name) => {
       const d = deps();

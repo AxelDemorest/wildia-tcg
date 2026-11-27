@@ -7,6 +7,7 @@ import {
 } from "@/components/admin/admin-icons";
 import { AdminNav, type AdminNavItem } from "@/components/admin/admin-nav";
 import { idleSidebarEntry, topBarIconButton } from "@/components/admin/admin-nav-styles";
+import { AdminNotifications } from "@/components/admin/admin-notifications";
 import { AdminSignOut } from "@/components/admin/admin-sign-out";
 import { BrandLogo } from "@/components/layout/brand-logo";
 import { Link } from "@/i18n/navigation";
@@ -109,7 +110,9 @@ export async function AdminShell({ locale, session, children }: Props) {
       </header>
 
       <main className="min-w-0 flex-1 px-4 pt-5 pb-8 lg:px-10 lg:pt-8 lg:pb-12">
-        <div className="mx-auto flex max-w-[1120px] flex-col gap-4 lg:gap-6">{children}</div>
+        <div className="mx-auto flex max-w-[1120px] flex-col gap-4 lg:gap-6">
+          <AdminNotifications>{children}</AdminNotifications>
+        </div>
       </main>
     </div>
   );

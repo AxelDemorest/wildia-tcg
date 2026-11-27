@@ -1,8 +1,16 @@
 import { getTranslations } from "next-intl/server";
+import type { BoosterRefusals } from "@/components/admin/booster-settings-card";
 import { RestoreSettingButton } from "@/components/admin/restore-setting-button";
 import type { AppLocale } from "@/i18n/routing";
 import { formatAdminDateTime } from "@/lib/admin/admin-dates";
+import { boosterName } from "@/lib/admin/booster-name";
+import {
+  boosterFieldValues,
+  type BoosterField,
+  type BoosterSettings,
+} from "@/lib/admin/booster-values";
 import { formatCount } from "@/lib/admin/format-count";
+import type { RestoreError } from "@/lib/admin/restore-setting";
 import type { EditableSetting, SettingValueError } from "@/lib/admin/setting-values";
 import {
   SETTINGS_HISTORY_LIMIT,
@@ -14,10 +22,30 @@ type Props = {
   changes: SettingChange[];
   /** The current value of each setting: a restore dialog says what it changes from. */
   values: Record<EditableSetting, number>;
+  /** The booster définitions, with the current values of a booster row's restore dialog. */
+  boosters: BoosterSettings[];
   /** What a restore dialog says when a row's Avant is refused, for each setting. */
   valueErrors: Record<EditableSetting, Record<SettingValueError, string>>;
+  /** What a booster row's restore dialog says when the server refuses its value. */
+  boosterRefusals: BoosterRefusals;
   locale: AppLocale;
 };
+
+/** A row's setting as the table names it, and its restore dialog's text and messages. */
+type RowDescription = {
+  label: string;
+  /** None for a booster no longer defined: there is nothing to put the value back into. */
+  restore?: { text: React.ReactNode; refusals: Partial<Record<RestoreError, string>> };
+};
+
+/** The message of a booster row whose Avant is out of its field's bounds; a flag has none. */
+function outOfRangeMessage(field: BoosterField, refusals: BoosterRefusals): string | undefined {
+  if (field === "is_active") return undefined;
+  if (field === "cost_coins") return refusals.costCoins;
+  if (field === "slots") return refusals.slots;
+  if (field === "shop_weight") return refusals.shopWeight;
+  return refusals.chance;
+}
 
 const TITLE_ID = "settings-history-title";
 
@@ -28,13 +56,21 @@ const cell =
 
 /**
  * The historique des paramètres under the cards: the latest changes, newest first, with dates in
- * Paris time and values written for the locale, each with its "Restaurer" button. It scrolls
- * sideways when narrower than 820 px.
+ * Paris time and values written for the locale, each with its "Restaurer" button (none for a
+ * booster no longer defined). It scrolls sideways when narrower than 820 px.
  */
-export async function SettingsHistory({ changes, values, valueErrors, locale }: Props) {
-  const [t, tAdmin] = await Promise.all([
+export async function SettingsHistory({
+  changes,
+  values,
+  boosters,
+  valueErrors,
+  boosterRefusals,
+  locale,
+}: Props) {
+  const [t, tAdmin, tPack] = await Promise.all([
     getTranslations("Admin.settings"),
     getTranslations("Admin"),
+    getTranslations("Boosters.pack"),
   ]);
   const authorName = (author: SettingChangeAuthor) =>
     author.kind === "deleted"
@@ -43,6 +79,46 @@ export async function SettingsHistory({ changes, values, valueErrors, locale }: 
   const strong = (chunks: React.ReactNode) => (
     <strong className="font-semibold text-admin-ink">{chunks}</strong>
   );
+  const formatValue = (value: number | boolean) =>
+    typeof value === "boolean"
+      ? t(value ? "history.yes" : "history.no")
+      : formatCount(value, locale);
+
+  const describe = (change: SettingChange, before: string): RowDescription => {
+    if ("setting" in change) {
+      const { setting } = change;
+      return {
+        label: t(`fields.${setting}.label`),
+        restore: {
+          text: t.rich(`fields.${setting}.restoreText`, {
+            from: formatCount(values[setting], locale),
+            to: before,
+            strong,
+          }),
+          refusals: valueErrors[setting],
+        },
+      };
+    }
+    const { slug, field } = change.booster;
+    const booster = boosterName(slug, tPack);
+    const current = boosters.find((candidate) => candidate.slug === slug);
+    return {
+      label: t(`boosters.fields.${field}.historyLabel`, { booster }),
+      restore: current && {
+        text: t.rich(`boosters.fields.${field}.restoreText`, {
+          booster,
+          from: formatValue(boosterFieldValues(current)[field]),
+          to: before,
+          strong,
+        }),
+        refusals: {
+          out_of_range: outOfRangeMessage(field, boosterRefusals),
+          no_available_booster: boosterRefusals.noAvailableBooster,
+          no_positive_chance: boosterRefusals.noPositiveChance,
+        },
+      },
+    };
+  };
 
   return (
     <section className="overflow-hidden rounded-xl border border-admin-line bg-white">
@@ -88,8 +164,8 @@ export async function SettingsHistory({ changes, values, valueErrors, locale }: 
               </tr>
             )}
             {changes.map((change) => {
-              const setting = t(`fields.${change.setting}.label`);
-              const before = formatCount(change.before, locale);
+              const before = formatValue(change.before);
+              const { label: setting, restore } = describe(change, before);
               return (
                 <tr key={change.id} className="group">
                   <td className={`${cell} pl-6 text-admin-text tabular-nums`}>
@@ -108,29 +184,27 @@ export async function SettingsHistory({ changes, values, valueErrors, locale }: 
                   </td>
                   <td className={`${cell} text-right text-admin-muted tabular-nums`}>{before}</td>
                   <td className={`${cell} text-right font-medium text-admin-ink tabular-nums`}>
-                    {formatCount(change.after, locale)}
+                    {formatValue(change.after)}
                   </td>
                   <td className={`${cell} pr-6 text-right`}>
-                    <RestoreSettingButton
-                      changeId={change.id}
-                      text={t.rich(`fields.${change.setting}.restoreText`, {
-                        from: formatCount(values[change.setting], locale),
-                        to: before,
-                        strong,
-                      })}
-                      labels={{
-                        restoreText: t("history.restoreText"),
-                        restoreAccessibleName: t("history.restoreAccessibleName", {
-                          setting,
-                          value: before,
-                        }),
-                        title: t("restoreDialog.title"),
-                        cancel: t("restoreDialog.cancel"),
-                        confirm: t("restoreDialog.confirm"),
-                        failed: t("restoreFailed"),
-                      }}
-                      valueErrors={valueErrors[change.setting]}
-                    />
+                    {restore && (
+                      <RestoreSettingButton
+                        changeId={change.id}
+                        text={restore.text}
+                        labels={{
+                          restoreText: t("history.restoreText"),
+                          restoreAccessibleName: t("history.restoreAccessibleName", {
+                            setting,
+                            value: before,
+                          }),
+                          title: t("restoreDialog.title"),
+                          cancel: t("restoreDialog.cancel"),
+                          confirm: t("restoreDialog.confirm"),
+                          failed: t("restoreFailed"),
+                        }}
+                        refusals={restore.refusals}
+                      />
+                    )}
                   </td>
                 </tr>
               );

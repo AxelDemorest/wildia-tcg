@@ -13,6 +13,7 @@ const rpcRows = [
     last_sign_in_at: "2026-11-22T08:00:00+00:00",
     locale: "fr",
     is_public: true,
+    balance: "1250.0000",
   },
   {
     id: "a-1",
@@ -22,6 +23,7 @@ const rpcRows = [
     last_sign_in_at: null,
     locale: "en",
     is_public: false,
+    balance: "0.0000",
   },
 ];
 
@@ -65,6 +67,7 @@ describe("runListAccounts", () => {
         lastSignInAt: "2026-11-22T08:00:00+00:00",
         locale: "fr",
         isPublic: true,
+        balance: 1250,
       },
       {
         id: "a-1",
@@ -74,6 +77,7 @@ describe("runListAccounts", () => {
         lastSignInAt: null,
         locale: "en",
         isPublic: false,
+        balance: 0,
       },
     ]);
   });
