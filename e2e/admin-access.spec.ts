@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Page } from "./fixtures";
 import { addTeamMember, cleanup, createPlayer, type Player } from "../tests/integration/supabase";
 
 test.afterAll(cleanup);

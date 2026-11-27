@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./fixtures";
 
 test.describe("language in the address", () => {
   test("the home page without a language goes to French", async ({ page }) => {
