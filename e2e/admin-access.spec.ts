@@ -164,5 +164,5 @@ test("a team member leaves the admin for the site and gets the dark canvas back"
   await page.getByRole("link", { name: "Retour au site" }).click();
   await expect(page).toHaveURL(/\/fr$/, { timeout: 20_000 });
   await expect(siteNav(page)).toBeVisible();
-  await expect(page.locator("html")).toHaveCSS("background-color", "rgb(20, 20, 20)");
+  await expect(page.locator("html")).toHaveCSS("background-color", "rgb(11, 13, 12)");
 });

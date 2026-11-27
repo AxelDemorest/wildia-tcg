@@ -177,7 +177,7 @@ test("a super administrator sees the home in English", async ({ page }) => {
   const badge = role.getByText("Super administrator", { exact: true });
   await expect(badge).toBeVisible();
   await expect(badge).toHaveCSS("background-color", "rgb(231, 242, 236)");
-  await expect(badge).toHaveCSS("color", "rgb(23, 98, 63)");
+  await expect(badge).toHaveCSS("color", "rgb(20, 100, 67)");
   await expect(
     role.getByText("You can see account e-mails. Team roles are managed outside the app for now."),
   ).toBeVisible();
