@@ -5,7 +5,7 @@
     "navHome": "Home",
     "catalog": "Catalog",
     "boosters": "Boosters",
-    "collection": "My binder",
+    "collection": "My collection",
     "login": "Log in",
     "signup": "Sign up",
     "logout": "Log out",
@@ -191,7 +191,15 @@
     "emptyBody": "Open boosters or browse the catalog to start collecting.",
     "ctaCatalog": "Browse catalog",
     "ctaBoosters": "Open boosters",
-    "errorLoad": "Could not load your collection."
+    "errorLoad": "Could not load your collection.",
+    "titleVisitor": "{name}'s binder",
+    "subtitleVisitor": "Species this player owns (read-only).",
+    "emptyTitleVisitor": "Empty binder",
+    "emptyBodyVisitor": "This player does not have any cards in their binder yet.",
+    "paginationLabel": "Binder pagination",
+    "paginationPrev": "Previous page",
+    "paginationNext": "Next page",
+    "paginationStatus": "Page {page} of {pageCount}"
   },
   "Boosters": {
     "title": "Boosters",
@@ -226,6 +234,20 @@
       "load-failed": "Couldn’t show the opening, your cards are in your binder."
     },
     "packKicker": "Booster",
+    "explainer": {
+      "rotation": {
+        "title": "A rotating shop",
+        "body": "When the timer runs out, a new selection of boosters arrives for everyone at the same time."
+      },
+      "price": {
+        "title": "Pay with coins",
+        "body": "Your cards earn coins over time. Spend them to open the boosters in the shop."
+      },
+      "reveal": {
+        "title": "One open per slot",
+        "body": "Each slot opens only once per shop rotation. The cards you pull go straight to your binder."
+      }
+    },
     "pack": {
       "standard": {
         "name": "Standard booster",
@@ -274,6 +296,9 @@
     "displayName": "Display name",
     "bio": "Bio",
     "featuredCard": "Showcase card",
+    "showcaseTitle": "Profile showcase",
+    "showcaseHint": "Up to six owned cards, one per slot.",
+    "showcaseSlot": "Slot {slot}",
     "featuredNone": "None",
     "isPublic": "Profile visible to everyone",
     "save": "Save",
@@ -290,9 +315,43 @@
     "editProfile": "Edit my profile",
     "localeHint": "Player's preferred locale: {locale}",
     "featuredTitle": "Showcase card",
+    "showcase": {
+      "title": "Showcase",
+      "subtitle": "Up to six species featured on this profile.",
+      "emptySlot": "Empty slot",
+      "edit": "Edit showcase"
+    },
+    "stats": {
+      "title": "Statistics",
+      "subtitle": "Collection progress (economy hidden from visitors).",
+      "sidebarLabel": "Collection summary",
+      "species": "Species",
+      "copies": "Copies",
+      "catalogPercent": "Catalog %",
+      "opens": "Opens",
+      "rarestOwned": "Rarest card owned",
+      "rarityBreakdown": "By rarity"
+    },
+    "hub": {
+      "navLabel": "Profile navigation",
+      "memberSince": "Member since {date}",
+      "binderWorld": "Binder world",
+      "binderWorldSoon": "Coming soon",
+      "tabSoonTitle": "Coming soon",
+      "tabSoonBody": "This section is coming in a future update.",
+      "privateNotice": "Your profile is private: only you can see this page.",
+      "tabs": {
+        "overview": "Overview",
+        "collection": "Collection",
+        "showcase": "Showcase",
+        "stats": "Stats",
+        "settings": "Settings"
+      }
+    },
     "error": {
       "invalid": "Invalid input.",
       "featured_not_owned": "You must own the selected showcase card.",
+      "showcase_not_owned": "You must own every card selected in the showcase.",
       "failed": "Could not save profile."
     },
     "bannerError": {

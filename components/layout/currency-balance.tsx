@@ -17,7 +17,7 @@ export async function CurrencyBalance({ userId }: Props) {
 
   return (
     <span
-      className="inline-flex items-center gap-1 rounded-xl bg-amber-300/10 px-2.5 py-0.5 text-sm font-semibold text-amber-300 ring-1 ring-amber-300/25"
+      className="inline-flex items-center gap-1 rounded-md bg-amber-300/10 px-2.5 py-0.5 text-sm font-semibold text-amber-300"
       title={t("balanceTitle")}
     >
       <span aria-hidden>🪙</span>

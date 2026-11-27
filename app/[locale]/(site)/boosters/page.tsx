@@ -1,5 +1,6 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { BoosterShop } from "@/components/boosters/booster-shop";
+import { ShopExplainer } from "@/components/boosters/shop-explainer";
 import { PageHeader } from "@/components/ui/page-header";
 import { getUser } from "@/server/auth/require-user";
 import { getBoosterShopOffer } from "@/server/boosters/shop";
@@ -23,11 +24,13 @@ export default async function BoostersPage({ params }: Props) {
   return (
     <div className="flex w-full flex-col gap-5">
       <PageHeader title={t("title")} subtitle={t("subtitle")} />
+      <ShopExplainer />
       <BoosterShop
         locale={locale}
         offer={offer}
         secondsLeft={secondsLeft}
         isLoggedIn={Boolean(user)}
+        userId={user?.id ?? null}
       />
     </div>
   );

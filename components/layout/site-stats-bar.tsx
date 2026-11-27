@@ -11,7 +11,7 @@ export async function SiteStatsBar() {
   const format = new Intl.NumberFormat(locale);
   const items = [
     {
-      icon: <BoosterIcon className="size-3.5 text-brand" />,
+      icon: <BoosterIcon className="size-3.5 text-secondary" />,
       value: stats.boostersOpenedToday,
       label: t("statsBoostersToday"),
     },
@@ -44,7 +44,7 @@ export async function SiteStatsBar() {
 
 export function SiteStatsBarShell({ children }: { children?: React.ReactNode }) {
   return (
-    <div className="flex h-8 shrink-0 items-center overflow-hidden border-b border-white/[0.04] bg-[#101010] px-4 text-[11px] text-muted sm:px-6">
+    <div className="flex h-8 shrink-0 items-center overflow-hidden border-b border-border bg-background px-4 text-[11px] text-muted sm:px-6">
       {children}
     </div>
   );

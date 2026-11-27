@@ -23,11 +23,14 @@ export async function openShopSlot(formData: FormData): Promise<OpenShopSlotActi
       slotIndex: formData.get("slotIndex"),
     },
     {
-      getUserId: async () => (await getUser())?.id ?? null,
+      getUserId: async () => {
+        const user = await getUser();
+        return user?.id ?? null;
+      },
       checkRateLimit: assertOpenBoosterRateLimit,
       openSlot: openBoosterShopSlot,
-      revalidate: (locale) => {
-        pathsRevalidatedAfterOpening(locale).forEach((path) => revalidatePath(path));
+      revalidate: (locale, userId) => {
+        pathsRevalidatedAfterOpening(locale, userId).forEach((path) => revalidatePath(path));
       },
     },
   );

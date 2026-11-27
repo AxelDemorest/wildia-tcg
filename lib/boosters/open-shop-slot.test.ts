@@ -189,16 +189,17 @@ describe("runOpenShopSlot", () => {
 
     expect(result).toEqual({ ok: true, result: { drawId: "draw-1" }, locale: "fr" });
     expect(deps.openSlot).toHaveBeenCalledWith(42, 1);
-    expect(deps.revalidate).toHaveBeenCalledWith("fr");
+    expect(deps.revalidate).toHaveBeenCalledWith("fr", "user-1");
     expect(calls).toEqual(["getUserId", "checkRateLimit", "openSlot", "revalidate"]);
   });
 });
 
 describe("pathsRevalidatedAfterOpening", () => {
   it("revalidates exactly the collection and the shop of the locale, in any order", () => {
-    expect([...pathsRevalidatedAfterOpening("en")].sort()).toEqual([
+    expect([...pathsRevalidatedAfterOpening("en", "user-1")].sort()).toEqual([
       "/en/boosters",
       "/en/collection",
+      "/en/players/user-1/collection",
     ]);
   });
 });

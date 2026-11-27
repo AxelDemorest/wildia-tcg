@@ -9,8 +9,15 @@ import { uploadProfileBanner } from "@/server/profiles/upload-banner";
 
 export type ProfileActionState = {
   ok: boolean;
-  message?: "invalid" | "featured_not_owned" | "failed";
+  message?: "invalid" | "showcase_not_owned" | "failed";
 };
+
+function revalidatePlayerProfile(locale: string, userId: string) {
+  revalidatePath(`/${locale}/players/${userId}`);
+  revalidatePath(`/${locale}/players/${userId}/collection`);
+  revalidatePath(`/${locale}/players/${userId}/showcase`);
+  revalidatePath(`/${locale}/players/${userId}/settings`);
+}
 
 export async function saveProfileSettings(
   _prev: ProfileActionState,
@@ -30,12 +37,11 @@ export async function saveProfileSettings(
 
   try {
     await updateUserProfile(user.id, input);
-    revalidatePath(`/${locale}/settings/profile`);
-    revalidatePath(`/${locale}/players/${user.id}`);
+    revalidatePlayerProfile(locale, user.id);
     return { ok: true };
   } catch (e) {
-    if (e instanceof Error && e.message === "featured_not_owned") {
-      return { ok: false, message: "featured_not_owned" };
+    if (e instanceof Error && e.message === "showcase_not_owned") {
+      return { ok: false, message: "showcase_not_owned" };
     }
     return { ok: false, message: "failed" };
   }
@@ -65,8 +71,7 @@ export async function saveProfileBanner(
 
   try {
     await uploadProfileBanner(user.id, file);
-    revalidatePath(`/${parsed.data.locale}/settings/profile`);
-    revalidatePath(`/${parsed.data.locale}/players/${user.id}`);
+    revalidatePlayerProfile(parsed.data.locale, user.id);
     return { ok: true };
   } catch (e) {
     if (e instanceof Error) {

@@ -11,7 +11,7 @@ export async function HomeRecentDrawsSection({ locale }: Props) {
   const recentDraws = await listRecentDrawnCards(cards, 10);
 
   return (
-    <section className="rounded-2xl border border-border bg-surface/80 py-5 backdrop-blur-md">
+    <section className="rounded-lg border border-border bg-surface py-5">
       <HomeRecentDraws
         cards={recentDraws}
         kicker={t("recentDrawsKicker")}

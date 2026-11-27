@@ -26,7 +26,7 @@ export function ContestForm() {
     return (
       <p
         role="status"
-        className="rounded-2xl bg-white/10 px-4 py-3 text-sm font-medium text-white ring-1 ring-white/20"
+        className="rounded-2xl bg-white/10 px-4 py-3 text-sm font-medium text-white"
       >
         {t("contestSuccess")}
       </p>
@@ -53,7 +53,7 @@ export function ContestForm() {
       <label htmlFor="contest-email" className="sr-only">
         {t("contestEmailLabel")}
       </label>
-      <div className="flex w-full items-center gap-1.5 rounded-xl bg-[#16161b] p-1.5 ring-1 ring-white/10 focus-within:ring-2 focus-within:ring-brand">
+      <div className="flex w-full items-center gap-1.5 rounded-xl bg-[#16161b] p-1.5 focus-within:ring-2 focus-within:ring-brand">
         <input
           id="contest-email"
           name="email"

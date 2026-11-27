@@ -8,7 +8,7 @@ type Props = {
 export function Badge({ children, className = "" }: Props) {
   return (
     <span
-      className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold uppercase tracking-wide ${className}`}
+      className={`inline-flex items-center rounded-sm px-2 py-0.5 text-xs font-semibold uppercase tracking-wide ${className}`}
     >
       {children}
     </span>

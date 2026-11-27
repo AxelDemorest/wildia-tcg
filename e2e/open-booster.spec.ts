@@ -63,7 +63,7 @@ const pileBacks = (page: Page) => page.getByRole("main").locator("[data-side=bac
 test("a player opens one emplacement of their shop offer and lands on the face-down stack of the draw", async ({
   page,
 }) => {
-  // A cold `next dev` compiles /fr/boosters and /fr/collection on first visit.
+  // A cold `next dev` compiles /fr/boosters and the profile collection route on first visit.
   test.setTimeout(180_000);
 
   // The offer is read twice (by the test, then by the page): stay clear of a window change. The
@@ -104,7 +104,14 @@ test("a player opens one emplacement of their shop offer and lands on the face-d
   });
 
   // The grid is the list of the page's main area, one item per emplacement, in slotIndex order.
-  const emplacements = () => page.getByRole("main").getByRole("list").first().getByRole("listitem");
+  // The explainer tiles above the shop are lists too, with a decorative pack.
+  const emplacements = () =>
+    page
+      .getByRole("main")
+      .getByRole("list")
+      .filter({ has: page.locator("[data-state]:not(.shop-explainer-pack *)") })
+      .first()
+      .getByRole("listitem");
   const pack = (item: ReturnType<typeof emplacements>) => item.locator("[data-state]");
   const openButton = (item: ReturnType<typeof emplacements>) =>
     item.getByRole("button", { name: /Ouvrir/, disabled: false });
@@ -345,9 +352,11 @@ test("a player opens one emplacement of their shop offer and lands on the face-d
   });
 
   await test.step("find every drawn card in the binder", async () => {
-    await page.getByRole("link", { name: "Mon classeur" }).first().click();
-    // Longer than the default 5 s: the first visit compiles /fr/collection on a cold dev server.
-    await expect(page).toHaveURL(/\/fr\/collection/, { timeout: 20_000 });
+    await page.goto(`/fr/players/${player.id}/collection`);
+    // Longer than the default 5 s: the first visit compiles the collection on a cold dev server.
+    await expect(page).toHaveURL(new RegExp(`/fr/players/${player.id}/collection`), {
+      timeout: 20_000,
+    });
 
     for (const name of drawnNames) {
       await expect(page.getByText(name).first()).toBeVisible();

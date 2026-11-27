@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { parseBoosterShopOffer, pickWeightedBoosterType } from "@/lib/boosters/shop";
+import {
+  parseBoosterShopOffer,
+  pickWeightedBoosterType,
+  shopWindowSeconds,
+} from "@/lib/boosters/shop";
 
 describe("parseBoosterShopOffer", () => {
   it("maps the RPC JSON of an offre boutique to the app's shape, numbers included", () => {
@@ -47,6 +51,21 @@ describe("parseBoosterShopOffer", () => {
     expect(() =>
       parseBoosterShopOffer({ window_index: 1, ends_at: "2026-11-16T10:03:00+00:00", slots: null }),
     ).toThrow("Invalid shop slots payload");
+  });
+});
+
+describe("shopWindowSeconds", () => {
+  it("recovers the fenêtre boutique length from the end of window N, (N + 1) × length", () => {
+    const windowIndex = 9_876_543;
+    const endsAt = new Date((windowIndex + 1) * 180 * 1000).toISOString();
+    expect(shopWindowSeconds({ windowIndex, endsAt })).toBe(180);
+  });
+
+  it("reads the Postgres timestamp format with an offset", () => {
+    // 2026-11-16T10:03:00Z is the end of window 9_971_240 for 180 s windows.
+    expect(shopWindowSeconds({ windowIndex: 9_971_240, endsAt: "2026-11-16T10:03:00+00:00" })).toBe(
+      180,
+    );
   });
 });
 

@@ -94,6 +94,16 @@ export async function getCatalogCardBySlug(
   return mapCard(data as CardQueryRow, locale);
 }
 
+/** Playable species in the catalogue (rows in `cards`). */
+export async function countCatalogSpecies(): Promise<number> {
+  const supabase = await createClient();
+  const { count, error } = await supabase
+    .from("cards")
+    .select("*", { count: "exact", head: true });
+  if (error) throw new Error(error.message);
+  return count ?? 0;
+}
+
 export async function getCatalogCardById(
   locale: string,
   cardId: string,

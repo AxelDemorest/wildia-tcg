@@ -34,9 +34,9 @@ export function SiteNavPills({ items, label }: Props) {
             <li key={item.href} className="shrink-0">
               <Link
                 href={item.href}
-                className={`inline-flex min-h-10 items-center gap-2 whitespace-nowrap rounded-xl px-3.5 py-2.5 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:px-4 ${
+                className={`inline-flex min-h-10 items-center gap-2 whitespace-nowrap rounded-md px-3.5 py-2.5 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:px-4 ${
                   active
-                    ? "bg-brand font-semibold text-white hover:bg-brand-strong [&>svg]:text-white"
+                    ? "bg-white/[0.06] font-semibold text-foreground shadow-[inset_0_-2px_0_var(--color-secondary)] hover:bg-white/[0.08] [&>svg]:text-secondary"
                     : "font-medium text-muted hover:bg-white/[0.04] hover:text-white"
                 }`}
                 aria-current={active ? "page" : undefined}

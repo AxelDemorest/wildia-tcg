@@ -241,6 +241,98 @@ describe("profiles", () => {
   });
 });
 
+describe("user_cards of a public profile", () => {
+  beforeAll(async () => {
+    await grantCard(publicPlayer.id, cardId);
+  });
+
+  it("are readable by visitors and other players", async () => {
+    const total = await visibleCount(admin, "user_cards", "user_id", publicPlayer.id);
+    expect(total).toBeGreaterThan(0);
+
+    expect(await visibleCount(visitor, "user_cards", "user_id", publicPlayer.id)).toBe(total);
+    expect(await visibleCount(other.client, "user_cards", "user_id", publicPlayer.id)).toBe(total);
+    expect(await visibleCount(publicPlayer.client, "user_cards", "user_id", publicPlayer.id)).toBe(
+      total,
+    );
+  });
+
+  it("still cannot be written through the API", async () => {
+    const before = await snapshot("user_cards", "user_id", publicPlayer.id);
+
+    for (const client of [publicPlayer.client, other.client, visitor]) {
+      const inserted = await client
+        .from("user_cards")
+        .insert({ user_id: publicPlayer.id, card_id: cardId, quantity: 99 });
+      expect(inserted.error?.code).toBe("42501");
+      await client.from("user_cards").update({ quantity: 99 }).eq("user_id", publicPlayer.id);
+      await client.from("user_cards").delete().eq("user_id", publicPlayer.id);
+    }
+
+    expect(await snapshot("user_cards", "user_id", publicPlayer.id)).toBe(before);
+  });
+});
+
+describe("profile_showcase_slots", () => {
+  beforeAll(async () => {
+    await grantCard(publicPlayer.id, cardId);
+    const { error } = await admin.from("profile_showcase_slots").upsert({
+      profile_id: publicPlayer.id,
+      slot: 1,
+      card_id: cardId,
+    });
+    if (error) throw error;
+
+    const privateSlot = await admin.from("profile_showcase_slots").upsert({
+      profile_id: owner.id,
+      slot: 1,
+      card_id: cardId,
+    });
+    if (privateSlot.error) throw privateSlot.error;
+  });
+
+  it("shows a public player's slots to everyone", async () => {
+    expect(await visibleCount(publicPlayer.client, "profile_showcase_slots", "profile_id", publicPlayer.id)).toBe(
+      1,
+    );
+    expect(await visibleCount(other.client, "profile_showcase_slots", "profile_id", publicPlayer.id)).toBe(
+      1,
+    );
+    expect(await visibleCount(visitor, "profile_showcase_slots", "profile_id", publicPlayer.id)).toBe(
+      1,
+    );
+  });
+
+  it("shows a private player's slots to their owner only", async () => {
+    expect(await visibleCount(owner.client, "profile_showcase_slots", "profile_id", owner.id)).toBe(1);
+    expect(await visibleCount(other.client, "profile_showcase_slots", "profile_id", owner.id)).toBe(0);
+    expect(await visibleCount(visitor, "profile_showcase_slots", "profile_id", owner.id)).toBe(0);
+  });
+
+  it("lets the owner write their own slots, not anyone else's", async () => {
+    const own = await owner.client.from("profile_showcase_slots").upsert({
+      profile_id: owner.id,
+      slot: 2,
+      card_id: null,
+    });
+    expect(own.error).toBeNull();
+
+    const intoOther = await owner.client.from("profile_showcase_slots").upsert({
+      profile_id: publicPlayer.id,
+      slot: 2,
+      card_id: null,
+    });
+    expect(intoOther.error).not.toBeNull();
+
+    const fromVisitor = await visitor.from("profile_showcase_slots").upsert({
+      profile_id: owner.id,
+      slot: 3,
+      card_id: null,
+    });
+    expect(fromVisitor.error).not.toBeNull();
+  });
+});
+
 describe("contest_entries (e-mails of the launch contest)", () => {
   const email = `test-${randomUUID()}@example.test`;
 

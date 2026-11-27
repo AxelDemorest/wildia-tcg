@@ -116,15 +116,15 @@ function FeatureCard({
 
   return (
     <article
-      className={`group relative flex flex-col overflow-hidden rounded-3xl p-6 ring-1 transition duration-300 hover:-translate-y-1 sm:p-7 ${
+      className={`group relative flex flex-col overflow-hidden p-6 transition-colors duration-300 sm:p-7 ${
         highlighted
-          ? "bg-[linear-gradient(135deg,#0b4a33_0%,#17684a_100%)] text-white ring-white/10"
-          : "bg-white/[0.03] text-foreground ring-white/[0.06] hover:bg-white/[0.05]"
+          ? "bg-[linear-gradient(135deg,#0b4a33_0%,#17684a_100%)] text-white"
+          : "bg-background text-foreground hover:bg-surface"
       } ${SPANS[featureKey]}`}
     >
       <span
-        className={`flex h-12 w-12 items-center justify-center rounded-2xl ${
-          highlighted ? "bg-white/12 text-accent" : "bg-brand/10 text-brand ring-1 ring-brand/20"
+        className={`flex h-11 w-11 items-center justify-center rounded-md ${
+          highlighted ? "bg-white/12 text-accent" : "bg-brand/10 text-secondary ring-1 ring-inset ring-brand/25"
         }`}
       >
         <Icon className="h-6 w-6" />
@@ -159,11 +159,11 @@ export async function HomeFeatures() {
   return (
     <section
       id="features"
-      className="scroll-mt-4 rounded-2xl border border-border bg-surface/80 py-12 backdrop-blur-md sm:py-16"
+      className="scroll-mt-4 border-t border-border py-12 sm:py-16"
     >
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
         <header className="mx-auto max-w-3xl text-center">
-          <p className="text-xs font-semibold uppercase tracking-wider text-brand sm:text-sm">
+          <p className="text-xs font-semibold uppercase tracking-wider text-secondary sm:text-sm">
             {t("featuresKicker")}
           </p>
           <h2 className="mt-3 text-balance text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-4xl md:leading-[1.15]">
@@ -174,7 +174,7 @@ export async function HomeFeatures() {
           </p>
         </header>
 
-        <div className="mt-10 grid gap-4 sm:mt-12 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
+        <div className="mt-10 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:mt-12 sm:grid-cols-2 lg:grid-cols-4">
           {FEATURES.map((key) => (
             <FeatureCard
               key={key}

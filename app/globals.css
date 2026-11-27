@@ -2,24 +2,24 @@
 
 :root {
   color-scheme: dark;
-  --background: #141414;
-  --background-shine:
-    radial-gradient(circle at 15% 0%, rgb(31 122 82 / 0.08), transparent 40%),
-    radial-gradient(circle at 85% 10%, rgb(63 185 133 / 0.05), transparent 38%);
+  /* Green-tinted neutrals: the planes share the brand hue instead of fighting it. */
+  --background: #0b0d0c;
   --foreground: #ffffff;
-  --surface: #1a1a1f;
-  --panel: #1e1e24;
-  --muted: #9ca3af;
-  --border: #2a2a32;
-  --brand: #1f7a52;
-  --brand-strong: #17623f;
-  --secondary: #5fc79a;
+  --surface: #121614;
+  --panel: #181d1a;
+  --muted: #8e9a93;
+  --border: #212825;
+  --border-strong: #2f3833;
+  --brand: #1a7d52;
+  --brand-strong: #146443;
+  /* Signal green: active states, kickers and green text (brand fails AA as small text). */
+  --secondary: #4fd69c;
   --ink: #13231a;
   --accent: #f5c04a;
-  --radius-md: 0.75rem;
-  --radius-lg: 1rem;
-  --shadow-card: 0 18px 40px -18px rgb(0 0 0 / 0.85);
-  --shadow-how-card: 0 30px 60px -28px rgb(0 0 0 / 0.9);
+  /* UI chrome only. Trading cards and boosters keep their own silhouette. */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.625rem;
 }
 
 @theme inline {
@@ -29,6 +29,7 @@
   --color-panel: var(--panel);
   --color-muted: var(--muted);
   --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
   --color-brand: var(--brand);
   --color-brand-strong: var(--brand-strong);
   --color-secondary: var(--secondary);
@@ -37,6 +38,7 @@
   --font-sans: var(--font-lexend);
   --font-mono: var(--font-geist-mono);
   --font-display: var(--font-google-sans-flex);
+  --radius-sm: var(--radius-sm);
   --radius-md: var(--radius-md);
   --radius-lg: var(--radius-lg);
 }
@@ -47,8 +49,9 @@ html {
 
 body {
   min-height: 100%;
-  background-color: var(--background);
-  background-image: var(--background-shine);
+  background:
+    radial-gradient(70rem 32rem at 50% -12rem, rgb(26 125 82 / 0.12), transparent 70%) no-repeat,
+    var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
 }
@@ -157,20 +160,96 @@ h6 {
   --card-glow: rgb(139 102 196 / 0.5);
 }
 
+/* Legendary: solid gold leaf, the frames and lettering stamped in dark bronze. */
 .tcg-card[data-rarity="legendary"] {
-  --card-base: #13301f;
-  --card-base-deep: #07150d;
-  --card-band: #2f6b45;
-  --card-line: #e4c46e;
-  --card-glow: rgb(228 180 70 / 0.65);
+  --card-base: #e9c46a;
+  --card-base-deep: #7a5410;
+  --card-band: #a8781f;
+  --card-line: #4a3006;
+  --card-glow: rgb(245 196 80 / 0.8);
+  background: linear-gradient(
+    135deg,
+    #8a5d12 0%,
+    #e9c46a 16%,
+    #fff1b8 30%,
+    #d4a53c 44%,
+    #9a6c18 58%,
+    #f0cf74 76%,
+    #fff3c4 88%,
+    #b88a2a 100%
+  );
+  box-shadow:
+    0 8px 24px -12px var(--card-glow),
+    inset 0 0 0 1px rgb(255 244 200 / 0.55);
 }
 
+/*
+ * Mythic: near-black violet with a rare oil-slick foil (::before) that keeps
+ * drifting across the face. The gem facets are kept as a barely-there texture.
+ */
 .tcg-card[data-rarity="mythic"] {
-  --card-base: #42112a;
-  --card-base-deep: #1c0511;
-  --card-band: #8a2650;
-  --card-line: #f6b3c6;
-  --card-glow: rgb(236 72 120 / 0.65);
+  --card-base: #1a0f2e;
+  --card-base-deep: #0b0614;
+  --card-band: rgb(196 181 253 / 0.07);
+  --card-line: #e8d5ff;
+  --card-glow: rgb(139 92 246 / 0.6);
+  --holo: linear-gradient(
+    115deg,
+    rgb(125 211 252 / 0.22) 0%,
+    rgb(196 181 253 / 0.26) 35%,
+    rgb(249 168 212 / 0.22) 65%,
+    rgb(125 211 252 / 0.22) 100%
+  );
+  --holo-ring: conic-gradient(
+    from var(--holo-angle),
+    #2a1d45,
+    #7dd3fc 12%,
+    #2a1d45 25%,
+    #c4b5fd 40%,
+    #2a1d45 55%,
+    #f9a8d4 68%,
+    #2a1d45 80%,
+    #e8d5ff 90%,
+    #2a1d45
+  );
+  background:
+    conic-gradient(
+        from -34.8deg,
+        rgb(232 213 255 / 0.035) 0 69.6deg,
+        transparent 0 180deg,
+        rgb(0 0 0 / 0.12) 0 249.6deg,
+        rgb(232 213 255 / 0.015) 0
+      )
+      0 0 / 8cqw 11.5cqw,
+    radial-gradient(120% 85% at 30% 18%, #2a1a4a 0%, #1a0f2e 38%, #0b0614 100%);
+  box-shadow:
+    0 8px 24px -12px var(--card-glow),
+    -6px 2px 20px -12px rgb(125 211 252 / 0.4),
+    6px -2px 20px -12px rgb(196 181 253 / 0.45),
+    inset 0 0 0 1px rgb(232 213 255 / 0.16);
+}
+
+/* Oil-slick foil: thin accent bands separated by long dark stretches, never a full rainbow. */
+.tcg-card[data-rarity="mythic"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+      118deg,
+      transparent 10%,
+      rgb(125 211 252 / 0.24) 20%,
+      rgb(196 181 253 / 0.32) 27%,
+      rgb(249 168 212 / 0.24) 34%,
+      transparent 44%,
+      transparent 58%,
+      rgb(196 181 253 / 0.2) 66%,
+      rgb(125 211 252 / 0.26) 72%,
+      rgb(232 213 255 / 0.16) 78%,
+      transparent 88%
+    )
+    0 0 / 250% 250%;
+  mix-blend-mode: screen;
 }
 
 .tcg-card-back {
@@ -327,6 +406,7 @@ h6 {
 .tcg-card-footer > span {
   max-width: 100%;
   overflow: hidden;
+  border-radius: 9999px;
   border-color: color-mix(in srgb, var(--card-line) 70%, transparent);
   background-color: rgb(0 0 0 / 0.25);
   padding: 1.1cqw 3.4cqw;
@@ -374,16 +454,75 @@ h6 {
   mix-blend-mode: screen;
 }
 
-.tcg-card[data-rarity="mythic"] .tcg-card-shine::before {
-  content: "";
-  position: absolute;
-  inset: 0;
+/* Legendary gold. */
+.tcg-card[data-rarity="legendary"] .tcg-card-art {
+  border-color: #fff0b8;
+  box-shadow:
+    0 0 0 max(1px, 0.9cqw) rgb(74 48 6 / 0.55),
+    0 2cqw 4cqw -2cqw rgb(60 36 0 / 0.7);
+}
+.tcg-card[data-rarity="legendary"] .tcg-card-name {
+  text-shadow: 0 1px 0 rgb(255 245 205 / 0.6);
+}
+.tcg-card[data-rarity="legendary"] .tcg-card-footer > span {
+  background-color: rgb(255 248 220 / 0.45);
+}
+.tcg-card[data-rarity="legendary"] .tcg-card-quantity {
+  color: #fff1bf;
+}
+
+/* Mythic trims: a dark iridescent ring on the frames and art border, pale lettering. */
+@property --holo-angle {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 0deg;
+}
+.tcg-card[data-rarity="mythic"] .tcg-card-frame {
+  opacity: 0.7;
+}
+.tcg-card[data-rarity="mythic"] .tcg-card-frame,
+.tcg-card[data-rarity="mythic"] .tcg-card-frame::after {
+  border-image: var(--holo-ring) 1;
+}
+.tcg-card[data-rarity="mythic"] .tcg-card-art {
+  border-color: transparent;
+  background:
+    linear-gradient(var(--card-base-deep), var(--card-base-deep)) padding-box,
+    var(--holo-ring) border-box;
+  box-shadow:
+    0 0 0 max(1px, 0.9cqw) rgb(0 0 0 / 0.5),
+    0 0 4cqw -1cqw rgb(196 181 253 / 0.3),
+    0 2cqw 4cqw -2cqw rgb(0 0 0 / 0.8);
+}
+.tcg-card[data-rarity="mythic"] .tcg-card-name {
+  text-shadow:
+    0 1px 0 rgb(0 0 0 / 0.6),
+    0 0 3cqw rgb(196 181 253 / 0.4);
+}
+.tcg-card[data-rarity="mythic"] .tcg-card-footer > span {
+  border-color: rgb(232 213 255 / 0.4);
+  background:
+    var(--holo) 0 0 / 200% 100%,
+    rgb(11 6 20 / 0.7);
+  box-shadow:
+    inset 0 1px 0 rgb(232 213 255 / 0.18),
+    0 0 3cqw -1cqw rgb(125 211 252 / 0.35);
+}
+.tcg-card[data-rarity="mythic"] .tcg-card-shine {
   background: linear-gradient(
-    135deg,
-    rgb(255 120 170 / 0.22),
-    rgb(255 220 120 / 0.14) 35%,
-    rgb(140 200 255 / 0.18) 65%,
-    rgb(200 140 255 / 0.22)
+    125deg,
+    transparent 20%,
+    rgb(232 213 255 / 0.08) 32%,
+    transparent 44%
+  );
+}
+.tcg-card[data-rarity="mythic"][data-shine="hover"] .tcg-card-shine::after {
+  background-image: linear-gradient(
+    105deg,
+    transparent 42%,
+    rgb(232 213 255 / 0.18) 49%,
+    rgb(125 211 252 / 0.1) 52%,
+    transparent 58%
   );
 }
 
@@ -418,6 +557,52 @@ h6 {
   .tcg-card-link:focus-visible > .tcg-card[data-shine="hover"] .tcg-card-shine::after {
     opacity: 1;
     animation: tcg-card-sheen 2.2s ease-in-out infinite;
+  }
+
+  .tcg-card[data-rarity="mythic"]:hover .tcg-card-shine::after,
+  .tcg-card-link:focus-visible > .tcg-card[data-rarity="mythic"] .tcg-card-shine::after {
+    animation-duration: 3.6s;
+  }
+}
+
+/* Mythic is always alive: ring spin, foil drift and badge slide run at rest; hover only adds the sheen and the lift. */
+@media (prefers-reduced-motion: no-preference) {
+  .tcg-card[data-rarity="mythic"] {
+    animation: tcg-holo-spin 12s linear infinite;
+  }
+  .tcg-card[data-rarity="mythic"]::before {
+    animation: tcg-petrol-drift 5s ease-in-out infinite alternate;
+  }
+  .tcg-card[data-rarity="mythic"] .tcg-card-footer > span {
+    animation: tcg-holo-slide 3s ease-in-out infinite alternate;
+  }
+}
+
+@media (hover: hover) {
+  .tcg-card-link:hover > .tcg-card[data-rarity="mythic"] {
+    box-shadow:
+      0 20px 36px -16px var(--card-glow),
+      -10px 4px 28px -14px rgb(125 211 252 / 0.55),
+      10px -4px 28px -14px rgb(196 181 253 / 0.6),
+      inset 0 0 0 1px rgb(232 213 255 / 0.22);
+  }
+}
+
+@keyframes tcg-holo-slide {
+  to {
+    background-position: 100% 0;
+  }
+}
+
+@keyframes tcg-holo-spin {
+  to {
+    --holo-angle: 360deg;
+  }
+}
+
+@keyframes tcg-petrol-drift {
+  to {
+    background-position: 100% 70%;
   }
 }
 
@@ -752,6 +937,190 @@ h6 {
 @keyframes reveal-pile-fade {
   from {
     opacity: 0;
+  }
+}
+
+/*
+ * Showcase slab: a graded-card style acrylic case around each showcase card.
+ * `.showcase-slab` is the size container; inner parts are sized in cqw. The accent
+ * follows the card rarity (same hues as `--card-line`).
+ */
+.showcase-slab {
+  --slab-accent: var(--border-strong);
+  container-type: inline-size;
+}
+.showcase-slab[data-rarity="common"] {
+  --slab-accent: #c9ccc6;
+}
+.showcase-slab[data-rarity="uncommon"] {
+  --slab-accent: #8fe0c4;
+}
+.showcase-slab[data-rarity="rare"] {
+  --slab-accent: #9fd0f3;
+}
+.showcase-slab[data-rarity="epic"] {
+  --slab-accent: #cfb2f5;
+}
+.showcase-slab[data-rarity="legendary"] {
+  --slab-accent: #e4c46e;
+}
+.showcase-slab[data-rarity="mythic"] {
+  --slab-accent: #c4b5fd;
+}
+/* Epic's accent is lavender too, so the mythic label strip carries the oil-slick hues. */
+.showcase-slab[data-rarity="mythic"] .showcase-slab-label::after {
+  background: linear-gradient(90deg, var(--brand) 0%, #7dd3fc 45%, #c4b5fd 72%, #f9a8d4 100%);
+}
+
+.showcase-slab-case {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 3.5cqw;
+  padding: 4.5cqw 4.5cqw 3cqw;
+  border-radius: 5cqw;
+  background:
+    linear-gradient(
+      160deg,
+      rgb(255 255 255 / 0.11) 0%,
+      rgb(255 255 255 / 0.02) 38%,
+      rgb(255 255 255 / 0.05) 100%
+    ),
+    #0c1210;
+  border: 1px solid rgb(255 255 255 / 0.14);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.22),
+    inset 0 -1px 0 rgb(0 0 0 / 0.7),
+    inset 0 0 0 1.6cqw rgb(255 255 255 / 0.025),
+    0 0 0 1px rgb(0 0 0 / 0.55),
+    0 22px 34px -20px rgb(0 0 0 / 0.95);
+  transition:
+    translate 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.3s ease;
+}
+/* Acrylic reflection over the whole case, card included. */
+.showcase-slab-case::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      118deg,
+      transparent 0%,
+      transparent 52%,
+      rgb(255 255 255 / 0.07) 56%,
+      rgb(255 255 255 / 0.015) 66%,
+      transparent 70%
+    ),
+    linear-gradient(180deg, rgb(255 255 255 / 0.06) 0%, transparent 18%);
+}
+
+/* Dark green band with the claws logo tiled faintly behind the wordmark. */
+.showcase-slab-label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 5.4cqw 3cqw 4.4cqw;
+  border-radius: 2.5cqw;
+  background:
+    radial-gradient(70% 120% at 50% 50%, rgb(26 125 82 / 0.35), transparent 75%),
+    linear-gradient(180deg, #0f3524 0%, #072015 100%);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.07),
+    0 1px 0 rgb(255 255 255 / 0.05);
+}
+.showcase-slab-label::before {
+  content: "";
+  position: absolute;
+  inset: -60% -20%;
+  rotate: -18deg;
+  background: var(--foreground);
+  opacity: 0.09;
+  mask-image: var(--slab-logo), var(--slab-logo);
+  mask-size: 15cqw 15cqw;
+  mask-position:
+    0 0,
+    7.5cqw 7.5cqw;
+  mask-repeat: repeat;
+  pointer-events: none;
+}
+.showcase-slab-label::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1.2cqw;
+  background: linear-gradient(90deg, var(--brand) 0%, var(--slab-accent) 100%);
+}
+
+.showcase-slab-brand {
+  position: relative;
+  font-family: var(--font-display), var(--font-sans), system-ui, sans-serif;
+  font-size: max(12px, 9cqw);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--foreground);
+  text-shadow: 0 0.6cqw 1.6cqw rgb(0 0 0 / 0.6);
+}
+
+.showcase-slab-well {
+  position: relative;
+  padding: 3cqw;
+  border-radius: 3cqw;
+  background: rgb(0 0 0 / 0.5);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.06),
+    inset 0 2cqw 5cqw rgb(0 0 0 / 0.65);
+}
+.showcase-slab-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6cqw;
+  text-align: center;
+  font-size: max(11px, 6cqw);
+  color: var(--muted);
+  aspect-ratio: 2 / 3;
+  border-radius: 6% / 4%;
+  border: 1px dashed var(--border-strong);
+  background:
+    radial-gradient(80% 60% at 50% 40%, rgb(26 125 82 / 0.08), transparent 70%),
+    rgb(255 255 255 / 0.015);
+}
+
+/* Moulded grip at the bottom edge of the case. */
+.showcase-slab-foot {
+  height: 2.2cqw;
+  margin: 0 18%;
+  border-radius: 1cqw;
+  background: repeating-linear-gradient(
+    90deg,
+    rgb(255 255 255 / 0.1) 0 1px,
+    transparent 1px 1.6cqw
+  );
+  opacity: 0.7;
+}
+
+@media (hover: hover) {
+  .showcase-slab-link:hover .showcase-slab-case {
+    translate: 0 -1.5%;
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.22),
+      inset 0 -1px 0 rgb(0 0 0 / 0.7),
+      inset 0 0 0 1.6cqw rgb(255 255 255 / 0.025),
+      0 0 0 1px color-mix(in srgb, var(--slab-accent) 40%, transparent),
+      0 26px 38px -20px color-mix(in srgb, var(--slab-accent) 45%, black);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .showcase-slab-case {
+    transition: none;
   }
 }
 
@@ -1363,6 +1732,213 @@ h6 {
 }
 .booster-pack[data-state="opening"] .booster-pack-ground {
   background: radial-gradient(closest-side, rgb(95 199 154 / 0.55), transparent);
+}
+
+/*
+ * Boutique explainer tiles: one small looping 3D scene per tile (a pack swaying inside an orbit,
+ * a spinning coin with a real edge, a card flipping over to its glowing face).
+ */
+.shop-explainer-stage {
+  position: relative;
+  flex-shrink: 0;
+  width: 6.5rem;
+  height: 7rem;
+  perspective: 520px;
+}
+.shop-explainer-showcase,
+.shop-explainer-coin-stage,
+.shop-explainer-cards {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  transform-style: preserve-3d;
+}
+
+.shop-explainer-pack {
+  width: 3.3rem;
+  transform-style: preserve-3d;
+  animation: shop-explainer-sway 5s ease-in-out infinite;
+}
+.shop-explainer-orbit {
+  position: absolute;
+  left: 50%;
+  top: 58%;
+  width: 6rem;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  border: 1px solid rgb(79 214 156 / 0.4);
+  box-shadow: 0 0 14px rgb(79 214 156 / 0.18);
+  animation: shop-explainer-orbit 3.5s linear infinite;
+}
+.shop-explainer-orbit-dot {
+  position: absolute;
+  left: 50%;
+  top: -4px;
+  width: 7px;
+  height: 7px;
+  margin-left: -3.5px;
+  border-radius: 50%;
+  background: var(--secondary);
+  box-shadow: 0 0 10px var(--secondary);
+}
+@keyframes shop-explainer-sway {
+  0%,
+  100% {
+    transform: rotateY(-30deg) translateY(0);
+  }
+  50% {
+    transform: rotateY(30deg) translateY(-5px);
+  }
+}
+@keyframes shop-explainer-orbit {
+  from {
+    transform: rotateX(74deg) rotateZ(0deg);
+  }
+  to {
+    transform: rotateX(74deg) rotateZ(360deg);
+  }
+}
+
+.shop-explainer-coin {
+  position: relative;
+  width: 3.9rem;
+  height: 3.9rem;
+  transform-style: preserve-3d;
+  animation:
+    shop-explainer-coin-spin 3.2s linear infinite,
+    shop-explainer-bob 3.2s ease-in-out infinite;
+}
+.shop-explainer-coin-face {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+}
+.shop-explainer-coin-front {
+  transform: translateZ(3px);
+}
+.shop-explainer-coin-back {
+  transform: rotateY(180deg) translateZ(3px);
+}
+.shop-explainer-coin-edge {
+  position: absolute;
+  inset: 8.5%;
+  border-radius: 50%;
+  background: #b07a0e;
+  transform: translateZ(calc(var(--layer) * 1.2px));
+}
+.shop-explainer-coin-shadow {
+  position: absolute;
+  bottom: 0.6rem;
+  left: 50%;
+  width: 3.2rem;
+  height: 0.6rem;
+  margin-left: -1.6rem;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(0 0 0 / 0.65), transparent);
+  animation: shop-explainer-shadow 3.2s ease-in-out infinite;
+}
+@keyframes shop-explainer-coin-spin {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(360deg);
+  }
+}
+@keyframes shop-explainer-bob {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -7px;
+  }
+}
+@keyframes shop-explainer-shadow {
+  0%,
+  100% {
+    scale: 1;
+    opacity: 1;
+  }
+  50% {
+    scale: 0.7;
+    opacity: 0.6;
+  }
+}
+
+.shop-explainer-card {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 3rem;
+  height: 4.5rem;
+  margin: -2.25rem 0 0 -1.5rem;
+  border-radius: 0.3rem;
+  object-fit: cover;
+  box-shadow: 0 8px 14px -4px rgb(0 0 0 / 0.6);
+}
+.shop-explainer-card-left {
+  transform: translateX(-1.2rem) translateZ(-24px) rotate(-14deg);
+  filter: brightness(0.7);
+}
+.shop-explainer-card-right {
+  transform: translateX(1.2rem) translateZ(-24px) rotate(14deg);
+  filter: brightness(0.7);
+}
+.shop-explainer-flip {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  animation: shop-explainer-flip 4.5s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+.shop-explainer-flip-back,
+.shop-explainer-flip-front {
+  backface-visibility: hidden;
+}
+.shop-explainer-flip-front {
+  display: grid;
+  place-items: center;
+  transform: rotateY(180deg);
+  color: #fbe9b7;
+  border: 1px solid rgb(228 196 110 / 0.7);
+  background: radial-gradient(120% 90% at 50% 35%, #2a6b4c 0%, #0c3424 60%, #051a11 100%);
+  box-shadow:
+    0 0 18px rgb(228 196 110 / 0.5),
+    0 8px 14px -4px rgb(0 0 0 / 0.6);
+}
+@keyframes shop-explainer-flip {
+  0%,
+  22% {
+    transform: rotateY(0deg) translateY(0);
+  }
+  42%,
+  72% {
+    transform: rotateY(180deg) translateY(-6px);
+  }
+  92%,
+  100% {
+    transform: rotateY(360deg) translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shop-explainer-pack,
+  .shop-explainer-orbit,
+  .shop-explainer-coin,
+  .shop-explainer-coin-shadow,
+  .shop-explainer-flip {
+    animation: none;
+  }
+  .shop-explainer-orbit {
+    transform: rotateX(74deg);
+  }
+  .shop-explainer-coin {
+    transform: rotateY(-25deg);
+  }
 }
 
 @utility bg-ink {

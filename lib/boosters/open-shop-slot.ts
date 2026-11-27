@@ -36,7 +36,7 @@ export type OpenShopSlotDeps<T> = {
   checkRateLimit: (userId: string) => Promise<boolean>;
   /** Throws an Error carrying the RPC message when the opening is refused. */
   openSlot: (windowIndex: number, slotIndex: number) => Promise<T>;
-  revalidate: (locale: string) => void | Promise<void>;
+  revalidate: (locale: string, userId: string) => void | Promise<void>;
 };
 
 export type OpenShopSlotOutcome<T> =
@@ -64,8 +64,12 @@ export function refusalReloadsOffer(code: RefusalCode): boolean {
 }
 
 /** The pages whose cached render shows the pack count or the shop offer, stale after an opening. */
-export function pathsRevalidatedAfterOpening(locale: string): string[] {
-  return [`/${locale}/collection`, `/${locale}/boosters`];
+export function pathsRevalidatedAfterOpening(locale: string, userId: string): string[] {
+  return [
+    `/${locale}/collection`,
+    `/${locale}/players/${userId}/collection`,
+    `/${locale}/boosters`,
+  ];
 }
 
 /** Orchestrates the opening of an emplacement; dependencies are injected so it runs without Next nor Supabase. */
@@ -92,6 +96,6 @@ export async function runOpenShopSlot<T>(
     };
   }
 
-  await deps.revalidate(locale);
+  await deps.revalidate(locale, userId);
   return { ok: true, result, locale };
 }

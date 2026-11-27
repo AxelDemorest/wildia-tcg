@@ -13,6 +13,7 @@ type Props = {
   avatarAlt: string;
   logoutLabel: string;
   profileLabel: string;
+  collectionLabel: string;
   settingsLabel: string;
 };
 
@@ -23,6 +24,7 @@ export function HeaderProfileMenu({
   avatarAlt,
   logoutLabel,
   profileLabel,
+  collectionLabel,
   settingsLabel,
 }: Props) {
   const [open, setOpen] = useState(false);
@@ -55,9 +57,9 @@ export function HeaderProfileMenu({
         aria-controls={menuId}
         aria-label={avatarAlt}
         onClick={() => setOpen((value) => !value)}
-        className="relative size-9 shrink-0 overflow-hidden rounded-xl bg-gradient-to-br from-brand to-[#3fb985] p-[2px] transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        className="relative cursor-pointer size-9 shrink-0 overflow-hidden rounded-md bg-gradient-to-br from-brand to-secondary p-[2px] transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
-        <span className="relative block size-full overflow-hidden rounded-[10px]">
+        <span className="relative block size-full overflow-hidden rounded-[4px]">
           <Image
             src={avatarFailed ? MOCK_AVATAR_PATH : avatarUrl}
             alt=""
@@ -73,7 +75,7 @@ export function HeaderProfileMenu({
         <div
           id={menuId}
           role="menu"
-          className="absolute right-0 top-[calc(100%+0.5rem)] z-50 min-w-[12rem] overflow-hidden rounded-xl border border-border bg-panel/95 py-1.5 shadow-[var(--shadow-card)] backdrop-blur-md"
+          className="absolute right-0 top-[calc(100%+0.5rem)] z-50 min-w-[12rem] overflow-hidden rounded-lg border border-border-strong bg-panel py-1.5 shadow-[0_16px_40px_-16px_rgb(0_0_0/0.8)]"
         >
           <Link
             href={`/players/${userId}`}
@@ -84,7 +86,15 @@ export function HeaderProfileMenu({
             {profileLabel}
           </Link>
           <Link
-            href="/settings/profile"
+            href={`/players/${userId}/collection`}
+            role="menuitem"
+            className="block px-3.5 py-2 text-sm text-foreground hover:bg-white/[0.05]"
+            onClick={() => setOpen(false)}
+          >
+            {collectionLabel}
+          </Link>
+          <Link
+            href={`/players/${userId}/settings`}
             role="menuitem"
             className="block px-3.5 py-2 text-sm text-foreground hover:bg-white/[0.05]"
             onClick={() => setOpen(false)}
@@ -92,11 +102,7 @@ export function HeaderProfileMenu({
             {settingsLabel}
           </Link>
           <div className="my-1 border-t border-border" role="separator" />
-          <form
-            action={signOut.bind(null, locale)}
-            role="none"
-            onSubmit={() => setOpen(false)}
-          >
+          <form action={signOut.bind(null, locale)} role="none" onSubmit={() => setOpen(false)}>
             <button
               type="submit"
               role="menuitem"

@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { setRequestLocale } from "next-intl/server";
 import { SiteChat } from "@/components/layout/site-chat";
+import { SiteChatColumn } from "@/components/layout/site-chat-column";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteStatsBar, SiteStatsBarShell } from "@/components/layout/site-stats-bar";
 import { SiteHeader } from "@/components/site-header";
@@ -30,11 +31,11 @@ export default async function SiteLayout({ children, params }: Props) {
           <SiteFooter />
         </div>
 
-        <div className="sticky top-[7.25rem] hidden h-[calc(100dvh-8.25rem)] w-[19rem] shrink-0 xl:block">
-          <Suspense fallback={<div className="h-full rounded-2xl border border-border bg-panel" aria-hidden />}>
+        <SiteChatColumn>
+          <Suspense fallback={<div className="h-full rounded-lg border border-border bg-surface" aria-hidden />}>
             <SiteChat locale={locale} />
           </Suspense>
-        </div>
+        </SiteChatColumn>
       </div>
     </>
   );

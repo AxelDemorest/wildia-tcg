@@ -1,8 +1,8 @@
 /** Toggle pill used by the catalog filters and the collection sort. */
 export function chipClass(active: boolean): string {
-  return `rounded-xl border px-3 py-1.5 text-sm font-medium transition ${
+  return `rounded-md px-3 py-1.5 text-sm font-medium ring-1 ring-inset transition ${
     active
-      ? "border-brand/50 bg-brand/12 text-white"
-      : "border-border bg-surface text-muted hover:border-white/20 hover:text-white"
+      ? "bg-brand/15 text-white ring-secondary/45"
+      : "text-muted ring-border hover:bg-white/[0.04] hover:text-white hover:ring-border-strong"
   }`;
 }

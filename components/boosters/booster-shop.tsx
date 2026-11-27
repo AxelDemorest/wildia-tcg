@@ -3,14 +3,13 @@
 import { useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
-import { BoosterPack } from "@/components/boosters/booster-pack";
+import { BoosterShopSlot } from "@/components/boosters/booster-shop-slot";
 import { ShopCountdown } from "@/components/boosters/shop-countdown";
-import { Button } from "@/components/ui/button";
 import { Surface } from "@/components/ui/surface";
 import { Link, useRouter } from "@/i18n/navigation";
 import { refusalReloadsOffer } from "@/lib/boosters/open-shop-slot";
 import { markPendingReveal } from "@/lib/boosters/pending-reveal";
-import type { BoosterShopOffer } from "@/lib/boosters/shop";
+import { shopWindowSeconds, type BoosterShopOffer } from "@/lib/boosters/shop";
 import { parseShopNotice } from "@/lib/boosters/shop-notice";
 import { openShopSlot } from "@/server/actions/open-booster";
 
@@ -20,6 +19,7 @@ type Props = {
   /** Seconds left in the offer's window, computed on the server at render. */
   secondsLeft: number;
   isLoggedIn: boolean;
+  userId: string | null;
 };
 
 export function BoosterShop({ locale, offer, secondsLeft, isLoggedIn }: Props) {
@@ -70,7 +70,7 @@ export function BoosterShop({ locale, offer, secondsLeft, isLoggedIn }: Props) {
         <p className="text-muted">{t("loginRequired")}</p>
         <Link
           href={{ pathname: "/login", query: { returnTo: `/${locale}/boosters` } }}
-          className="mt-4 inline-flex rounded-xl bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-strong"
+          className="mt-4 inline-flex rounded-md bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-strong"
         >
           {t("loginCta")}
         </Link>
@@ -84,7 +84,11 @@ export function BoosterShop({ locale, offer, secondsLeft, isLoggedIn }: Props) {
 
   return (
     <div className="space-y-5">
-      <ShopCountdown secondsAtRender={secondsLeft} windowIndex={offer.windowIndex} />
+      <ShopCountdown
+        secondsAtRender={secondsLeft}
+        windowIndex={offer.windowIndex}
+        windowSeconds={shopWindowSeconds(offer)}
+      />
       {notice && !pending && (
         <p
           className="rounded-xl border border-white/15 bg-white/[0.04] px-4 py-3 text-sm text-foreground"
@@ -98,41 +102,16 @@ export function BoosterShop({ locale, offer, secondsLeft, isLoggedIn }: Props) {
           {error}
         </p>
       )}
-      <ul className="mx-auto grid max-w-[48.5rem] grid-cols-2 gap-x-6 gap-y-8 md:grid-cols-4">
-        {offer.slots.map((slot) => {
-          const name = t(`pack.${slot.booster.slug}.name`);
-          const isOpening = openingSlot === slot.slotIndex;
-          const packState = slot.exhausted ? "exhausted" : isOpening ? "opening" : "idle";
-          return (
-            <li key={slot.slotIndex} className="flex min-w-0 flex-col items-center gap-2.5">
-              <span className="sr-only">{`${name}, ${t("slots", { count: slot.booster.slots })}`}</span>
-              <BoosterPack
-                slug={slot.booster.slug}
-                cardCount={slot.booster.slots}
-                state={packState}
-              />
-              <p className="text-sm font-semibold text-amber-300">
-                {t("cost", { amount: slot.booster.costCoins })}
-              </p>
-              {slot.exhausted ? (
-                <p className="text-sm font-semibold text-muted">{t("exhausted")}</p>
-              ) : (
-                <Button
-                  type="button"
-                  className="w-full"
-                  // The visible "Open" says nothing about the slot; while opening, the visible "Opening…" is the accessible name.
-                  aria-label={
-                    isOpening ? undefined : t("open", { name, position: slot.slotIndex + 1 })
-                  }
-                  onClick={() => handleOpen(slot.slotIndex)}
-                  disabled={pending}
-                >
-                  {isOpening ? t("opening") : t("openCta")}
-                </Button>
-              )}
-            </li>
-          );
-        })}
+      <ul className="grid w-full grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 xl:grid-cols-6">
+        {offer.slots.map((slot) => (
+          <BoosterShopSlot
+            key={slot.slotIndex}
+            slot={slot}
+            isOpening={openingSlot === slot.slotIndex}
+            disabled={pending}
+            onOpen={handleOpen}
+          />
+        ))}
       </ul>
     </div>
   );
