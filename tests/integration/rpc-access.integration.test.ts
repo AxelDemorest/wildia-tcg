@@ -268,6 +268,7 @@ describe("internal helpers", () => {
     "private.booster_shop_window()",
     "private.pick_shop_booster()",
     "private.open_booster_for(uuid, uuid)",
+    "private.guard_provider_identity()",
   ])("%s is executable by neither anon nor authenticated", (fn) => {
     const [row] = sql<{ anon: boolean; authenticated: boolean }>(
       `select has_function_privilege('anon', '${fn}', 'EXECUTE') as anon,

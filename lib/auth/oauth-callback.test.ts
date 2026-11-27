@@ -6,7 +6,7 @@ import {
 } from "@/lib/auth/oauth-callback";
 
 // The contract under test:
-//   runOAuthCallback({ locale, code, returnTo, error, errorCode }, { exchangeCode, writeLocale, logError })
+//   runOAuthCallback({ locale, code, returnTo, error, errorCode, errorDescription }, { exchangeCode, writeLocale, logError })
 //     -> a site-relative URL
 // exchangeCode(code) -> { id, createdAt, lastSignInAt } (throws when refused);
 // writeLocale(userId, locale); logError(error) receives what must not be shown.
@@ -25,7 +25,7 @@ const justCreated = {
   createdAt: new Date(NOW - 2_000).toISOString(),
   lastSignInAt: new Date(NOW).toISOString(),
 };
-const input = { error: null, errorCode: null };
+const input = { error: null, errorCode: null, errorDescription: null };
 
 describe("runOAuthCallback", () => {
   it("sends a callback with neither code nor error to the login with the generic error, without exchanging", async () => {
@@ -92,11 +92,36 @@ describe("runOAuthCallback", () => {
     const d = deps(justCreated);
 
     const to = await runOAuthCallback(
-      { locale: "/evil.com", code: null, returnTo: null, error: "access_denied", errorCode: null },
+      {
+        locale: "/evil.com",
+        code: null,
+        returnTo: null,
+        error: "access_denied",
+        errorCode: null,
+        errorDescription: null,
+      },
       d,
     );
 
     expect(to.startsWith("/fr/login")).toBe(true);
     expect(to).not.toContain("evil.com");
+  });
+
+  it("sends the visitor to the login with account_refused when the identity guard refused the sign-in", async () => {
+    const d = deps(justCreated);
+
+    const to = await runOAuthCallback(
+      {
+        locale: "fr",
+        code: null,
+        returnTo: null,
+        error: "server_error",
+        errorCode: "unexpected_failure",
+        errorDescription: "Error creating identity",
+      },
+      d,
+    );
+
+    expect(to).toBe("/fr/login?error=account_refused");
   });
 });

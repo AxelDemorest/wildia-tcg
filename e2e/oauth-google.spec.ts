@@ -57,7 +57,7 @@ const oauthErrorMessages = (fr as unknown as { Auth: { oauthError: Record<string
 // The route announcer of Next is an empty role="alert": only the visible ones count.
 const alertOf = (page: Page) => page.getByRole("alert").filter({ hasText: /\S/ });
 
-test("a visitor starts Google from the signup, and the button is disabled while it is pending", async ({
+test("a visitor starts Google from the signup, and both OAuth buttons are disabled while it is pending", async ({
   page,
   baseURL,
 }) => {
@@ -69,22 +69,26 @@ test("a visitor starts Google from the signup, and the button is disabled while 
   // Holds the Server Action's POST, so the pending state can be looked at.
   let release!: () => void;
   const gate = new Promise<void>((resolve) => (release = resolve));
-  await page.route("**/signup", async (route) => {
+  await page.route("**/signup**", async (route) => {
     if (route.request().method() === "POST" && route.request().headers()["next-action"]) {
       await gate;
     }
     await route.continue();
   });
 
-  await page.goto("/fr/signup");
-  const button = page.getByRole("button", { name: "Continuer avec Google" });
-  await button.click();
-  await expect(button).toBeDisabled();
+  await page.goto("/fr/signup?returnTo=%2Ffr%2Fcollection");
+  const google = page.getByRole("button", { name: "Continuer avec Google" });
+  const discord = page.getByRole("button", { name: "Continuer avec Discord" });
+  await google.click();
+  await expect(google).toBeDisabled();
+  await expect(discord).toBeDisabled();
   release();
 
   await expect.poll(() => authorizeUrl?.searchParams.get("provider")).toBe("google");
   await page.waitForURL(/\/auth\/v1\/authorize/);
-  expect(authorizeUrl?.searchParams.get("redirect_to")).toBe(`${baseURL}/fr/auth/callback`);
+  const redirectTo = new URL(authorizeUrl?.searchParams.get("redirect_to") ?? "");
+  expect(redirectTo.origin + redirectTo.pathname).toBe(`${baseURL}/fr/auth/callback`);
+  expect(redirectTo.searchParams.get("returnTo")).toBe("/fr/collection");
 });
 
 test("a refused consent lands on the login with the translated message and the returnTo kept", async ({

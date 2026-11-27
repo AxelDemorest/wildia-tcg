@@ -126,12 +126,18 @@
     "submitLogin": "Se connecter",
     "submitSignup": "S'inscrire",
     "continueWithGoogle": "Continuer avec Google",
-    "errorGeneric": "Une erreur est survenue. Réessayez.",
+    "continueWithDiscord": "Continuer avec Discord",
+    "separator": "ou",
+    "noAccount": "Pas encore de compte ?",
+    "createAccount": "Créer un compte",
+    "haveAccount": "Déjà un compte ?",
+    "logIn": "Se connecter",
     "errorRateLimited": "Trop de tentatives. Patientez une minute.",
     "oauthError": {
-      "access_denied": "Vous avez refusé l’accès à votre compte Google. Réessayez ou utilisez votre e-mail.",
-      "email_unusable": "L’e-mail de votre compte Google n’est pas vérifié ou n’est pas utilisable. Utilisez un autre moyen de connexion.",
-      "failed": "La connexion avec Google a échoué. Réessayez."
+      "access_denied": "Vous avez refusé l’accès à votre compte. Réessayez ou utilisez votre e-mail.",
+      "email_unusable": "L’e-mail de votre compte n’est pas fourni, pas vérifié ou pas utilisable. Utilisez un autre moyen de connexion.",
+      "account_refused": "Connexion refusée : votre e-mail n’est pas vérifié chez ce service, ou un compte avec mot de passe utilise déjà cette adresse. Connectez-vous avec votre e-mail et votre mot de passe.",
+      "failed": "La connexion a échoué. Réessayez."
     }
   },
   "Catalog": {
