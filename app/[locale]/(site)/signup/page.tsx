@@ -1,7 +1,8 @@
 import { redirect } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 import { AuthForm } from "@/components/auth-form";
-import { signUp } from "@/server/actions/auth";
+import { GoogleSignInForm } from "@/components/google-sign-in-form";
+import { signInWithGoogle, signUp } from "@/server/actions/auth";
 import { getUser } from "@/server/auth/require-user";
 
 type Props = { params: Promise<{ locale: string }> };
@@ -18,7 +19,10 @@ export default async function SignupPage({ params }: Props) {
 
   return (
     <div className="flex flex-1 items-center justify-center px-6 py-16">
-      <AuthForm locale={locale} mode="signup" action={signUp} />
+      <div className="flex w-full max-w-sm flex-col gap-4">
+        <AuthForm locale={locale} mode="signup" action={signUp} />
+        <GoogleSignInForm locale={locale} action={signInWithGoogle} />
+      </div>
     </div>
   );
 }

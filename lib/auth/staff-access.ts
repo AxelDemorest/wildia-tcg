@@ -1,3 +1,4 @@
+import { loginHref } from "@/lib/auth/return-to";
 import type { SessionUser } from "@/lib/auth/session-user";
 import type { StaffSession, TeamRole } from "@/lib/auth/staff-session";
 
@@ -23,7 +24,7 @@ export async function runStaffAccess(
 ): Promise<StaffAccess> {
   const user = await deps.getUser();
   if (!user) {
-    return { kind: "redirect", to: `/${locale}/login?returnTo=${encodeURIComponent(path)}` };
+    return { kind: "redirect", to: loginHref(locale, path) };
   }
 
   // Fails closed: a read that fails (database error, missing service key) counts as no role.

@@ -69,7 +69,7 @@ export function BoosterShop({ locale, offer, secondsLeft, isLoggedIn }: Props) {
       <Surface className="p-6 text-center">
         <p className="text-muted">{t("loginRequired")}</p>
         <Link
-          href="/login"
+          href={{ pathname: "/login", query: { returnTo: `/${locale}/boosters` } }}
           className="mt-4 inline-flex rounded-xl bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-strong"
         >
           {t("loginCta")}

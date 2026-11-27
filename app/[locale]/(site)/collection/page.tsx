@@ -25,7 +25,7 @@ export default async function CollectionPage({ params, searchParams }: Props) {
   const { sort: sortParam } = await searchParams;
   setRequestLocale(locale);
   const t = await getTranslations("Collection");
-  const user = await requireUser(locale);
+  const user = await requireUser(locale, `/${locale}/collection`);
   const sort = parseSort(sortParam);
 
   let cards: Awaited<ReturnType<typeof listUserCollection>> = [];

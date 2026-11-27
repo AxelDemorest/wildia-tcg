@@ -16,7 +16,7 @@ export default async function DevGrantsPage({ params }: Props) {
 
   const { locale } = await params;
   setRequestLocale(locale);
-  await requireUser(locale);
+  await requireUser(locale, `/${locale}/dev/grants`);
   const t = await getTranslations("DevGrants");
   const cards = await listCatalogCards(locale);
 

@@ -66,3 +66,12 @@ export function safeReturnTo(raw: string | string[] | undefined, locale: string)
   const path = typeof raw === "string" ? internalPath(raw) : null;
   return path ?? `/${knownLocaleOrDefault(locale)}`;
 }
+
+/**
+ * The login of `locale` that sends the visitor back to `returnTo` (a path of this site) once signed
+ * in. `locale` may come from the browser: it goes through `knownLocaleOrDefault`, so a forged one
+ * never gives `//evil.com/login`.
+ */
+export function loginHref(locale: string, returnTo: string): string {
+  return `/${knownLocaleOrDefault(locale)}/login?returnTo=${encodeURIComponent(returnTo)}`;
+}

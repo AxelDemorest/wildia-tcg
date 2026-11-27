@@ -125,8 +125,14 @@
     "signupTitle": "Inscription",
     "submitLogin": "Se connecter",
     "submitSignup": "S'inscrire",
+    "continueWithGoogle": "Continuer avec Google",
     "errorGeneric": "Une erreur est survenue. Réessayez.",
-    "errorRateLimited": "Trop de tentatives. Patientez une minute."
+    "errorRateLimited": "Trop de tentatives. Patientez une minute.",
+    "oauthError": {
+      "access_denied": "Vous avez refusé l’accès à votre compte Google. Réessayez ou utilisez votre e-mail.",
+      "email_unusable": "L’e-mail de votre compte Google n’est pas vérifié ou n’est pas utilisable. Utilisez un autre moyen de connexion.",
+      "failed": "La connexion avec Google a échoué. Réessayez."
+    }
   },
   "Catalog": {
     "title": "Catalogue des cartes",

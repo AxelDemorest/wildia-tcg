@@ -290,7 +290,7 @@ test("a guest sees the login message and link, and cannot open anything", async 
   await expect(page.getByText("Connectez-vous pour ouvrir un booster.")).toBeVisible();
   await expect(page.getByRole("link", { name: "Se connecter" })).toHaveAttribute(
     "href",
-    "/fr/login",
+    "/fr/login?returnTo=%2Ffr%2Fboosters",
   );
   await expect(page.getByRole("button", { name: /Ouvrir/ })).toHaveCount(0);
 });

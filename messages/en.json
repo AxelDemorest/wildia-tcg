@@ -125,8 +125,14 @@
     "signupTitle": "Sign up",
     "submitLogin": "Log in",
     "submitSignup": "Sign up",
+    "continueWithGoogle": "Continue with Google",
     "errorGeneric": "Something went wrong. Please try again.",
-    "errorRateLimited": "Too many attempts. Wait a minute and try again."
+    "errorRateLimited": "Too many attempts. Wait a minute and try again.",
+    "oauthError": {
+      "access_denied": "You declined access to your Google account. Try again or use your e-mail.",
+      "email_unusable": "The e-mail of your Google account is not verified or cannot be used. Use another way to sign in.",
+      "failed": "Signing in with Google failed. Try again."
+    }
   },
   "Catalog": {
     "title": "Card catalog",

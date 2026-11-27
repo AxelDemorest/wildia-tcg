@@ -6,12 +6,12 @@ Compteurs **en mémoire** (`lib/rate-limit/check.ts`), fenêtre fixe par clé. U
 
 | Route / action | Clé | Limite |
 |----------------|-----|--------|
-| `signIn` / `signUp` | `auth:{ip}` | 20 / minute |
+| `signIn` / `signUp` / `signInWithGoogle` | `auth:{ip}` | 20 / minute |
 | `openShopSlot` | `open_booster:{userId}` | 12 / minute |
 
 En cas de dépassement :
 
-- Auth : message i18n `Auth.errorRateLimited` (pas de redirect).
+- Auth : message i18n `Auth.errorRateLimited` (pas de redirect), y compris sur le formulaire Google : le départ est refusé avant la construction de l’URL d’autorisation (`runOAuthStart`).
 - Booster : `{ ok: false, error: "rate_limited" }` sans appeler la RPC (pas de double dépense).
 
 ## Production multi-instances
