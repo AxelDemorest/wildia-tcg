@@ -78,7 +78,14 @@ test("a player opens one emplacement of their shop offer, reveals the cards and 
   });
 
   // The grid is the list of the page's main area, one item per emplacement, in slotIndex order.
-  const emplacements = () => page.getByRole("main").getByRole("list").first().getByRole("listitem");
+  // The explainer tiles above the shop are lists too, with a decorative pack.
+  const emplacements = () =>
+    page
+      .getByRole("main")
+      .getByRole("list")
+      .filter({ has: page.locator("[data-state]:not(.shop-explainer-pack *)") })
+      .first()
+      .getByRole("listitem");
   const pack = (item: ReturnType<typeof emplacements>) => item.locator("[data-state]");
   const openButton = (item: ReturnType<typeof emplacements>) =>
     item.getByRole("button", { name: /Ouvrir/, disabled: false });

@@ -61,7 +61,13 @@ async function forceSlotsZeroAndOneToStandard(player: Player): Promise<void> {
 
 // The grid is the list of the page's main area, one item per emplacement, in slotIndex order.
 const emplacements = (page: Page) =>
-  page.getByRole("main").getByRole("list").first().getByRole("listitem");
+  page
+    .getByRole("main")
+    .getByRole("list")
+    // The explainer tiles above the shop are lists too, with a decorative pack.
+    .filter({ has: page.locator("[data-state]:not(.shop-explainer-pack *)") })
+    .first()
+    .getByRole("listitem");
 const openButton = (item: ReturnType<typeof emplacements>) =>
   item.getByRole("button", { name: /Ouvrir/, disabled: false });
 
@@ -236,7 +242,7 @@ test("a first visit to the page does not refresh the offer", async ({ page }) =>
   expect(refreshes).toBe(0);
 });
 
-// The grid caps at 4 packs per row (2 on a phone). Default config holds 8 emplacements.
+// The grid has 6 packs per row on desktop, 3 from the sm breakpoint, 2 on a phone. Default config holds 8 emplacements.
 const topOf = async (item: ReturnType<typeof emplacements>) => {
   const box = await item.boundingBox();
   if (!box) throw new Error("emplacement without a bounding box");
@@ -245,9 +251,9 @@ const topOf = async (item: ReturnType<typeof emplacements>) => {
 const SAME_ROW_TOLERANCE_PX = 4;
 
 for (const layout of [
-  { name: "desktop", size: { width: 1280, height: 720 }, perRow: 4 },
+  { name: "desktop", size: { width: 1280, height: 720 }, perRow: 6 },
   { name: "phone", size: { width: 390, height: 844 }, perRow: 2 },
-  { name: "narrow tablet", size: { width: 700, height: 900 }, perRow: 2 },
+  { name: "narrow tablet", size: { width: 700, height: 900 }, perRow: 3 },
 ]) {
   test(`the 8 emplacements are laid out ${layout.perRow} per row (${layout.name})`, async ({
     page,
