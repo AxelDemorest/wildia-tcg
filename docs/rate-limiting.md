@@ -14,6 +14,8 @@ En cas de dépassement :
 - Auth : message i18n `Auth.errorRateLimited` (pas de redirect), y compris sur le formulaire OAuth (Google et Discord) : le départ est refusé avant la construction de l’URL d’autorisation (`runOAuthStart`).
 - Booster : `{ ok: false, error: "rate_limited" }` sans appeler la RPC (pas de double dépense).
 
+Le callback OAuth (`/{locale}/auth/callback`) n’a pas de limite côté app : seul le départ est limité (`auth:{ip}`) ; les limites de Supabase Auth s’appliquent à l’échange du code, mais elles comptent l’IP du serveur Next (l’appel part du serveur), pas celle du visiteur ; une requête sans le cookie du vérificateur n’atteint jamais Supabase.
+
 ## Production multi-instances
 
 Sur Vercel, chaque instance a son propre heap : les limites ne sont pas globales. Pour un MVP solo / preview, c’est acceptable. Avant go-live boutique :
