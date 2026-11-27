@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useId, useRef, useState } from "react";
 import { Link } from "@/i18n/navigation";
+import { MOCK_AVATAR_PATH } from "@/lib/profiles/mock-avatar";
 import { signOut } from "@/server/actions/auth";
 
 type Props = {
@@ -25,6 +26,7 @@ export function HeaderProfileMenu({
   settingsLabel,
 }: Props) {
   const [open, setOpen] = useState(false);
+  const [avatarFailed, setAvatarFailed] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const menuId = useId();
 
@@ -56,7 +58,14 @@ export function HeaderProfileMenu({
         className="relative size-9 shrink-0 overflow-hidden rounded-xl bg-gradient-to-br from-brand to-[#3fb985] p-[2px] transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
         <span className="relative block size-full overflow-hidden rounded-[10px]">
-          <Image src={avatarUrl} alt="" fill sizes="36px" className="object-cover" />
+          <Image
+            src={avatarFailed ? MOCK_AVATAR_PATH : avatarUrl}
+            alt=""
+            fill
+            sizes="36px"
+            className="object-cover"
+            onError={() => setAvatarFailed(true)}
+          />
         </span>
       </button>
 
