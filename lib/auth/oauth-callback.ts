@@ -19,7 +19,7 @@ export type OAuthCallbackDeps = {
 };
 
 /** The login with the error to show, and the page to come back to when there is one. */
-function failureUrl(locale: string, code: OAuthErrorCode, returnTo: string | null): string {
+export function failureUrl(locale: string, code: OAuthErrorCode, returnTo: string | null): string {
   const knownLocale = knownLocaleOrDefault(locale);
   const params = new URLSearchParams({ error: code });
   const safe = safeReturnTo(returnTo ?? undefined, knownLocale);

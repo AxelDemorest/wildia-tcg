@@ -132,11 +132,19 @@
     "createAccount": "Créer un compte",
     "haveAccount": "Déjà un compte ?",
     "logIn": "Se connecter",
+    "checkEmail": "Vérifiez votre boîte de réception : nous avons envoyé un lien de confirmation à {email}. Votre session commence quand vous l’ouvrez.",
+    "nothingReceived": "Rien reçu d’ici une minute ?",
+    "resendLink": "Renvoyer le lien",
+    "resentLink": "Si l’adresse attend encore sa confirmation, un nouveau lien vient d’être envoyé. Seul le dernier lien fonctionne.",
+    "resendFailed": "L’envoi du lien a échoué. Réessayez dans un instant.",
+    "errorEmailNotConfirmed": "Votre mot de passe est bon, mais l’adresse n’est pas confirmée : confirmez votre adresse avec le lien reçu par e-mail.",
+    "errorSignUpFailed": "L’inscription a échoué. Réessayez dans un instant.",
     "errorRateLimited": "Trop de tentatives. Patientez une minute.",
     "oauthError": {
       "access_denied": "Vous avez refusé l’accès à votre compte. Réessayez ou utilisez votre e-mail.",
       "email_unusable": "L’e-mail de votre compte n’est pas fourni, pas vérifié ou pas utilisable. Utilisez un autre moyen de connexion.",
       "account_refused": "Connexion refusée : votre e-mail n’est pas vérifié chez ce service, ou un compte avec mot de passe utilise déjà cette adresse. Connectez-vous avec votre e-mail et votre mot de passe.",
+      "link_expired": "Connectez-vous avec votre e-mail et votre mot de passe : si l’adresse attend encore sa confirmation, vous pourrez recevoir un nouveau lien.",
       "failed": "La connexion a échoué. Réessayez."
     }
   },

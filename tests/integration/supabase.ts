@@ -271,6 +271,87 @@ export async function adoptUserByEmail(email: string): Promise<string> {
   return user.id;
 }
 
+/** Tracks an account by id, so cleanup deletes it (cleanup tolerates one already deleted). */
+export function trackUser(id: string): void {
+  createdUsers.push(id);
+}
+
+/**
+ * Creates an e-mail account the way a sign-up does, without any mail and without the admin
+ * API's own confirmation (`createPlayer` confirms with no click): `admin.generateLink` of type
+ * "signup" makes the user unconfirmed, with an `email` identity whose `email_verified` is false.
+ * With `confirmed`, the link's `hashed_token` goes to `verifyOtp({ token_hash, type: "signup" })`,
+ * what the `/auth/confirm` route does for the link of the mail: it sets `email_confirmed_at` and
+ * `identity_data.email_verified = true`, and opens a session.
+ */
+export async function createSignedUpAccount({
+  confirmed,
+}: {
+  confirmed: boolean;
+}): Promise<{ id: string; email: string; password: string }> {
+  const email = `test-${randomUUID()}@example.test`;
+  const password = randomUUID();
+  const { data, error } = await admin.auth.admin.generateLink({ type: "signup", email, password });
+  if (error) throw error;
+  createdUsers.push(data.user.id);
+  if (confirmed) {
+    // A client of its own: the session it opens must not stay on the shared `visitor`.
+    const { error: verifyError } = await createClient(url, anonKey, options).auth.verifyOtp({
+      token_hash: data.properties.hashed_token,
+      type: "signup",
+    });
+    if (verifyError) throw new Error(`Le lien de confirmation a échoué : ${verifyError.message}`);
+  }
+  return { id: data.user.id, email, password };
+}
+
+/**
+ * Signs up through Supabase Auth's public API (the anon key, like anyone on the internet): the
+ * account stays unconfirmed (the local stack asks for confirmation) and a mail is sent. `data` is
+ * the sign-up metadata (raw_user_meta_data), which a visitor chooses freely. `email` defaults to a
+ * new address.
+ */
+export async function signUpPublicly({
+  email = `test-${randomUUID()}@example.test`,
+  data: metadata,
+}: { email?: string; data?: Record<string, unknown> } = {}): Promise<{
+  id: string;
+  email: string;
+  password: string;
+}> {
+  const password = randomUUID();
+  const { data, error } = await visitor.auth.signUp({
+    email,
+    password,
+    options: { data: metadata },
+  });
+  if (error) throw error;
+  if (!data.user) throw new Error("signUpPublicly : pas d'utilisateur");
+  createdUsers.push(data.user.id);
+  return { id: data.user.id, email, password };
+}
+
+/**
+ * Confirms an account without any click, as Supabase Auth does for a sign-up when "Confirm email"
+ * is off (Autoconfirm): `email_confirmed_at` is set and `raw_user_meta_data.email_verified` becomes
+ * true, while the `email` identity's own `identity_data.email_verified` stays false.
+ */
+export function confirmWithoutClick(userId: string): void {
+  if (!/^[0-9a-f-]{36}$/.test(userId))
+    throw new Error("confirmWithoutClick : identifiant invalide");
+  const [row] = sql<{ updated: number }>(
+    `with updated as (
+       update auth.users
+       set email_confirmed_at = now(),
+           raw_user_meta_data = raw_user_meta_data || '{"email_verified": true}'::jsonb
+       where id = '${userId}'
+       returning id
+     )
+     select count(*)::int as updated from updated`,
+  );
+  if (row?.updated !== 1) throw new Error("confirmWithoutClick : compte introuvable");
+}
+
 /** Deletes a player's account now, as the dashboard or an account deletion would. */
 export async function deletePlayer(player: Player) {
   const result = await admin.auth.admin.deleteUser(player.id);
@@ -690,7 +771,10 @@ export async function cleanup(): Promise<void> {
   }
   for (const id of createdUsers.splice(0)) {
     const { error } = await admin.auth.admin.deleteUser(id);
-    if (error) failures.push(`compte ${id} : ${error.message}`);
+    // An account a test already deleted (replaced by a re-signup, say) is not a failure.
+    if (error && error.code !== "user_not_found" && error.status !== 404) {
+      failures.push(`compte ${id} : ${error.message}`);
+    }
   }
   const boosters = createdBoosters.splice(0);
   if (boosters.length > 0) {

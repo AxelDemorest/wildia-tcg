@@ -9,7 +9,7 @@ Les rôles ne s’accordent jamais selon le domaine d’e-mail : chaque accès e
 - **Supabase hébergé** : éditeur SQL du projet Supabase (il tourne avec les droits du propriétaire de la base).
 - **Local** : l’éditeur SQL du Studio local, ou un fichier avec `npx supabase db query --local -f <fichier>.sql`. Ne pas passer le SQL en argument entre guillemets : le shell remplace chaque `$$` par un numéro de processus et casse le bloc. `db query -f` n’accepte qu’une instruction par fichier : le bloc `do` va seul dans son propre fichier.
 
-Le compte doit déjà exister : la personne s’inscrit d’abord comme n’importe quel joueur.
+Le compte doit déjà exister : la personne s’inscrit d’abord comme n’importe quel joueur et a ouvert le lien de confirmation (une réinscription de l’adresse supprime un compte non confirmé, et avec lui son rôle d’équipe).
 
 ## Donner le rôle `super_admin`
 

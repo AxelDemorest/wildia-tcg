@@ -1,4 +1,5 @@
-import { knownLocaleOrDefault, safeReturnTo } from "@/lib/auth/return-to";
+import { oauthCallbackUrl } from "@/lib/auth/callback-url";
+import { knownLocaleOrDefault } from "@/lib/auth/return-to";
 
 /** The providers the site offers: the only ones a start may name. */
 export const OAUTH_PROVIDERS = ["google", "discord"] as const;
@@ -42,13 +43,11 @@ export async function runOAuthStart(
   const origin = await deps.getOrigin();
   if (!origin) return { ok: false, error: "failed" };
 
-  const callback = new URL(`/${locale}/auth/callback`, origin);
-  const safe = safeReturnTo(returnTo, locale);
-  // The home is the callback's own fallback: no need to carry it.
-  if (safe !== `/${locale}`) callback.searchParams.set("returnTo", safe);
-
   try {
-    return { ok: true, url: await deps.buildAuthorizeUrl(callback.toString(), provider) };
+    return {
+      ok: true,
+      url: await deps.buildAuthorizeUrl(oauthCallbackUrl(origin, locale, returnTo), provider),
+    };
   } catch {
     return { ok: false, error: "failed" };
   }

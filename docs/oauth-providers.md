@@ -88,7 +88,7 @@ Régler d’abord l’**URL Configuration**, puis activer les fournisseurs.
 **Authentication → URL Configuration** :
 
 - **Site URL** : `https://<hôte-prod>`, l’hôte que les visiteurs utilisent vraiment : un callback est accepté dès que son hôte est celui de la Site URL, quels que soient le port et le chemin.
-- **Redirect URLs** : `https://<hôte-prod>/*/auth/callback**`. Sur l’hôte de la Site URL, ce motif n’ajoute rien : il consigne explicitement les callbacks attendus (les deux langues, avec ou sans `returnTo`). La garde est « l’hôte de la Site URL, plus cette liste, et aucun autre hôte » ; jamais de joker sur l’hôte, car le callback de l’app prend l’hôte des en-têtes de la requête sans le contrôler.
+- **Redirect URLs** : `https://<hôte-prod>/*/auth/callback**` et `https://<hôte-prod>/*/auth/confirm**` (le lien du mail de confirmation, `/{locale}/auth/confirm?returnTo=…&token_hash=…`). Sur l’hôte de la Site URL, ce motif n’ajoute rien : il consigne explicitement les callbacks attendus (les deux langues, avec ou sans `returnTo`). La garde est « l’hôte de la Site URL, plus cette liste, et aucun autre hôte » ; jamais de joker sur l’hôte, car le callback de l’app prend l’hôte des en-têtes de la requête sans le contrôler.
 
 **Authentication → Sign In / Providers** :
 
@@ -104,9 +104,9 @@ Un déploiement d’aperçu a un hôte qui n’est ni celui de la Site URL ni da
 ### Checklist d’activation
 
 1. `npm run db:migrate` **avant** d’activer Google ou Discord, puis vérifier que `20261126130000` figure comme appliquée (`npx supabase migration list --linked`). La migration `20261126130000_oauth_identity_guard.sql` pose le déclencheur `private.guard_provider_identity` ; sans lui, un compte pré-inscrit par e-mail avec l’adresse d’un autre pourrait capter la connexion Google ou Discord de son propriétaire (voir `docs/security.md`).
-2. Vérifier **Authentication → Sign In / Providers → Email → Confirm email** :
-   - désactivé (cas du local) : une adresse inscrite par e-mail ne peut pas se lier à Google ou Discord, la connexion est refusée avec `account_refused`, jusqu’à CYR-119 (qui rétablit la confirmation) ;
-   - activé : la pré-inscription d’une adresse tierce est déjà couverte ; le refus R2 du déclencheur reste en défense en profondeur.
+2. Vérifier **Authentication → Sign In / Providers → Email → Confirm email** (CYR-119) :
+   - désactivé : les comptes inscrits par e-mail sont confirmés sans clic, leur identité `email` n’est jamais vérifiée : la connexion Google ou Discord avec la même adresse est refusée (`account_refused`) ;
+   - activé (le local l’est) : un compte confirmé par le lien se lie à Google ou Discord avec la même adresse, et la propriétaire d’une adresse pré-inscrite par un tiers prend le compte. **L’activer en dernier**, après le SMTP et le modèle de mail (README, « Production »).
 3. Créer les applications Google et Discord **de production** (section précédente).
 4. Dashboard Supabase : régler l’URL Configuration **avant** d’activer les deux fournisseurs (section précédente).
 5. Dérouler les parcours G1–G4, D1–D4, I1–I3 et P1–P2 de la checklist de recette ci-dessous sur `https://<hôte-prod>`, en `fr` et en `en` (S1–S3 et G5 ne concernent que le local).
@@ -127,7 +127,7 @@ Un déploiement d’aperçu a un hôte qui n’est ni celui de la Site URL ni da
 - [ ] **G1 — Inscription.** Nouveau compte Google depuis `/en/signup` : arrivée sur `/en`, connecté. Dans Studio, `profiles.locale = en`, avec le nom et l’avatar Google. L’en-tête affiche l’avatar Google (seule étape qui télécharge un vrai avatar : les tests e2e simulent `/_next/image`).
 - [ ] **G2 — Retour sur la page voulue.** **Au moins 5 minutes après G1** (le compte n’est plus « tout juste créé »), se déconnecter, ouvrir `/fr/login?returnTo=/fr/boosters`, puis Google : arrivée sur `/fr/boosters`, `locale` toujours `en`.
 - [ ] **G3 — Refus.** Annuler sur l’écran de Google : retour sur `/fr/login` avec le message de refus et le `returnTo` conservé.
-- [ ] **G4 — Même adresse que le compte e-mail.** S’inscrire par e-mail avec une adresse Gmail, puis Google avec la même adresse : **refusé** avec `account_refused` (R2), jusqu’à CYR-119.
+- [ ] **G4 — Même adresse que le compte e-mail.** S’inscrire par e-mail avec une adresse Gmail, ouvrir le lien reçu (Mailpit en local), puis Google avec la même adresse : même compte et même collection, identités `email` et `google`.
 - [ ] **G5 — Les deux hôtes (local).** Répéter G1 sur `http://localhost:3000` et sur `http://127.0.0.1:3000`.
 
 ### Discord
@@ -140,9 +140,14 @@ Un déploiement d’aperçu a un hôte qui n’est ni celui de la Site URL ni da
 
 ### Garde d’identité
 
-- [ ] **I1 — Compte e-mail, puis Discord.** Compte e-mail X, puis Discord (vérifié) avec l’adresse de X : refusé avec `account_refused`, le compte X est inchangé.
+- [ ] **I1 — Compte e-mail confirmé, puis Discord.** Compte e-mail X confirmé par le lien, puis Discord (vérifié) avec l’adresse de X : même compte. Avec un compte confirmé sans clic (confirmation automatique), la liaison est refusée avec `account_refused` et le compte est inchangé.
 - [ ] **I2 — E-mail Discord non vérifié.** Discord avec un e-mail non vérifié égal à celui d’un compte existant : refusé, aucune identité ajoutée.
 - [ ] **I3 — Google, puis Discord.** Compte Google, puis Discord vérifié avec la même adresse : même compte, deux identités.
+
+### Attaque B (adresse pré-inscrite par un tiers)
+
+- [ ] **A1 — Parcours complet avec un vrai Google.** Avec la confirmation activée : (1) s’inscrire par e-mail avec l’adresse Gmail de la testeuse, **sans ouvrir** le lien (c’est l’attaquant, qui connaît le mot de passe) ; (2) se connecter avec Google sur cette adresse : arrivée connectée ; (3) dans Studio (ou l’éditeur de table), le compte porte la seule identité `google`, `encrypted_password` est vide ; (4) la connexion par e-mail avec l’ancien mot de passe échoue.
+- [ ] **A2 — Pré-inscription remplacée.** S’inscrire deux fois avec la même adresse non confirmée (deux mots de passe) : seul le second mot de passe ouvre le compte une fois le dernier lien ouvert (le lien ouvre aussi la session : `/auth/confirm`).
 
 ### Production seulement
 

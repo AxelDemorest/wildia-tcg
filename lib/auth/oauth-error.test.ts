@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { oauthErrorCode, parseOAuthError } from "@/lib/auth/oauth-error";
 
 // The contract under test (lib/auth/oauth-error.ts, model: lib/boosters/shop-notice.ts):
-//   OAUTH_ERRORS = ["access_denied", "email_unusable", "account_refused", "failed"] as const
+//   OAUTH_ERRORS = ["access_denied", "email_unusable", "account_refused", "link_expired", "failed"] as const
 //   oauthErrorCode(error, errorCode, description: string | null): OAuthErrorCode
 //     what Supabase Auth sent in `error` / `error_code` / `error_description` -> the UI code
 //   parseOAuthError(value: string | null): OAuthErrorCode | null

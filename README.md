@@ -87,7 +87,7 @@ npm run db:pull-cards     # copie le catalogue de cartes de la prod (lecture seu
 
 **En local.** Créer une application Google (client « Application Web ») et une application Discord, avec l’URI de redirection `http://127.0.0.1:55321/auth/v1/callback`. Mettre les quatre variables `SUPABASE_AUTH_EXTERNAL_{GOOGLE,DISCORD}_{CLIENT_ID,SECRET}` dans `supabase/.env` (ignoré par git, lu par la CLI Supabase seule ; un export dans le shell marche aussi), puis `npx supabase stop && npx supabase start`. Les deux fournisseurs sont déjà activés dans `supabase/config.toml`, Google avec `skip_nonce_check = true` (requis en local). Tester « Continuer avec Google » ou « … Discord » sur `http://localhost:3000` ou `http://127.0.0.1:3000`.
 
-**En production.** Pas de fichier : les secrets sont saisis dans le dashboard Supabase (**Authentication → Sign In / Providers**), avec des applications Google et Discord distinctes de celles du local, et jamais dans Vercel. Avant d’activer : `npm run db:migrate` (garde d’identité). Dans **URL Configuration** : Site URL `https://<hôte-prod>`, Redirect URLs `https://<hôte-prod>/*/auth/callback**` (un callback est accepté si son hôte est celui de la Site URL ou s’il est dans cette liste ; jamais d’autre hôte). Les aperçus Vercel ne gèrent pas OAuth.
+**En production.** Pas de fichier : les secrets sont saisis dans le dashboard Supabase (**Authentication → Sign In / Providers**), avec des applications Google et Discord distinctes de celles du local, et jamais dans Vercel. Avant d’activer : `npm run db:migrate` (garde d’identité). Dans **URL Configuration** : Site URL `https://<hôte-prod>`, Redirect URLs `https://<hôte-prod>/*/auth/callback**` et `https://<hôte-prod>/*/auth/confirm**` (un callback ou un lien de confirmation est accepté si son hôte est celui de la Site URL ou s’il est dans cette liste ; jamais d’autre hôte). Les aperçus Vercel ne gèrent pas OAuth.
 
 URI de redirection à déclarer :
 
@@ -102,6 +102,26 @@ Si ça ne marche pas :
 - Retour sur l’accueil, déconnecté, avec `?code=` : l’hôte du callback n’est pas celui de la Site URL ni dans la liste (`additional_redirect_urls` en local, Redirect URLs en prod). En prod : visiteur passé par un alias `www.`, `*.vercel.app` ou un aperçu.
 - JSON brut « provider is not enabled » : fournisseur non activé.
 - App sur un autre port que 3000 : sur `127.0.0.1` tout port fonctionne ; sur `localhost:<port>`, ouvrir `http://127.0.0.1:<port>` ou ajouter `http://localhost:<port>/**` à `additional_redirect_urls` en local, sans le committer.
+
+### E-mails de confirmation
+
+L’inscription par e-mail envoie un lien de confirmation ; le lien mène à `/{locale}/auth/confirm` de l’app, qui ouvre la session dans le navigateur qui l’ouvre (lien valable 1 h, usage unique). Le mail est en français ou en anglais selon la langue de l’inscription (`supabase/templates/confirmation.html`, sujet dans `supabase/config.toml`, bloc `[auth.email.template.confirmation]`).
+
+**En local.** Les mails arrivent dans Mailpit (voir plus haut), sans SMTP. Après une modification du modèle ou de `config.toml` : `npx supabase stop && npx supabase start`.
+
+**En production.** `SUPABASE_SERVICE_ROLE_KEY` est requise partout où l’inscription par e-mail tourne, aperçus Vercel compris (elle supprime le compte non confirmé d’une adresse avant de réinscrire). Sans SMTP personnalisé, Supabase n’envoie qu’aux membres de l’équipe du projet, avec une limite horaire très basse : activer « Confirm email » sans SMTP bloquerait toutes les inscriptions. Dans l’ordre :
+
+1. `npm run db:migrate` (suppression des comptes non confirmés, garde d’identité assouplie).
+2. Déployer l’app. Tant que « Confirm email » est désactivé, l’inscription connecte tout de suite, comme avant.
+3. SMTP, chez le fournisseur de ton choix :
+   - **Authentication → Emails → SMTP Settings** : hôte, port, utilisateur, mot de passe, adresse et nom d’expéditeur ;
+   - domaine de l’expéditeur avec SPF, DKIM et DMARC ;
+   - limite d’envoi du dashboard (**Authentication → Rate Limits**) adaptée au trafic attendu ;
+   - **Authentication → Emails → Confirm signup** : copier le sujet de `config.toml` et le corps de `supabase/templates/confirmation.html` (l’hébergé ne lit pas ces fichiers) ;
+   - **Minimum interval between emails** (`max_frequency`) à 60 s.
+4. Tester le SMTP avec un autre mail (réinitialisation de mot de passe : aucun mail de confirmation n’est envoyé tant que « Confirm email » est désactivé), puis activer **Authentication → Sign In / Providers → Email → Confirm email** **en dernier**, et vérifier tout de suite le français et l’anglais avec deux inscriptions.
+
+Détails sécurité : [`docs/security.md`](docs/security.md).
 
 ### Lancer l’app
 
