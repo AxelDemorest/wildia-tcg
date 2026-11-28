@@ -76,20 +76,22 @@ test("an e-mail signup started with a returnTo has no session until the link, wh
 }) => {
   const email = `test-${randomUUID().slice(0, 8)}@example.test`;
 
-  await page.goto("/fr/signup?returnTo=%2Ffr%2Fcollection");
+  await page.goto("/fr/signup?returnTo=%2Ffr%2Fboosters");
   await page.getByLabel("E-mail").fill(email);
   await page.getByLabel("Mot de passe").fill(randomUUID());
   await page.getByRole("button", { name: "S'inscrire" }).click();
 
   await expect(page.getByRole("status").filter({ hasText: /vérifiez votre boîte/i })).toBeVisible();
-  await adoptUserByEmail(email);
+  const userId = await adoptUserByEmail(email);
 
-  // requireUser sends a signed-out visitor back to the login: no session before the click.
-  await page.goto("/fr/collection");
-  await expect(page).toHaveURL(/\/fr\/login/);
+  // Only the owner opens their settings: a 404 means no session before the click.
+  const before = await page.goto(`/fr/players/${userId}/settings`);
+  expect(before?.status()).toBe(404);
 
   await page.goto(await waitForConfirmLink(email));
-  await expect(page).toHaveURL(/\/fr\/collection$/, { timeout: 20_000 });
+  await expect(page).toHaveURL(/\/fr\/boosters$/, { timeout: 20_000 });
+  const after = await page.goto(`/fr/players/${userId}/settings`);
+  expect(after?.status()).toBe(200);
 });
 
 test("an e-mail signup whose hidden returnTo is forged lands on the home after the link, signed in", async ({
@@ -97,7 +99,7 @@ test("an e-mail signup whose hidden returnTo is forged lands on the home after t
 }) => {
   const email = `test-${randomUUID().slice(0, 8)}@example.test`;
 
-  await page.goto("/fr/signup?returnTo=%2Ffr%2Fcollection");
+  await page.goto("/fr/signup?returnTo=%2Ffr%2Fboosters");
   // The e-mail form is the one holding the password field.
   const emailForm = page.locator("form").filter({ has: page.getByLabel("Mot de passe") });
   await emailForm
@@ -110,11 +112,11 @@ test("an e-mail signup whose hidden returnTo is forged lands on the home after t
   await page.getByRole("button", { name: "S'inscrire" }).click();
 
   await expect(page.getByRole("status").filter({ hasText: /vérifiez votre boîte/i })).toBeVisible();
-  await adoptUserByEmail(email);
+  const userId = await adoptUserByEmail(email);
 
   await page.goto(await waitForConfirmLink(email));
   await expect(page).toHaveURL(/\/fr$/, { timeout: 20_000 });
-  // Signed in: the collection does not send us back to the login.
-  await page.goto("/fr/collection");
-  await expect(page).toHaveURL(/\/fr\/collection$/);
+  // Only the owner opens their settings: a 200 proves the session.
+  const response = await page.goto(`/fr/players/${userId}/settings`);
+  expect(response?.status()).toBe(200);
 });

@@ -65,11 +65,7 @@ export function refusalReloadsOffer(code: RefusalCode): boolean {
 
 /** The pages whose cached render shows the pack count or the shop offer, stale after an opening. */
 export function pathsRevalidatedAfterOpening(locale: string, userId: string): string[] {
-  return [
-    `/${locale}/collection`,
-    `/${locale}/players/${userId}/collection`,
-    `/${locale}/boosters`,
-  ];
+  return [`/${locale}/players/${userId}/collection`, `/${locale}/boosters`];
 }
 
 /** Orchestrates the opening of an emplacement; dependencies are injected so it runs without Next nor Supabase. */

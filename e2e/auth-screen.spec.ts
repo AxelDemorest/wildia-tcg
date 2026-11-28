@@ -6,7 +6,7 @@ test.afterAll(cleanup);
 const screens = [
   {
     name: "login in French",
-    path: "/fr/login?returnTo=%2Ffr%2Fcollection",
+    path: "/fr/login?returnTo=%2Ffr%2Fboosters",
     heading: "Connexion",
     submit: "Se connecter",
     google: "Continuer avec Google",
@@ -15,13 +15,13 @@ const screens = [
     email: "E-mail",
     password: "Mot de passe",
     crossPath: "/fr/signup",
-    crossReturnTo: "/fr/collection",
+    crossReturnTo: "/fr/boosters",
     crossText: /Créer un compte/,
     crossSentence: /Pas encore de compte\s*\?/,
   },
   {
     name: "signup in English",
-    path: "/en/signup?returnTo=%2Fen%2Fcollection",
+    path: "/en/signup?returnTo=%2Fen%2Fboosters",
     heading: "Sign up",
     submit: "Sign up",
     google: "Continue with Google",
@@ -30,7 +30,7 @@ const screens = [
     email: "Email",
     password: "Password",
     crossPath: "/en/login",
-    crossReturnTo: "/en/collection",
+    crossReturnTo: "/en/boosters",
     crossText: /Log in/,
     crossSentence: /Already have an account\s*\?/,
   },
@@ -90,9 +90,9 @@ test("a signed-in visitor opening the signup with a returnTo is sent to that pag
 }) => {
   await signInAsPlayer(page);
 
-  await page.goto("/fr/signup?returnTo=%2Ffr%2Fcollection");
+  await page.goto("/fr/signup?returnTo=%2Ffr%2Fboosters");
 
-  await expect(page).toHaveURL(/\/fr\/collection$/, { timeout: 20_000 });
+  await expect(page).toHaveURL(/\/fr\/boosters$/, { timeout: 20_000 });
 });
 
 test("a signed-in visitor opening the signup with a forged returnTo lands on the home", async ({

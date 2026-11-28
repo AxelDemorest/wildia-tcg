@@ -21,7 +21,7 @@ async function signUpFromForm(page: Page, path: string, email: string, password:
   await page.getByLabel("Mot de passe").fill(password);
   await page.getByRole("button", { name: "S'inscrire" }).click();
   await expect(page.getByRole("status").filter({ hasText: /vérifiez votre boîte/i })).toBeVisible();
-  await adoptUserByEmail(email);
+  return adoptUserByEmail(email);
 }
 
 test("a link opened in another browser opens a session there, and opened again in the sign-up browser it is a used link", async ({
@@ -36,7 +36,7 @@ test("a link opened in another browser opens a session there, and opened again i
   await page.getByLabel("Password").fill(randomUUID());
   await page.getByRole("button", { name: "Sign up" }).click();
   await expect(page.getByRole("status").filter({ hasText: /check your inbox/i })).toBeVisible();
-  await adoptUserByEmail(email);
+  const userId = await adoptUserByEmail(email);
   const link = await waitForConfirmLink(email);
 
   // Another browser: same client address, no cookie.
@@ -45,9 +45,9 @@ test("a link opened in another browser opens a session there, and opened again i
   try {
     await otherPage.goto(link);
     await expect(otherPage).toHaveURL(/\/en$/, { timeout: 20_000 });
-    // Signed in: the collection does not send us back to the login.
-    await otherPage.goto("/en/collection");
-    await expect(otherPage).toHaveURL(/\/en\/collection$/);
+    // Only the owner opens their settings: a 200 proves the session.
+    const response = await otherPage.goto(`/en/players/${userId}/settings`);
+    expect(response?.status()).toBe(200);
   } finally {
     await other.close();
   }
@@ -65,7 +65,7 @@ test("a password sign-in before the link asks to confirm the address, offers a n
 }) => {
   const email = `test-${randomUUID().slice(0, 8)}@example.test`;
   const password = randomUUID();
-  await signUpFromForm(page, "/fr/signup", email, password);
+  const userId = await signUpFromForm(page, "/fr/signup", email, password);
   await afterMaxFrequency(email);
 
   await page.goto("/fr/login");
@@ -81,22 +81,29 @@ test("a password sign-in before the link asks to confirm the address, offers a n
 
   await page.goto(await waitForConfirmLink(email, { nth: 2 }));
   await expect(page).toHaveURL(/\/fr$/, { timeout: 20_000 });
-  await page.goto("/fr/collection");
-  await expect(page).toHaveURL(/\/fr\/collection$/);
+  const response = await page.goto(`/fr/players/${userId}/settings`);
+  expect(response?.status()).toBe(200);
 });
 
 test("the resend button of the check-your-inbox screen sends a second link that signs in on the page asked for", async ({
   page,
 }) => {
   const email = `test-${randomUUID().slice(0, 8)}@example.test`;
-  await signUpFromForm(page, "/fr/signup?returnTo=%2Ffr%2Fcollection", email, randomUUID());
+  const userId = await signUpFromForm(
+    page,
+    "/fr/signup?returnTo=%2Ffr%2Fboosters",
+    email,
+    randomUUID(),
+  );
   await afterMaxFrequency(email);
 
   await page.getByRole("button", { name: /renvoyer le lien/i }).click();
   await expect(page.getByRole("status").filter({ hasText: /nouveau lien/i })).toBeVisible();
 
   await page.goto(await waitForConfirmLink(email, { nth: 2 }));
-  await expect(page).toHaveURL(/\/fr\/collection$/, { timeout: 20_000 });
+  await expect(page).toHaveURL(/\/fr\/boosters$/, { timeout: 20_000 });
+  const response = await page.goto(`/fr/players/${userId}/settings`);
+  expect(response?.status()).toBe(200);
 });
 
 test("the resend button of the check-your-inbox screen answers as usual when the account was replaced by a later sign-up, and sends nothing", async ({

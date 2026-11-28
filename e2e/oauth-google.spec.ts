@@ -19,7 +19,7 @@ test("a visitor signs in with Google and comes back to the page they asked for",
     await route.fulfill({ contentType: "text/html", body: "<p>Google (stub)</p>" });
   });
 
-  await page.goto("/en/login?returnTo=%2Fen%2Fcollection");
+  await page.goto("/en/login?returnTo=%2Fen%2Fboosters");
   await page.getByRole("button", { name: "Continue with Google" }).click();
 
   await expect.poll(() => authorizeUrl?.searchParams.get("provider")).toBe("google");
@@ -39,8 +39,10 @@ test("a visitor signs in with Google and comes back to the page they asked for",
   callback.searchParams.set("code", code);
   await page.goto(callback.toString());
 
-  // requireUser sends a signed-out visitor back to the login: staying here proves the session.
-  await expect(page).toHaveURL(/\/en\/collection$/, { timeout: 20_000 });
+  await expect(page).toHaveURL(/\/en\/boosters$/, { timeout: 20_000 });
+  // Only the owner opens their settings: a 200 proves the session.
+  const settings = await page.goto(`/en/players/${account.id}/settings`);
+  expect(settings?.status()).toBe(200);
 
   const { data, error } = await admin
     .from("profiles")
@@ -76,7 +78,7 @@ test("a visitor starts Google from the signup, and both OAuth buttons are disabl
     await route.continue();
   });
 
-  await page.goto("/fr/signup?returnTo=%2Ffr%2Fcollection");
+  await page.goto("/fr/signup?returnTo=%2Ffr%2Fboosters");
   const google = page.getByRole("button", { name: "Continuer avec Google" });
   const discord = page.getByRole("button", { name: "Continuer avec Discord" });
   await google.click();
@@ -88,21 +90,21 @@ test("a visitor starts Google from the signup, and both OAuth buttons are disabl
   await page.waitForURL(/\/auth\/v1\/authorize/);
   const redirectTo = new URL(authorizeUrl?.searchParams.get("redirect_to") ?? "");
   expect(redirectTo.origin + redirectTo.pathname).toBe(`${baseURL}/fr/auth/callback`);
-  expect(redirectTo.searchParams.get("returnTo")).toBe("/fr/collection");
+  expect(redirectTo.searchParams.get("returnTo")).toBe("/fr/boosters");
 });
 
 test("a refused consent lands on the login with the translated message and the returnTo kept", async ({
   page,
 }) => {
   await page.goto(
-    "/fr/auth/callback?error=access_denied&error_description=User+denied+access+raw-supabase-text&returnTo=%2Ffr%2Fcollection",
+    "/fr/auth/callback?error=access_denied&error_description=User+denied+access+raw-supabase-text&returnTo=%2Ffr%2Fboosters",
   );
 
   await expect(page).toHaveURL(/\/fr\/login\?/, { timeout: 20_000 });
   const url = new URL(page.url());
   expect(url.pathname).toBe("/fr/login");
   expect(url.searchParams.get("error")).toBe("access_denied");
-  expect(url.searchParams.get("returnTo")).toBe("/fr/collection");
+  expect(url.searchParams.get("returnTo")).toBe("/fr/boosters");
   await expect(alertOf(page)).toHaveText(oauthErrorMessages.access_denied);
   await expect(page.getByText("raw-supabase-text")).toHaveCount(0);
 });

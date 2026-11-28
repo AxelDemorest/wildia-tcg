@@ -20,7 +20,7 @@ test("a visitor signs in with Discord and comes back to the page they asked for"
     await route.fulfill({ contentType: "text/html", body: "<p>Discord (stub)</p>" });
   });
 
-  await page.goto("/fr/login?returnTo=%2Ffr%2Fcollection");
+  await page.goto("/fr/login?returnTo=%2Ffr%2Fboosters");
   await page.getByRole("button", { name: "Continuer avec Discord" }).click();
 
   await expect.poll(() => authorizeUrl?.searchParams.get("provider")).toBe("discord");
@@ -42,8 +42,10 @@ test("a visitor signs in with Discord and comes back to the page they asked for"
   callback.searchParams.set("code", code);
   await page.goto(callback.toString());
 
-  // requireUser sends a signed-out visitor back to the login: staying here proves the session.
-  await expect(page).toHaveURL(/\/fr\/collection$/, { timeout: 20_000 });
+  await expect(page).toHaveURL(/\/fr\/boosters$/, { timeout: 20_000 });
+  // Only the owner opens their settings: a 200 proves the session.
+  const settings = await page.goto(`/fr/players/${account.id}/settings`);
+  expect(settings?.status()).toBe(200);
 });
 
 test("a Discord e-mail that needs verification lands on the login with the e-mail message", async ({

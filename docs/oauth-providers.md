@@ -120,7 +120,7 @@ Un déploiement d’aperçu a un hôte qui n’est ni celui de la Site URL ni da
 
 - [ ] **S1 — Google, mise en route.** Créer l’application OAuth (redirect URI de Supabase Auth), renseigner les variables, puis `npx supabase stop && npx supabase start`.
 - [ ] **S2 — Discord, mise en route.** Sans les variables, `npx supabase start` démarre. Avec elles et un redémarrage, l’URL d’autorisation de Discord porte le vrai `client_id` (voir « Local »).
-- [ ] **S3 — Local, variables lues depuis `supabase/.env`.** Avec les quatre variables **seulement** dans `supabase/.env` : Google depuis `http://localhost:3000/en/login?returnTo=%2Fen%2Fcollection` arrive sur `/en/collection`, connecté ; Discord depuis `http://127.0.0.1:3000/fr/signup` arrive sur `/fr`.
+- [ ] **S3 — Local, variables lues depuis `supabase/.env`.** Avec les quatre variables **seulement** dans `supabase/.env` : Google depuis `http://localhost:3000/en/login?returnTo=%2Fen%2Fboosters` arrive sur `/en/boosters`, connecté ; Discord depuis `http://127.0.0.1:3000/fr/signup` arrive sur `/fr`.
 
 ### Google
 
@@ -133,7 +133,7 @@ Un déploiement d’aperçu a un hôte qui n’est ni celui de la Site URL ni da
 ### Discord
 
 - [ ] **D1 — Inscription.** Nouveau compte depuis `/fr/signup` : l’écran de Discord demande l’e-mail. Arrivée sur `/fr`, connecté, avec le nom d’affichage Discord (ou le pseudo), l’avatar personnalisé importé, et `locale = fr`. L’en-tête affiche l’avatar Discord (seule étape qui télécharge un vrai avatar : les tests e2e simulent `/_next/image`).
-- [ ] **D2 — Connexion.** Depuis `/en/login?returnTo=/en/collection` : arrivée sur la collection. Une seconde connexion réutilise le même compte.
+- [ ] **D2 — Connexion.** Depuis `/en/login?returnTo=%2Fen%2Fboosters` : arrivée sur `/en/boosters`. Une seconde connexion réutilise le même compte.
 - [ ] **D3 — Refus.** Refuser le consentement : message de refus, aucune ligne dans `auth.users`.
 - [ ] **D4 — E-mail non vérifié.** Un compte Discord dont l’e-mail n’est pas vérifié : message `account_refused`, aucune ligne dans `auth.users`.
 - [ ] **D5 — Interface.** Anneau de focus visible au clavier ; logos conformes aux chartes de Google et de Discord ; textes EN relus.
