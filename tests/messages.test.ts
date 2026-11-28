@@ -104,6 +104,7 @@ const oauthErrorCodes: Record<OAuthErrorCode, true> = {
   access_denied: true,
   email_unusable: true,
   account_refused: true,
+  link_expired: true,
   failed: true,
 };
 

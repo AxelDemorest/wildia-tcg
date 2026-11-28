@@ -1,0 +1,19 @@
+{{ if eq (printf "%v" .Data.locale) "en" }}
+<h2>Confirm your address</h2>
+<p>Thanks for signing up. Follow this link to confirm your address and start your session:</p>
+{{ if eq .RedirectTo .SiteURL }}
+<p><a href="{{ .SiteURL }}/en/auth/confirm?returnTo=%2Fen&token_hash={{ .TokenHash }}">Confirm your address</a></p>
+{{ else }}
+<p><a href="{{ .RedirectTo }}&token_hash={{ .TokenHash }}">Confirm your address</a></p>
+{{ end }}
+<p>If you did not sign up, ignore this e-mail.</p>
+{{ else }}
+<h2>Confirmez votre adresse</h2>
+<p>Merci de votre inscription. Ouvrez ce lien pour confirmer votre adresse et commencer votre session :</p>
+{{ if eq .RedirectTo .SiteURL }}
+<p><a href="{{ .SiteURL }}/fr/auth/confirm?returnTo=%2Ffr&token_hash={{ .TokenHash }}">Confirmer mon adresse</a></p>
+{{ else }}
+<p><a href="{{ .RedirectTo }}&token_hash={{ .TokenHash }}">Confirmer mon adresse</a></p>
+{{ end }}
+<p>Si vous ne vous êtes pas inscrit, ignorez cet e-mail.</p>
+{{ end }}

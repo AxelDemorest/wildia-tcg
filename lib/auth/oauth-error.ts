@@ -3,6 +3,7 @@ export const OAUTH_ERRORS = [
   "access_denied",
   "email_unusable",
   "account_refused",
+  "link_expired",
   "failed",
 ] as const;
 
@@ -18,8 +19,9 @@ const IDENTITY_REFUSED_DESCRIPTION = "Error creating identity";
  * The UI code for what Supabase Auth sent back in `error` / `error_code` / `error_description`.
  * Consent refused is `access_denied`; an unverified provider e-mail (`access_denied` with
  * `provider_email_needs_verification`) and a provider that sends no e-mail are `email_unusable`;
- * an identity the database refuses is `account_refused`; everything else (unknown values, any
- * other `server_error`, …) is `failed`.
+ * an identity the database refuses is `account_refused`; everything
+ * else (unknown values, any other `server_error`, …) is `failed`. `link_expired` is not read here:
+ * the confirmation route decides it.
  */
 export function oauthErrorCode(
   error: string | null,

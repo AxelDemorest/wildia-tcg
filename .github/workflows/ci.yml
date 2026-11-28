@@ -43,7 +43,7 @@ jobs:
       # Applies every migration on an empty database: a broken migration fails here,
       # not on `npm run db:migrate` in production.
       - name: Start local Supabase
-        run: npx supabase start -x studio,postgres-meta,mailpit,imgproxy,supavisor
+        run: npx supabase start -x studio,postgres-meta,imgproxy,supavisor
 
       # Local demo keys (the same on every machine), not secrets.
       - name: Point the app and the tests at it

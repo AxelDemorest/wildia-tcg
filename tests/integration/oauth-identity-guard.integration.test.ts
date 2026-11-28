@@ -1,6 +1,7 @@
 /**
  * The identity guard on auth.identities: Supabase Auth never creates or links an OAuth identity
- * whose e-mail is unverified (R1), nor links one to an account that has an `email` identity (R2).
+ * whose e-mail is unverified (R1), nor links one to an account whose `email` identity is neither
+ * verified by its link nor on an account still unconfirmed (R2, relaxed by CYR-119).
  * The guard also covers updates: Supabase Auth rewrites `identity_data` at each repeated sign-in.
  * Supabase Auth creates the user and the identity in one transaction: a refusal leaves nothing.
  * Runs against the local Supabase: npm run test:integration (see docs/testing.md).
@@ -10,9 +11,11 @@ import { afterAll, describe, expect, it } from "vitest";
 import {
   admin,
   cleanup,
-  createPlayer,
+  confirmWithoutClick,
   createProviderAccount,
+  createSignedUpAccount,
   linkProviderIdentity,
+  signUpPublicly,
   sql,
   updateProviderIdentity,
 } from "./supabase";
@@ -48,12 +51,37 @@ describe("unverified OAuth identity (R1)", () => {
 });
 
 describe("OAuth identity on an account with a password (R2)", () => {
-  it("refuses to link a verified Discord identity to an e-mail account", async () => {
-    const player = await createPlayer();
+  it("refuses to link a verified Discord identity to an account confirmed without a click (Autoconfirm)", async () => {
+    // "Confirm email" off: the sign-up confirms the account itself, and the e-mail identity's
+    // own email_verified stays false. The visitor even claims email_verified in the metadata.
+    const account = await signUpPublicly({ data: { email_verified: true } });
+    confirmWithoutClick(account.id);
 
-    expect(() => linkProviderIdentity(player.id, "discord")).toThrow();
+    expect(() => linkProviderIdentity(account.id, "discord")).toThrow();
 
-    expect(identitiesOf(player.id)).toEqual(["email"]);
+    expect(identitiesOf(account.id)).toEqual(["email"]);
+  });
+
+  it("links a verified Google identity to an account confirmed by its link: two identities", async () => {
+    const account = await createSignedUpAccount({ confirmed: true });
+
+    linkProviderIdentity(account.id, "google");
+
+    expect(identitiesOf(account.id)).toEqual(["email", "google"]);
+    // The click is what marks the e-mail identity verified.
+    const [identity] = sql<{ verified: string }>(
+      `select identity_data ->> 'email_verified' as verified from auth.identities
+       where user_id = '${account.id}' and provider = 'email'`,
+    );
+    expect(identity.verified).toBe("true");
+  });
+
+  it("lets a verified Google identity in on an account that was never confirmed (Supabase Auth then removes the e-mail identity and the password)", async () => {
+    const account = await createSignedUpAccount({ confirmed: false });
+
+    linkProviderIdentity(account.id, "google");
+
+    expect(identitiesOf(account.id)).toEqual(["email", "google"]);
   });
 });
 

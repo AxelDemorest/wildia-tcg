@@ -195,10 +195,9 @@ describe("runOpenShopSlot", () => {
 });
 
 describe("pathsRevalidatedAfterOpening", () => {
-  it("revalidates exactly the collection and the shop of the locale, in any order", () => {
+  it("revalidates exactly the player collection and the shop of the locale, in any order", () => {
     expect([...pathsRevalidatedAfterOpening("en", "user-1")].sort()).toEqual([
       "/en/boosters",
-      "/en/collection",
       "/en/players/user-1/collection",
     ]);
   });
